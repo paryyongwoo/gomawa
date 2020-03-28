@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="500dp">
+
+    <LinearLayout
+        android:id="@+id/listview_item_share_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/share_profile"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/activity_share_profile"
+            app:civ_border_width="@null" />
+
+        <TextView
+            android:id="@+id/share_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="귀요미"
+            android:layout_weight="5"
+            android:layout_marginLeft="10dp"
+            android:textSize="12dp"
+            />
+
+        <TextView
+            android:id="@+id/share_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="2020.02.16"
+            android:layout_marginLeft="10dp"
+            android:textSize="12dp"
+            android:layout_weight="5"
+            android:gravity="right|center_vertical"
+            android:layout_marginRight="10dp"
+            />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/listview_item_share_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/share_item_background"
+            android:background="@color/inactiveColor"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="@id/listview_item_share_body"
+            app:layout_constraintStart_toStartOf="@+id/listview_item_share_body"
+            >
+
+        </ImageView>
+        <TextView
+            android:id="@+id/listview_item_share_body_textview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요"
+            android:textColor="@color/inactiveColor"
+            app:layout_constraintTop_toTopOf="@id/listview_item_share_body"
+            app:layout_constraintStart_toStartOf="@+id/listview_item_share_body"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_my_thanks"
+        android:icon="@drawable/menu_my_thanks_icon"
+        android:title="myThanks" />
+
+    <item
+        android:id="@+id/menu_share"
+        android:icon="@drawable/menu_share_icon"
+        android:title="share" />
+
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/menu_setting_icon"
+        android:title="setting" />
+
+</menu>

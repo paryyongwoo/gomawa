@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/backgroundColor</item>
+        <item name="colorPrimaryDark">@color/activeColor</item>
+        <item name="colorAccent">@color/inactiveColor</item>
+        <item name="android:statusBarColor">@color/inactiveColor</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <!-- The launcher theme. It sets the main window background to the launch_screen drawable -->
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <item name="android:windowBackground">@drawable/launch_screen</item>
+    <!-- Optional, on Android 5+ you can modify the colorPrimaryDark color to match the windowBackground color for further branding-->
+    <!-- <item name="colorPrimaryDark">@android:color/white</item> -->
+    </style>
+    
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textCursorDrawable">@color/inactiveColor</item>
+        <item name="android:textColor">@color/inactiveColor</item>
+        <item name="android:textColorHint">@color/grayColor</item>
+        <item name="android:textColorHighlight">@color/inactiveColor</item>
+    </style>
+
+</resources>

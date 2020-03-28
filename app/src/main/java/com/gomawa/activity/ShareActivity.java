@@ -54,10 +54,11 @@ public class ShareActivity extends AppCompatActivity {
          * show, hide 메소드를 통해 보여줄 프래그먼트만 화면에 표시한다.
          */
         if (fragmentMyThanks == null) {
-            fragmentShare = new FragmentShare();
-            FragmentShareWrite fragmentShareWrite = new FragmentShareWrite();
-            fm.beginTransaction().add(R.id.bottom_menu_framelayout, fragmentShare).commit();
-            fm.beginTransaction().add(R.id.share_frame_layout, fragmentShareWrite).commit();
+//            fragmentShare = new FragmentShare();
+//            FragmentShareWrite fragmentShareWrite = new FragmentShareWrite();
+            fragmentMyThanks = new FragmentMyThanks();
+            fm.beginTransaction().add(R.id.bottom_menu_framelayout, fragmentMyThanks).commit();
+//            fm.beginTransaction().add(R.id.share_frame_layout, fragmentShareWrite).commit();
         }
 
         // 뷰설정

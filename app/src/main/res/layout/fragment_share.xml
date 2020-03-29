@@ -34,28 +34,7 @@
                 android:orientation="vertical" >
 
                 <ImageButton
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@null"
-                    android:src="@drawable/write_btn_disable" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/inactiveColor"
-                    android:textSize="10dp"
-                    android:text="글쓰기" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical" >
-
-                <ImageButton
+                    android:id="@+id/list_btn"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="@null"
@@ -78,6 +57,30 @@
                 android:orientation="vertical" >
 
                 <ImageButton
+                    android:id="@+id/write_btn"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@null"
+                    android:src="@drawable/write_btn_disable" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/inactiveColor"
+                    android:textSize="10dp"
+                    android:text="글쓰기" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageButton
+                    android:id="@+id/my_list_btn"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="@null"

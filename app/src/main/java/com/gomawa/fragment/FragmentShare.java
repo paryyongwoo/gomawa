@@ -1,6 +1,5 @@
 package com.gomawa.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,36 +15,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 
 import com.gomawa.R;
-import com.gomawa.dto.ShareItem;
-import com.gomawa.viewpager.DepthPageTransformer;
-import com.gomawa.viewpager.ScreenSlidePagerAdapter;
-
-import java.util.ArrayList;
 
 public class FragmentShare extends Fragment {
 
+    /**
+     * 뷰
+     */
     private ViewGroup rootView = null;
     private ListView shareListView = null;
-
-    private ArrayList<ShareItem> shareItemList = null;
+    private ImageButton writeBtn = null;
+    private ImageButton listBtn = null;
+    private ImageButton myListBtn = null;
 
     /**
-     * 뷰페이저
+     * 글쓰기, 목록, 내글 프래그먼트
      */
-    private ViewPager mPager = null;
-    private ScreenSlidePagerAdapter pagerAdapter = null;
+    private Fragment writeFragment = null;
+    private Fragment listFragment = null;
 
-    Fragment writeFragment = null;
-    Fragment listFragment = null;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d("fragment", "onAttach share");
-    }
+    /**
+     * 프래그먼트 매니저
+     */
+    private FragmentManager fm = null;
 
     @Nullable
     @Override
@@ -60,16 +54,15 @@ public class FragmentShare extends Fragment {
          */
         initView();
 
-//        mPager = rootView.findViewById(R.id.thanksPager);
-//        mPager.setOffscreenPageLimit(4);
-//        pagerAdapter = new ScreenSlidePagerAdapter(getChildFragmentManager());
-//        writeFragment = new FragmentShareWrite();
-//        listFragment = new FragmentShareList();
-//        pagerAdapter.addItem(writeFragment);
-//        pagerAdapter.addItem(listFragment);
-//        mPager.setAdapter(pagerAdapter);
-//        // DepthPageTransformer 설정
-//        mPager.setPageTransformer(true, new DepthPageTransformer());
+        /**
+         * FragmentManager 얻기
+         */
+        fm = getChildFragmentManager();
+
+        if (listFragment == null) {
+            listFragment = new FragmentShareList();
+            fm.beginTransaction().add(R.id.share_frame_layout, listFragment).commit();
+        }
 
         return rootView;
     }
@@ -105,8 +98,51 @@ public class FragmentShare extends Fragment {
         headerText.setText(headerTitle);
         TextView headerSubTitleText = rootView.findViewById(R.id.header_subtitle);
         headerSubTitleText.setText(headerSubTitle);
-
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) headerSubTitleText.getLayoutParams();
         marginLayoutParams.setMargins(0, marginLayoutParams.topMargin - 20, 0, 0);
+
+        /**
+         * 헤더 버튼 (목록, 글쓰기, 내글보기)
+         */
+        listBtn = rootView.findViewById(R.id.list_btn);
+        writeBtn = rootView.findViewById(R.id.write_btn);
+        myListBtn = rootView.findViewById(R.id.my_list_btn);
+
+        /**
+         * 목록 (목록과 내글보기는 프래그먼트 전환시 구분자를 함께 전달해줘야함)
+         */
+        listBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
+                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+            }
+        });
+
+        /**
+         * 글쓰기
+         */
+        writeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (writeFragment == null) {
+                    writeFragment = new FragmentShareWrite();
+                    fm.beginTransaction().add(R.id.share_frame_layout, writeFragment).commit();
+                }
+                if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
+                if (listFragment != null) fm.beginTransaction().hide(listFragment).commit();
+            }
+        });
+
+        /**
+         * 내글보기 (목록과 내글보기는 프래그먼트 전환시 구분자를 함께 전달해줘야함)
+         */
+        myListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
+                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+            }
+        });
     }
 }

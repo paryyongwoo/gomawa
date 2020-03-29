@@ -2,18 +2,218 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:paddingTop="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+    <include layout="@layout/header" />
+    
+    <LinearLayout
+        android:id="@+id/setting_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_share_text_third"
-        android:text="삼"
-        android:textSize="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        android:layout_marginTop="100dp"
+        android:orientation="vertical" >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/share_item_background"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nickname"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/setting_header"
+        android:layout_marginBottom="200dp"
+        android:orientation="vertical"
+        android:background="@drawable/setting_menu" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/user"
+                    android:background="@null"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="프로필사진 수정"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/pen"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="닉네임 수정"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/logout"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="로그아웃"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="4dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/error"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="공지사항"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/star"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="앱 평점주기"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <ImageButton
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/mail"
+                    android:adjustViewBounds="true"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="문의하기"
+                    android:textSize="10sp"
+                    android:textColor="#000000"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

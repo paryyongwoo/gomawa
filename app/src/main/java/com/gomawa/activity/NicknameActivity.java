@@ -42,6 +42,10 @@ public class NicknameActivity extends Activity {
         // FragmentSetting 에서 받아온 인텐트. 현재 닉네임이 "nowNickname"에 담겨 있음
         Intent i = getIntent();
 
+        // 상단 타이틀의 Text 값
+        TextView title = findViewById(R.id.activity_nickname_title);
+        title.setText("닉네임 변경");
+
         // editText 와 deleteBtn 초기화
         editText = findViewById(R.id.activity_nickname_editText);
         deleteBtn = findViewById(R.id.activity_nickname_deleteBtn);

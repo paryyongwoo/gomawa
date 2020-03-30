@@ -11,12 +11,20 @@ import android.widget.TextView;
 import com.gomawa.dto.Member;
 
 public class Global {
+    // todo: 얘네들 FragmentSetting 으로 옮겨야 함, REQUEST_RESULT 변수 명도 바꾸고
     // 액티비티 전환 간 Intent 를 위한 상수
     public static final int REQUEST_RESULT = 0;
     public static final int RESULT_SUCESS = 1;
     public static final int RESULT_SUCESS_NICKNAME = 2;
 
+    // 닉네임 글자 수 제한
     public static final int NICKNAME_LIMIT = 10;
+
+    // 개발자 이메일
+    public static final String[] EMAIL = { "apfhd5620@gmail.com" };
+
+    // 어플 이름 ( 플레이스토어 검색을 위한 임시 변수 )
+    public static final String APPNAME = "고마와";
 
     // 닉네임이 어디있는 지 몰라서 임시로 만든 변수
     public static String nickname = "park";
@@ -52,6 +60,7 @@ public class Global {
      * editText의 글자 수 viewText에 출력
      */
     public static void printLength(Editable editable, TextView textView, int limit) {
+        // todo: 한글 문자열을 어떻게 처리하나? 영어는 몇 글자 까지?
         int length = editable.toString().getBytes().length;
 
         if(length > limit) {

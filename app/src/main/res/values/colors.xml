@@ -11,4 +11,7 @@
     <color name="grayColor">#444f59</color>
     <color name="blackColor">#000000</color>
     <color name="whiteColor">#ffffff</color>
+
+    <!-- 반투명 배경 전용 color -->
+    <color name="transparent">#80000000</color>
 </resources>

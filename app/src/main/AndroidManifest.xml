@@ -37,6 +37,9 @@
 
         </activity>
 
+        <activity android:name=".activity.NicknameActivity"
+            android:theme="@style/Transparent"/>
+
     </application>
 
 </manifest>

@@ -27,6 +27,7 @@ import com.gomawa.dialog.PickImageDialog;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -84,6 +85,24 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener fromCameraBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        // 빈 이미지 파일 만들기
+                        try {
+                            tempFile = Global.createImageFile();
+                        } catch(IOException e) {
+                            Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+
+                            pickImageDialog.dismiss();
+                        }
+
+                        if(tempFile != null) {
+                            Uri uri = FileProvider.getUriForFile(mContext, "com.gomawa.fileprovider", tempFile);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            startActivityForResult(intent, Global.PICK_FROM_CAMERA);
+                        }
 
                     }
                 };
@@ -162,11 +181,10 @@ public class FragmentSetting extends Fragment {
             }
         // 갤러리에서 이미지 가져온 후 호출됨
         } else if(requestCode == Global.PICK_FROM_GALLREY) {
-            if(resultCode == Activity.RESULT_CANCELED) {
-                // 아무 이미지도 선택하지 않았을 때 (백 버튼)
+            if (resultCode == Activity.RESULT_CANCELED) {
+                // todo: 아무 이미지도 선택하지 않았을 때 (백 버튼)
             } else {
                 // 이미지를 선택했을 때
-
                 // uri를 path로 전환
                 Uri photoUri = data.getData();
 
@@ -185,33 +203,37 @@ public class FragmentSetting extends Fragment {
                 String copiedPath = tempPath.replace(".", "2.");
                 File copiedFile = Global.fileCopy(tempPath, copiedPath);
 
-                if(copiedFile.exists()) {
+                if (copiedFile.exists()) {
                     // 원본 이미지 보호를 위해 복사된 이미지 파일로 CROP 과정이 진행됨
                     tempFile = copiedFile;
-                    Uri uri = FileProvider.getUriForFile(mContext, "com.gomawa.fileprovider", tempFile);
-
-                    Intent intent = new Intent("com.android.camera.action.CROP");
-                    intent.setDataAndType(uri, "image/*");
-                    // 접근 권한을 주는 부분!
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("outputX", 200);
-                    intent.putExtra("outputY", 200);
-                    intent.putExtra("scale", true);
-                    intent.putExtra("return-data", false);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                    intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+                    Intent intent = Global.setIntentToCrop(mContext, tempFile);
 
                     // CROP 액티비티 실행
-                    startActivityForResult(intent, Global.CROP_FROM_GALLREY);
+                    startActivityForResult(intent, Global.CROP_IMAGE);
                 }
             }
 
             // 다이얼로그 종료
             pickImageDialog.dismiss();
+        // 카메라에서 이미지 가져온 후 호출됨
+        }else if(requestCode == Global.PICK_FROM_CAMERA) {
+            if(resultCode == Activity.RESULT_CANCELED) {
+                // todo: 사진을 찍지 않았을 때 여기서 처리
+            } else {
+                if(tempFile.exists()) {
+                    // 원본 이미지 보호를 하지 않음 = 찍은 사진이 CROP되어 저장됨
+                    Intent intent = Global.setIntentToCrop(mContext, tempFile);
+
+                    // CROP 액티비티 실행
+                    startActivityForResult(intent, Global.CROP_IMAGE);
+                }
+            }
+
+            // 다이얼로그 종료
+            pickImageDialog.dismiss();
+
         // CROP 액티비티 후에 실행
-        }else if(requestCode == Global.CROP_FROM_GALLREY) {
+        }else if(requestCode == Global.CROP_IMAGE) {
             // 프로필 이미지 파일에 tempFile 을 대입
             Global.profileImageFile = tempFile;
 
@@ -221,6 +243,7 @@ public class FragmentSetting extends Fragment {
 
             // todo: 복사된 이미지 파일의 삭제가 이루어져야함. 나중에 S3에 복사된 이미지를 저장한 후에 삭제하는 코드를 적으면 되지 않을까 싶음
             // 지금 기능으로는 복사된 이미지 파일의 삭제가 이루어지지 않으니, 일일이 삭제해야함
+            // 카메라로 찍은 사진도 삭제해야하나?
         }
     }
 }

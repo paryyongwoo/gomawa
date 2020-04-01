@@ -3,6 +3,9 @@ package com.gomawa.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.text.Editable;
@@ -11,23 +14,27 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.core.content.FileProvider;
+
 import com.gomawa.dto.Member;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Global {
-    // todo: 얘네들 FragmentSetting 으로 옮겨야 함, REQUEST_RESULT 변수 명도 바꾸고
-    // 액티비티 전환 간 Intent 를 위한 상수
+    // 액티비티 전환 간 Intent 를 위한 상수 - 현재는 닉네임 액티비티 불러오는데 쓰이고 있음
     public static final int REQUEST_RESULT = 0;
     public static final int RESULT_SUCESS = 1;
     public static final int RESULT_SUCESS_NICKNAME = 2;
 
     // 갤러리&카메라에서 이미지 가져올 때 사용하는 상수
     public static final int PICK_FROM_GALLREY = 11;
-    public static final int CROP_FROM_GALLREY = 22;
+    public static final int CROP_IMAGE = 22;
+    public static final int PICK_FROM_CAMERA = 33;
 
     // 닉네임 글자 수 제한
     public static final int NICKNAME_LIMIT = 10;
@@ -127,5 +134,46 @@ public class Global {
         }
 
         return newFile;
+    }
+
+    /**
+     * 빈 이미지 파일 만드는 함수
+     */
+    public static File createImageFile() throws IOException {
+        // 이미지 파일 이름 / "newProfileImage" 대신 알맞은 문자열 넣어줘야함
+        String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
+        String imageFileName = "newProfileImage_" + timeStamp + "_";
+
+        // 이미지 저장 폴더
+        // todo: gomawa_temp 폴더는 임시이므로 어떻게 해야 할 지 난 잘 모르겠다
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/gomawa_temp");
+        if(!storageDir.exists()) storageDir.mkdir();
+
+        // 빈 파일 생성
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        return image;
+    }
+
+    /**
+     * 이미지를 CROP하기 위한 INTENT를 설정하고 반환하는 함수
+     */
+    public static Intent setIntentToCrop(Context mContext, File file) {
+        Uri uri = FileProvider.getUriForFile(mContext, "com.gomawa.fileprovider", file);
+
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 접근 권한을 주는 부분!
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 200);
+        intent.putExtra("scale", true);
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+
+        return intent;
     }
 }

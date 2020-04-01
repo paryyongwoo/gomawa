@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
+import com.gomawa.common.Global;
 import com.gomawa.fragment.FragmentMyThanks;
 import com.gomawa.fragment.FragmentSetting;
 import com.gomawa.fragment.FragmentShare;
@@ -104,4 +105,9 @@ public class ShareActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Global.onBackPressedCheck(this.getApplicationContext(), this);
+    }
 }

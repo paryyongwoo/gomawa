@@ -29,9 +29,11 @@
 
         </provider>
 
+        <!-- noHistory 속성이 true이면 액티비티 전환 시 저절로 finish 됨 -->
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/SplashTheme"
+            android:noHistory="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

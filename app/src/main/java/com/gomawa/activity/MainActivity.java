@@ -1,6 +1,7 @@
 package com.gomawa.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -89,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
                 mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mOAuthLoginHandler);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Global.onBackPressedCheck(mContext, this);
     }
 
     private void tedPermission() {

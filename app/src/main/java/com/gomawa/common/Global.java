@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -35,6 +36,9 @@ public class Global {
     public static final int PICK_FROM_GALLREY = 11;
     public static final int CROP_IMAGE = 22;
     public static final int PICK_FROM_CAMERA = 33;
+
+    // 뒤로가기 버튼 시간 측정 변수
+    private static long backKeyPressedTime = 0;
 
     // 닉네임 글자 수 제한
     public static final int NICKNAME_LIMIT = 10;
@@ -175,5 +179,18 @@ public class Global {
         intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
 
         return intent;
+    }
+
+    /**
+     * 뒤로가기 한 번 더 확인한 후에 액티비티를 종료해주는 함수
+     */
+    public static void onBackPressedCheck(Context mContext, Activity mActivity) {
+        if(System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(mContext, "뒤로가기 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            mActivity.finish();
+        }
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- todo: 다이얼로그 drawable 필요 -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/dialog_pick_image_from_gallery_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="갤러리에서 가져오기" />
+
+    <Button
+        android:id="@+id/dialog_pick_image_from_camera_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="카메라에서 가져오기" />
+
+</LinearLayout>

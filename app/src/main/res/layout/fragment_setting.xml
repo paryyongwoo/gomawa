@@ -21,8 +21,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/fragment_setting_profileImage_imageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:src="@drawable/share_item_background"/>
 
         <TextView
@@ -42,7 +42,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/setting_header"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="150dp"
         android:orientation="vertical"
         android:background="@drawable/setting_menu" >
 

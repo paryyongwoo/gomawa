@@ -24,7 +24,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.gomawa.R;
 import com.gomawa.activity.ShareActivity;
-import com.gomawa.common.Global;
+import com.gomawa.common.CommonUtils;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
@@ -320,7 +321,7 @@ public class FragmentMyThanks extends Fragment {
          * dailyThanks 객체를 api로 보내기
          * api/dailyThanks
          */
-        Member member = Global.getMember();
+        Member member = CommonUtils.getMember();
         if (member.getKey() < 0) {
             Toast.makeText(activity, "재로그인필요", Toast.LENGTH_SHORT).show();
         } else {

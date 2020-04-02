@@ -23,7 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
-import com.gomawa.common.Global;
+import com.gomawa.common.CommonUtils;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
@@ -87,14 +88,14 @@ public class FragmentShareWrite extends Fragment {
             @Override
             public void onClick(View v) {
                 // 키보드 보이게
-                Global.showKeyboard(getActivity(), editText);
+                CommonUtils.showKeyboard(getActivity(), editText);
             }
         });
 
         /**
          * 화면이 렌더링 됨과 동시에 키보드 보이게
          */
-        Global.showKeyboard(getActivity(), editText);
+        CommonUtils.showKeyboard(getActivity(), editText);
 
         /**
          * 업로드, 완료 버튼 이벤트 등록
@@ -119,7 +120,7 @@ public class FragmentShareWrite extends Fragment {
                 /**
                  * 키보드 내리기
                  */
-                Global.hideKeyboard(getActivity(), editText);
+                CommonUtils.hideKeyboard(getActivity(), editText);
             }
         });
 
@@ -134,7 +135,7 @@ public class FragmentShareWrite extends Fragment {
                 ShareItem shareItem = new ShareItem();
                 shareItem.setContent(editText.getText().toString());
                 // 작성자 설정
-                Member member = Global.getMember();
+                Member member = CommonUtils.getMember();
                 shareItem.setKey(member.getKey());
 
                 /**
@@ -168,7 +169,7 @@ public class FragmentShareWrite extends Fragment {
                 /**
                  * 키보드 내리기
                  */
-                Global.hideKeyboard(getActivity(), editText);
+                CommonUtils.hideKeyboard(getActivity(), editText);
             }
         });
     }

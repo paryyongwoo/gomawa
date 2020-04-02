@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gomawa.R;
-import com.gomawa.common.Global;
+import com.gomawa.common.CommonUtils;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.gun0912.tedpermission.PermissionListener;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Global.onBackPressedCheck(mContext, this);
+        CommonUtils.onBackPressedCheck(mContext, this);
     }
 
     private void tedPermission() {
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 member.setEmail(email);
                 member.setGender(gender);
 
-                Global.setMember(member);
+                CommonUtils.setMember(member);
 
                 // 로그인 성공 후, 서버로 접속한 유저 정보 전달해서 데이터베이스에 저장
                 Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMember(member);

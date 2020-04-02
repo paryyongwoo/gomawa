@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,8 +20,11 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
-import com.gomawa.common.Global;
+import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Constants;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.PickImageDialog;
 import com.squareup.picasso.Picasso;
 
@@ -64,7 +66,7 @@ public class FragmentSetting extends Fragment {
         nicknameTextView = rootView.findViewById(R.id.fragment_setting_nickname_textView);
 
         // 닉네임을 DB에서 가져와서 표시 (DB 없어서 임시로 Global에서 가져옴)
-        nicknameTextView.setText(Global.nickname);
+        nicknameTextView.setText(CommonUtils.nickname);
 
         // 프로필 사진 변경 버튼 Listener
         ImageButton profileImageBtn = rootView.findViewById(R.id.fragment_setting_profileImage_btn);
@@ -77,7 +79,7 @@ public class FragmentSetting extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                        startActivityForResult(intent, Global.PICK_FROM_GALLREY);
+                        startActivityForResult(intent, Constants.PICK_FROM_GALLREY);
                     }
                 };
 
@@ -89,7 +91,7 @@ public class FragmentSetting extends Fragment {
 
                         // 빈 이미지 파일 만들기
                         try {
-                            tempFile = Global.createImageFile();
+                            tempFile = ImageUtils.createImageFile();
                         } catch(IOException e) {
                             Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
@@ -101,7 +103,7 @@ public class FragmentSetting extends Fragment {
                             Uri uri = FileProvider.getUriForFile(mContext, "com.gomawa.fileprovider", tempFile);
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            startActivityForResult(intent, Global.PICK_FROM_CAMERA);
+                            startActivityForResult(intent, Constants.PICK_FROM_CAMERA);
                         }
 
                     }
@@ -119,8 +121,8 @@ public class FragmentSetting extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), NicknameActivity.class);
-                i.putExtra("nowNickname", Global.nickname);
-                startActivityForResult(i, Global.REQUEST_RESULT);
+                i.putExtra("nowNickname", CommonUtils.nickname);
+                startActivityForResult(i, Constants.REQUEST_RESULT);
             }
         });
 
@@ -141,7 +143,7 @@ public class FragmentSetting extends Fragment {
 
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 //intent.setData(Uri.parse("market://details?id=" + packageName));
-                intent.setData(Uri.parse("http://play.google.com/store/search?q=" + Global.APPNAME + "&c=apps"));
+                intent.setData(Uri.parse("http://play.google.com/store/search?q=" + Constants.APPNAME + "&c=apps"));
 
                 startActivity(intent);
             }
@@ -154,7 +156,7 @@ public class FragmentSetting extends Fragment {
             public void onClick(View view) {
                 Intent email = new Intent(Intent.ACTION_SEND);
                 email.setType("plain/Text");
-                email.putExtra(Intent.EXTRA_EMAIL, Global.EMAIL);
+                email.putExtra(Intent.EXTRA_EMAIL, Constants.EMAIL);
                 startActivity(email);
             }
         });
@@ -165,22 +167,22 @@ public class FragmentSetting extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // NicknameActivity 종료 시 호출
-        if (requestCode == Global.REQUEST_RESULT) {
+        if (requestCode == Constants.REQUEST_RESULT) {
             switch (resultCode) {
                 // NicknameActivity - BackBtn
-                case Global.RESULT_SUCESS:
+                case Constants.RESULT_SUCESS:
                     break;
                 // NicknameActivity - okBtn
-                case Global.RESULT_SUCESS_NICKNAME:
-                    Global.nickname = data.getExtras().getString("newNickname");
-                    nicknameTextView.setText(Global.nickname);
+                case Constants.RESULT_SUCESS_NICKNAME:
+                    CommonUtils.nickname = data.getExtras().getString("newNickname");
+                    nicknameTextView.setText(CommonUtils.nickname);
                     break;
                 // 비정상적인 종료
                 default:
                     Toast.makeText(getContext(), "NicknameActivity가 비정상적으로 종료됨.", Toast.LENGTH_LONG).show();
             }
         // 갤러리에서 이미지 가져온 후 호출됨
-        } else if(requestCode == Global.PICK_FROM_GALLREY) {
+        } else if(requestCode == Constants.PICK_FROM_GALLREY) {
             if (resultCode == Activity.RESULT_CANCELED) {
                 // todo: 아무 이미지도 선택하지 않았을 때 (백 버튼)
             } else {
@@ -201,31 +203,31 @@ public class FragmentSetting extends Fragment {
 
                 // 선택한 이미지를 copiedFile에 복사
                 String copiedPath = tempPath.replace(".", "2.");
-                File copiedFile = Global.fileCopy(tempPath, copiedPath);
+                File copiedFile = CommonUtils.fileCopy(tempPath, copiedPath);
 
                 if (copiedFile.exists()) {
                     // 원본 이미지 보호를 위해 복사된 이미지 파일로 CROP 과정이 진행됨
                     tempFile = copiedFile;
-                    Intent intent = Global.setIntentToCrop(mContext, tempFile);
+                    Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
 
                     // CROP 액티비티 실행
-                    startActivityForResult(intent, Global.CROP_IMAGE);
+                    startActivityForResult(intent, Constants.CROP_IMAGE);
                 }
             }
 
             // 다이얼로그 종료
             pickImageDialog.dismiss();
         // 카메라에서 이미지 가져온 후 호출됨
-        }else if(requestCode == Global.PICK_FROM_CAMERA) {
+        }else if(requestCode == Constants.PICK_FROM_CAMERA) {
             if(resultCode == Activity.RESULT_CANCELED) {
                 // todo: 사진을 찍지 않았을 때 여기서 처리
             } else {
                 if(tempFile.exists()) {
                     // 원본 이미지 보호를 하지 않음 = 찍은 사진이 CROP되어 저장됨
-                    Intent intent = Global.setIntentToCrop(mContext, tempFile);
+                    Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
 
                     // CROP 액티비티 실행
-                    startActivityForResult(intent, Global.CROP_IMAGE);
+                    startActivityForResult(intent, Constants.CROP_IMAGE);
                 }
             }
 
@@ -233,9 +235,9 @@ public class FragmentSetting extends Fragment {
             pickImageDialog.dismiss();
 
         // CROP 액티비티 후에 실행
-        }else if(requestCode == Global.CROP_IMAGE) {
+        }else if(requestCode == Constants.CROP_IMAGE) {
             // 프로필 이미지 파일에 tempFile 을 대입
-            Global.profileImageFile = tempFile;
+            ImageUtils.profileImageFile = tempFile;
 
             // 프로필 이미지뷰의 이미지를 바꿔줌
             CircleImageView imageView = rootView.findViewById(R.id.fragment_setting_profileImage_imageView);

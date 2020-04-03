@@ -20,6 +20,8 @@ import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
 
+import java.io.UnsupportedEncodingException;
+
 public class NicknameActivity extends Activity {
     Activity mActivity = this;
 
@@ -89,7 +91,7 @@ public class NicknameActivity extends Activity {
         });
 
         // 현재 닉네임의 길이를 계산하여 lengthTextView 에 출력 (이후에는 위 TextChangedListener 에서 진행함)
-        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.nickname.getBytes().length, Constants.NICKNAME_LIMIT));
+        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.calculateLength(CommonUtils.nickname), Constants.NICKNAME_LIMIT));
 
         // deleteBtn Listener
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -124,12 +126,14 @@ public class NicknameActivity extends Activity {
                 CommonUtils.hideKeyboard(mActivity, editText);
 
                 // 닉네임 길이 검사
-                int length = editText.getText().toString().getBytes().length;
+                int length = CommonUtils.calculateLength(editText.getText().toString());
 
                 if(length > Constants.NICKNAME_LIMIT) {
                     // 닉네임 길이 제한보다 길다면~~ 처리 (일단은 무시)
+                    CommonUtils.hideKeyboard(mActivity, editText);
                 } else if(length == 0) {
                     // 닉네임 길이가 0이라면~~ 처리 (일단은 무시)
+                    CommonUtils.hideKeyboard(mActivity, editText);
                 } else {
                     // 이도저도 아니라면 인텐트에 editText의 Text 값을 실어서 Setting Fragment 로 보냄.
                     // 실질적인 닉네임 변경 작업은 Setting Fragment에서 이루어짐.

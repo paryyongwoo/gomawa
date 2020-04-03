@@ -3,6 +3,7 @@ package com.gomawa.common;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class CommonUtils {
     // 닉네임이 어디있는 지 몰라서 임시로 만든 변수
@@ -46,15 +48,37 @@ public class CommonUtils {
     }
 
     /**
-     * editText의 글자 수 viewText에 출력
+     * 문자열의 Length 를 계산해서 int 값으로 반환해주는 함수 (한글의 경우 2Byte)
+     */
+    public static int calculateLength(String string) {
+        int length = -1;
+
+        try {
+            // getBytes의 인자로 "euc-kr" 을 넣으면 한글을 2Byte로 계산함
+            length = string.getBytes("euc-kr").length;
+        } catch (UnsupportedEncodingException e) {
+            // todo: UnsupportedEncodingException 예외 처리
+        }
+
+        // 예외 발생 시 -1이 반환됨
+        return length;
+    }
+
+    /**
+     * editText의 글자 수를 viewText에 출력해주는 함수
+     * addTextChangedListener >> afterTextChanged 에서 사용되기 때문에 매개변수가 editText 가 아니라 editable 일 수 밖에 없음
      */
     public static void printLength(Editable editable, TextView textView, int limit) {
-        // todo: 한글 문자열을 어떻게 처리하나? 영어는 몇 글자 까지?
-        int length = editable.toString().getBytes().length;
+        int length = calculateLength(editable.toString());
 
-        if(length > limit) {
+        if(length == -1) {
+            // Length 계산에서 예외 발생
+            textView.setText("글자 수 계산 중 오류가 발생했습니다.");
+        } else if(length > limit) {
+            // 글자 수 제한 초과
             textView.setText("글자 수 제한을 초과하였습니다.");
         } else {
+            // 글자 수 정상
             String str =  makeLengthString(length, limit);
             textView.setText(str);
         }
@@ -62,6 +86,7 @@ public class CommonUtils {
 
     /**
      * 문자열 Length 출력을 위한 문자열 합성 함수
+     * NicknameActivity 에서도 한 번 사용되기 때문에 따로 분리해놓음
      */
     public static String makeLengthString(int length, int limit) {
         return length + " / " + limit;

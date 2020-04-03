@@ -35,19 +35,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentSetting extends Fragment {
     // mActivity & mContext
-    Activity mActivity;
-    Context mContext;
+    private Activity mActivity;
+    private Context mContext;
 
-    ViewGroup rootView;
+    private ViewGroup rootView;
 
     // 닉네임이 표시되는 TextView
-    TextView nicknameTextView;
+    private TextView nicknameTextView;
 
     // 갤러리 또는 카메라를 선택하는 다이얼로그
-    PickImageDialog pickImageDialog;
+    private PickImageDialog pickImageDialog;
 
     // 선택하고, Crop된 이미지 파일이 임시로 저장되는 변수
-    File tempFile = null;
+    private File tempFile = null;
 
     @Nullable
     @Override
@@ -172,9 +172,8 @@ public class FragmentSetting extends Fragment {
                 // NicknameActivity - BackBtn
                 case Constants.RESULT_SUCESS:
                     break;
-                // NicknameActivity - okBtn
+                // NicknameActivity - okBtn - textView 의 Text 값을 현재 닉네임으로 변경
                 case Constants.RESULT_SUCESS_NICKNAME:
-                    CommonUtils.nickname = data.getExtras().getString("newNickname");
                     nicknameTextView.setText(CommonUtils.nickname);
                     break;
                 // 비정상적인 종료

@@ -18,18 +18,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
-import com.gomawa.common.ImageUtils;
-
-import java.io.UnsupportedEncodingException;
 
 public class NicknameActivity extends Activity {
-    Activity mActivity = this;
+    private Activity mActivity = this;
 
-    EditText editText;
-    Button deleteBtn;
-    TextView lengthTextView;
-    ImageButton backBtn;
-    Button okBtn;
+    private EditText editText;
+    private Button deleteBtn;
+    private TextView lengthTextView;
+    private ImageButton backBtn;
+    private Button okBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +38,7 @@ public class NicknameActivity extends Activity {
 
     private void initView() {
         // FragmentSetting 에서 받아온 인텐트. 현재 닉네임이 "nowNickname"에 담겨 있음
-        Intent i = getIntent();
+        Intent intent = getIntent();
 
         // 상단 타이틀의 Text 값
         TextView title = findViewById(R.id.activity_nickname_title);
@@ -53,7 +50,7 @@ public class NicknameActivity extends Activity {
         lengthTextView = findViewById(R.id.activity_nickname_length_textView);
 
         // ConstraintLayout 터치 시 editText로 부터 포커스 빼앗고 키보드 내림
-        // question : 왜 경고가 뜨는 지 모르겠슴니다
+        // question: 왜 경고가 뜨는 지 모르겠슴니다
         ConstraintLayout constraintLayout = findViewById(R.id.activity_nickname_body);
         constraintLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -66,7 +63,7 @@ public class NicknameActivity extends Activity {
         });
 
         // editText의 Text를 현재 닉네임으로 변경
-        editText.setText(i.getExtras().getString("nowNickname"));
+        editText.setText(intent.getExtras().getString("nowNickname"));
 
         // editText 포커스 전환 시 deleteBtn 나타나고 사라짐
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -135,12 +132,10 @@ public class NicknameActivity extends Activity {
                     // 닉네임 길이가 0이라면~~ 처리 (일단은 무시)
                     CommonUtils.hideKeyboard(mActivity, editText);
                 } else {
-                    // 이도저도 아니라면 인텐트에 editText의 Text 값을 실어서 Setting Fragment 로 보냄.
-                    // 실질적인 닉네임 변경 작업은 Setting Fragment에서 이루어짐.
-                    // todo : 그냥 여기서 닉네임 변경 작업까지 한 후에 fragment 에서는 textView의 Text 값만 바꿔주는 형태로 바꾸는 게 좋을 듯
-                    Intent intent = new Intent();
-                    intent.putExtra("newNickname", editText.getText().toString());
-                    setResult(Constants.RESULT_SUCESS_NICKNAME, intent);
+                    // 닉네임 길이가 적당하면 닉네임을 editText의 Text 값으로 변경한 후에 액티비티 종료
+                    CommonUtils.nickname = editText.getText().toString();
+
+                    setResult(Constants.RESULT_SUCESS_NICKNAME);
                     finish();
                 }
             }

@@ -18,21 +18,10 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface RetrofitService {
-    // GET
-    @Headers("Accept: application/json")
-    @GET("/api/member/{key}")
-    Call<Member> getMember(@Path("key") Long key);
-
-
-
     //POST
     @Headers("Accept: application/json")
     @POST("/api/member")
-    Call<Member> addMember(@Body Member memberParam);
-
-    @Headers("Accept: application/json")
-    @POST("/api/nickName")
-    Call<Member> setNickName(@Body Member memberParam);
+    Call<Member> addMemberOnStart(@Body Member memberParam);
 
     @Headers("Accept: application/json")
     @POST("/api/dailyThanks")

@@ -7,6 +7,7 @@ public class Member {
     private Long key; // 네이버, 카카오 로그인에서 제공하는 식별자 id
     private String email;
     private String gender;
+    private String nickName; // 닉네임
     private LocalDateTime regDate;
 
     public Member() {
@@ -37,6 +38,9 @@ public class Member {
         this.gender = gender;
     }
 
+    public String getNickName() { return nickName; }
+
+    public void setNickName(String nickName) { this.nickName = nickName; }
 
     public LocalDateTime getRegDate() {
         return regDate;
@@ -52,14 +56,16 @@ public class Member {
                 "key=" + key +
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
+                ", nickName='" + nickName + '\'' +
                 ", regDate=" + regDate +
                 '}';
     }
 
-    public Member(Long key, String email, String gender, LocalDateTime regDate) {
+    public Member(Long key, String email, String gender, String nickName, LocalDateTime regDate) {
         this.key = key;
         this.email = email;
         this.gender = gender;
+        this.nickName = nickName;
         this.regDate = regDate;
     }
 }

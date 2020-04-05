@@ -26,6 +26,7 @@ import com.nhn.android.naverlogin.OAuthLoginHandler;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -204,43 +206,80 @@ public class MainActivity extends AppCompatActivity {
                 if (innerJson.has("gender")) gender = innerJson.getString("gender");
 
                 // 완성된 사용자 객체
-                Member member = new Member();
+                final Member member = new Member();
                 member.setKey(key);
                 member.setEmail(email);
                 member.setGender(gender);
+                member.setNickName(email.substring(email.lastIndexOf("@") + 1));
 
+                Log.d("초기 닉네임", email.substring(email.lastIndexOf("@") + 1));
+
+                // Member 객체 생성
                 CommonUtils.setMember(member);
 
-                // 로그인 성공 후, 서버로 접속한 유저 정보 전달해서 데이터베이스에 저장
-                Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMember(member);
+
+
+                // DB에 해당 Member가 이미 있는 지 검사
+                Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().getMember(key);
                 Callback<Member> callback = new Callback<Member>() {
                     @Override
-                    public void onResponse(Call<Member> call, retrofit2.Response<Member> response) {
+                    public void onResponse(Call<Member> call, Response<Member> response) {
                         if (response.isSuccessful()) {
-                            // 로그인 성공
-                            Log.d("api", "status: " + response.body());
-                            Member member = response.body();
-                            Log.d("api", "member: " + member.toString());
+                            // 통신 성공
+                            if (response.body() == null) {
+                                // DB에서 가져온 Member 가 Null 일 경우 ( 처음 가입하는 경우 )
+                                // addMember를 위해 한 번 더 통신
+                                Call<Member> call_inside = RetrofitHelper.getInstance().getRetrofitService().addMember(member);
+                                Callback<Member> callback_inside = new Callback<Member>() {
+                                    @Override
+                                    public void onResponse(Call<Member> call, Response<Member> response) {
+                                        if (response.isSuccessful()) {
+                                            // 로그인 성공
+                                            Log.d("api", "status: " + response.body());
+                                            Member member = response.body();
+                                            Log.d("api", "member: " + member.toString());
 
-                            // 다음 액티비티로 이동 (고마운 하루)
-                            Intent intent = new Intent(mContext, ShareActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Log.d("api 응답은 왔으나 실패", "status: " + response.code());
-                            int status = response.code();
-                            if (status == 403) {
-                                Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
+                                            // 다음 액티비티로 이동 (고마운 하루)
+                                            Intent intent = new Intent(mContext, ShareActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                            Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                                            int status = response.code();
+                                            if (status == 403) {
+                                                Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Member> call, Throwable t) {
+                                        /*
+                                        Log.d("api 로그인 통신 실패", t.getMessage());
+
+                                        // 개발용으로 로그인 실패해도 화면 이동하게
+                                        Intent intent = new Intent(mContext, ShareActivity.class);
+                                        startActivity(intent);
+                                        */
+
+                                        Log.d("addMember api 로그인 통신 실패", t.getMessage());
+                                    }
+                                };
+                                call_inside.enqueue(callback_inside);
+                            } else {
+                                // DB에서 가져온 Member에 값이 있을 경우 ( 이미 가입한 경우 )
+                                // 바로 액티비티 이동
+                                Intent intent = new Intent(mContext, ShareActivity.class);
+                                startActivity(intent);
                             }
+                        } else {
+                            // 통신 실패
+                            Log.d("getMember 결과", "" + response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Member> call, Throwable t) {
-                        Log.d("api 로그인 통신 실패", t.getMessage());
-
-                        // 개발용으로 로그인 실패해도 화면 이동하게
-                        Intent intent = new Intent(mContext, ShareActivity.class);
-                        startActivity(intent);
+                        Log.d("getMember api 로그인 통신 실패", t.getMessage());
                     }
                 };
                 call.enqueue(callback);

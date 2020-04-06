@@ -8,15 +8,15 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/dialog_pick_image_from_gallery_button"
+        android:id="@+id/dialog_vertical_two_button_first_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="갤러리에서 가져오기" />
+        android:text="First" />
 
     <Button
-        android:id="@+id/dialog_pick_image_from_camera_button"
+        android:id="@+id/dialog_vertical_two_button_second_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="카메라에서 가져오기" />
+        android:text="Second" />
 
 </LinearLayout>

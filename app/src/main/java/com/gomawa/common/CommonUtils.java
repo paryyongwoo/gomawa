@@ -41,6 +41,11 @@ public class CommonUtils {
             Toast.makeText(mContext, "뒤로가기 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_LONG).show();
             return;
         } else {
+            if(AuthUtils.checkLoginState(mContext)) {
+                // 로그인이 되어있다면 로그아웃 처리
+                AuthUtils.logout(mContext);
+            }
+
             mActivity.finish();
         }
     }

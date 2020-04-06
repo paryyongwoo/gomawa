@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gomawa.R;
+import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
@@ -257,32 +258,11 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // 로그인 실패
-                new DeleteTokenTask().execute();
+                new AuthUtils.DeleteTokenTask().execute(mContext);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * @description
-     * 로그아웃 및 토큰 삭제
-     */
-    private class DeleteTokenTask extends AsyncTask<Void, Void, Void> {
-        boolean isSuccessDeleteToken = true;
-        @Override
-        protected Void doInBackground(Void... voids) {
-            isSuccessDeleteToken = mOAuthLoginModule.logoutAndDeleteToken(mContext);
-
-            Log.d("login", "토큰삭제완료");
-            if (!isSuccessDeleteToken) {
-                // 서버에서 token 삭제에 실패했어도 클라이언트에 있는 token 은 삭제되어 로그아웃된 상태이다
-                // 실패했어도 클라이언트 상에 token 정보가 없기 때문에 추가적으로 해줄 수 있는 것은 없음
-                Log.d("login", "errorCode:" + mOAuthLoginModule.getLastErrorCode(mContext));
-                Log.d("login", "errorDesc:" + mOAuthLoginModule.getLastErrorDesc(mContext));
-            }
-            return null;
         }
     }
 }

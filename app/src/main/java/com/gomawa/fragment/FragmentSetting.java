@@ -1,7 +1,9 @@
 package com.gomawa.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,12 +22,13 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
+import com.gomawa.activity.MainActivity;
+import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
-import com.gomawa.common.ImageUtils;
-import com.gomawa.dialog.PickImageDialog;
+import com.gomawa.dialog.VerticalTwoButtonDialog;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -43,8 +46,8 @@ public class FragmentSetting extends Fragment {
     // 닉네임이 표시되는 TextView
     private TextView nicknameTextView;
 
-    // 갤러리 또는 카메라를 선택하는 다이얼로그
-    private PickImageDialog pickImageDialog;
+    // 수직 2 버튼 다이얼로그
+    private VerticalTwoButtonDialog verticalTwoButtonDialog;
 
     // 선택하고, Crop된 이미지 파일이 임시로 저장되는 변수
     private File tempFile = null;
@@ -64,6 +67,12 @@ public class FragmentSetting extends Fragment {
 
     private void initView() {
         nicknameTextView = rootView.findViewById(R.id.fragment_setting_nickname_textView);
+
+        // 헤더 타이틀과 서브타이틀 Text 초기화
+        TextView headerTitle = rootView.findViewById(R.id.header_title);
+        headerTitle.setText("설정");
+        TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
+        headerSubTitle.setText("");
 
         // 닉네임을 CommonUtils.Member 에서 가져와서 표시
         nicknameTextView.setText(CommonUtils.getMember().getNickName());
@@ -96,7 +105,7 @@ public class FragmentSetting extends Fragment {
                             Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
 
-                            pickImageDialog.dismiss();
+                            verticalTwoButtonDialog.dismiss();
                         }
 
                         if(tempFile != null) {
@@ -110,8 +119,8 @@ public class FragmentSetting extends Fragment {
                 };
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-                pickImageDialog = new PickImageDialog(mContext, fromGalleryBtnListener, fromCameraBtnListener);
-                pickImageDialog.show();
+                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromGalleryBtnListener, fromCameraBtnListener, "갤러리에서 가져오기", "카메라로 사진 찍기");
+                verticalTwoButtonDialog.show();
             }
         });
 
@@ -126,11 +135,39 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        // 헤더 타이틀과 서브타이틀 Text 초기화
-        TextView headerTitle = rootView.findViewById(R.id.header_title);
-        headerTitle.setText("설정");
-        TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
-        headerSubTitle.setText("");
+        // 로그아웃 버튼 Listener
+        ImageButton logoutBtn = rootView.findViewById(R.id.fragment_setting_logout_btn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 확인 버튼 Listener
+                View.OnClickListener okBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // 로그아웃
+                        AuthUtils.logout(mContext);
+                        //new AuthUtils.DeleteTokenTask().execute(mContext);
+
+                        // 액티비티 전환
+                        Intent intent = new Intent(mActivity, MainActivity.class);
+                        startActivity(intent);
+                        mActivity.finish();
+                    }
+                };
+
+                // 취소 버튼 Listener
+                View.OnClickListener cancelBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        verticalTwoButtonDialog.dismiss();
+                    }
+                };
+
+                // 다이얼로그 인스턴스를 생성한 후에 띄워줌
+                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "확인", "취소");
+                verticalTwoButtonDialog.show();
+            }
+        });
 
         // 평점주기 버튼 Listener
         ImageButton rateBtn = rootView.findViewById(R.id.fragment_setting_rate_btn);
@@ -215,7 +252,7 @@ public class FragmentSetting extends Fragment {
             }
 
             // 다이얼로그 종료
-            pickImageDialog.dismiss();
+            verticalTwoButtonDialog.dismiss();
         // 카메라에서 이미지 가져온 후 호출됨
         }else if(requestCode == Constants.PICK_FROM_CAMERA) {
             if(resultCode == Activity.RESULT_CANCELED) {
@@ -231,7 +268,7 @@ public class FragmentSetting extends Fragment {
             }
 
             // 다이얼로그 종료
-            pickImageDialog.dismiss();
+            verticalTwoButtonDialog.dismiss();
 
         // CROP 액티비티 후에 실행
         }else if(requestCode == Constants.CROP_IMAGE) {

@@ -65,8 +65,8 @@ public class FragmentSetting extends Fragment {
     private void initView() {
         nicknameTextView = rootView.findViewById(R.id.fragment_setting_nickname_textView);
 
-        // 닉네임을 DB에서 가져와서 표시 (DB 없어서 임시로 Global에서 가져옴)
-        nicknameTextView.setText(CommonUtils.nickname);
+        // 닉네임을 CommonUtils.Member 에서 가져와서 표시
+        nicknameTextView.setText(CommonUtils.getMember().getNickName());
 
         // 프로필 사진 변경 버튼 Listener
         ImageButton profileImageBtn = rootView.findViewById(R.id.fragment_setting_profileImage_btn);
@@ -121,7 +121,7 @@ public class FragmentSetting extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), NicknameActivity.class);
-                i.putExtra("nowNickname", CommonUtils.nickname);
+                i.putExtra("nowNickname", CommonUtils.getMember().getNickName());
                 startActivityForResult(i, Constants.REQUEST_RESULT);
             }
         });
@@ -174,7 +174,7 @@ public class FragmentSetting extends Fragment {
                     break;
                 // NicknameActivity - okBtn - textView 의 Text 값을 현재 닉네임으로 변경
                 case Constants.RESULT_SUCESS_NICKNAME:
-                    nicknameTextView.setText(CommonUtils.nickname);
+                    nicknameTextView.setText(CommonUtils.getMember().getNickName());
                     break;
                 // 비정상적인 종료
                 default:

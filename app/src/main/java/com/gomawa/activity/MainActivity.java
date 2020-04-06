@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
         @Override
         public void run(boolean success) {
+            // Naver 로그인 성공 & Token을 받는 데 성공
             if (success) {
                 String accessToken = mOAuthLoginModule.getAccessToken(mContext);
 

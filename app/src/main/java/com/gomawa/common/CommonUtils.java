@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class CommonUtils {
-    // 닉네임이 어디있는 지 몰라서 임시로 만든 변수
-    public static String nickname = "park";
-
+    // 멤버
     private static Member member;
 
     // 뒤로가기 버튼 시간 측정 변수

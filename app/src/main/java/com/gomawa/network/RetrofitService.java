@@ -14,6 +14,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -32,4 +33,10 @@ public interface RetrofitService {
     @POST("/api/shareItem")
     Call<String> addShareItem(@Body ShareItem shareItem, @Part MultipartBody.Part file);
 
+
+
+    // PUT
+    @Headers("Accept: application/json")
+    @PUT("/api/nickName")
+    Call<Member> setNickName(@Body Member memberParam);
 }

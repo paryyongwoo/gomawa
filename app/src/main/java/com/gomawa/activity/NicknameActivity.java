@@ -2,9 +2,11 @@ package com.gomawa.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.dto.Member;
+import com.gomawa.network.RetrofitHelper;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NicknameActivity extends Activity {
     private Activity mActivity = this;
@@ -37,9 +45,6 @@ public class NicknameActivity extends Activity {
     }
 
     private void initView() {
-        // FragmentSetting 에서 받아온 인텐트. 현재 닉네임이 "nowNickname"에 담겨 있음
-        Intent intent = getIntent();
-
         // 상단 타이틀의 Text 값
         TextView title = findViewById(R.id.activity_nickname_title);
         title.setText("닉네임 변경");
@@ -63,7 +68,7 @@ public class NicknameActivity extends Activity {
         });
 
         // editText의 Text를 현재 닉네임으로 변경
-        editText.setText(intent.getExtras().getString("nowNickname"));
+        editText.setText(CommonUtils.getMember().getNickName());
 
         // editText 포커스 전환 시 deleteBtn 나타나고 사라짐
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -88,7 +93,7 @@ public class NicknameActivity extends Activity {
         });
 
         // 현재 닉네임의 길이를 계산하여 lengthTextView 에 출력 (이후에는 위 TextChangedListener 에서 진행함)
-        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.calculateLength(CommonUtils.nickname), Constants.NICKNAME_LIMIT));
+        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.calculateLength(CommonUtils.getMember().getNickName()), Constants.NICKNAME_LIMIT));
 
         // deleteBtn Listener
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +119,7 @@ public class NicknameActivity extends Activity {
             }
         });
 
-        // 확인 버튼 - editText의 값을 인텐트에 실어서 보냄
+        // 확인 버튼
         okBtn = findViewById(R.id.activity_nickname_okBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +137,8 @@ public class NicknameActivity extends Activity {
                     // 닉네임 길이가 0이라면~~ 처리 (일단은 무시)
                     CommonUtils.hideKeyboard(mActivity, editText);
                 } else {
-                    // 닉네임 길이가 적당하면 닉네임을 editText의 Text 값으로 변경한 후에 액티비티 종료
-                    CommonUtils.nickname = editText.getText().toString();
+                    // 닉네임 길이가 적당하면 닉네임을 DB에 올린 후 CommonUtils의 Member의 NickName 값도 바꿔줌
+                    new RequestApiTask().execute(editText.getText().toString());
 
                     setResult(Constants.RESULT_SUCESS_NICKNAME);
                     finish();
@@ -146,5 +151,38 @@ public class NicknameActivity extends Activity {
     public void onBackPressed() {
         setResult(Constants.RESULT_SUCESS);
         finish();
+    }
+
+    private class RequestApiTask extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            // 새로 저장될 닉네임
+            String newNickName = objects[0].toString();
+
+            // 현재 멤버를 복사해서 닉네임을 newNickName으로 변경
+            Member member = CommonUtils.getMember();
+            member.setNickName(newNickName);
+
+            // 닉네임만 바뀐 멤버를 매개변수로 setNickName 통신 시작
+            Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().setNickName(member);
+            Callback<Member> callback = new Callback<Member>() {
+                @Override
+                public void onResponse(Call<Member> call, Response<Member> response) {
+                    Member receiveMember = response.body();
+
+                    Log.d("반환받은 Member : ", receiveMember.toString());
+
+                    CommonUtils.setMember(receiveMember);
+                }
+
+                @Override
+                public void onFailure(Call<Member> call, Throwable t) {
+                    Log.d("api 로그인 통신 실패", t.getMessage());
+                }
+            };
+            call.enqueue(callback);
+
+            return null;
+        }
     }
 }

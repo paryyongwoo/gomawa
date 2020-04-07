@@ -35,4 +35,10 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <!-- 다이얼로그 뜨고 사라질 때 애니메이션 -->
+    <style name="AnimationPopupStyle">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_open</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_close</item>
+    </style>
+
 </resources>

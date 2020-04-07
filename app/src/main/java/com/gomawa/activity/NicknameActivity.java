@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,6 +24,9 @@ import com.gomawa.common.Constants;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 
+import java.io.InputStreamReader;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -168,11 +172,16 @@ public class NicknameActivity extends Activity {
             Callback<Member> callback = new Callback<Member>() {
                 @Override
                 public void onResponse(Call<Member> call, Response<Member> response) {
-                    Member receiveMember = response.body();
+                    if(response.isSuccessful()) {
+                        Member memberReceived = response.body();
 
-                    Log.d("반환받은 Member : ", receiveMember.toString());
+                        Log.d("반환받은 Member : ", memberReceived.toString());
 
-                    CommonUtils.setMember(receiveMember);
+                        CommonUtils.setMember(memberReceived);
+                    } else {
+                        // todo: 예외 처리
+                        Toast.makeText(NicknameActivity.this, "닉네임 수정 실패", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override

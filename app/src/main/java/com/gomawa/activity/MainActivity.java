@@ -229,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<Member> call, Response<Member> response) {
                         if (response.isSuccessful()) {
                             // DB 작업이 성공적이면 받은 Member 를 CommonUtils의 Member로 설정함
-                            Member receiveMember = response.body();
-                            CommonUtils.setMember(receiveMember);
+                            Member memberReceived = response.body();
+                            CommonUtils.setMember(memberReceived);
 
                             Log.d("##### Member ", CommonUtils.getMember().toString());
 

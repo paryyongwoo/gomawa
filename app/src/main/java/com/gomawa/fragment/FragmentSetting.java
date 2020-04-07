@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,9 @@ public class FragmentSetting extends Fragment {
                 };
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromGalleryBtnListener, fromCameraBtnListener, "갤러리에서 가져오기", "카메라로 사진 찍기");
+                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromGalleryBtnListener, fromCameraBtnListener, "어디서 가져오시겠습니까?", "갤러리", "촬영");
+                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
+                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 verticalTwoButtonDialog.show();
             }
         });
@@ -164,7 +167,10 @@ public class FragmentSetting extends Fragment {
                 };
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "확인", "취소");
+                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "로그아웃 하시겠습니까?", "확인", "취소");
+                // todo: 다이얼로그의 그래비티를 설정하고 애니메이션 설정하는 부분을 다이얼로그 클래스 파일에 넣을지 말지 결정해야함 (프로필사진 변경 버튼)
+                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
+                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 verticalTwoButtonDialog.show();
             }
         });

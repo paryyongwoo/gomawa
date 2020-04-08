@@ -2,7 +2,10 @@ package com.gomawa.network;
 
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
+import com.gomawa.dto.NoticeItem;
 import com.gomawa.dto.ShareItem;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -19,6 +22,12 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface RetrofitService {
+    // GET
+    @GET("/api/notice")
+    Call<List<NoticeItem>> getNoticeAll();
+
+
+
     //POST
     @Headers("Accept: application/json")
     @POST("/api/member")

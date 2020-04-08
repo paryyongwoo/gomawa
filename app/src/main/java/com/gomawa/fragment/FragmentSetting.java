@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
 import com.gomawa.activity.MainActivity;
+import com.gomawa.activity.NoticeActivity;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
@@ -172,6 +173,17 @@ public class FragmentSetting extends Fragment {
                 verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
                 verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 verticalTwoButtonDialog.show();
+            }
+        });
+
+        // 공지사항 버튼 Listener
+        ImageButton noticeBtn = rootView.findViewById(R.id.fragment_setting_notice_btn);
+        noticeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 공지사항 버튼은 데이터를 주고 받을 게 없으므로 startActivity 메소드를 사용함
+                Intent intent = new Intent(mContext, NoticeActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal">
+
+    <!-- weight 설정을 위한 View -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="#ff735797"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="17"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/listview_item_notice_title"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:background="#ff123456"
+            android:gravity="center_vertical"
+            android:text="Text" />
+
+        <TextView
+            android:id="@+id/listview_item_notice_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#ff654321"
+            android:text="Date"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+</LinearLayout>

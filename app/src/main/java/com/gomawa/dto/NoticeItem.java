@@ -5,13 +5,13 @@ import java.util.Date;
 // 공지사항 리스트에 뜨는 Item
 public class NoticeItem {
     private String title;
-    private String text;
+    private String dsc;
     // date 를 일단 String 값으로... 설정해놓음
     private String date;
 
-    public NoticeItem(String title, String text, String date) {
+    public NoticeItem(String title, String dsc, String date) {
         this.title = title;
-        this.text = text;
+        this.dsc = dsc;
         this.date = date;
     }
 
@@ -23,12 +23,12 @@ public class NoticeItem {
         this.title = title;
     }
 
-    public String getText() {
-        return text;
+    public String getDsc() {
+        return dsc;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDsc(String dsc) {
+        this.dsc = dsc;
     }
 
     public String getDate() {

@@ -18,10 +18,11 @@
         android:layout_marginBottom="12dp"
         />
 
-    <Button
+    <!-- 카카오 로그인 버튼은 따로 View 가 있음! -->
+    <com.kakao.usermgmt.LoginButton
+        android:id="@+id/loginBtnKakao"
         android:layout_width="300dp"
         android:layout_height="58dp"
-        android:background="@drawable/login_btn_naver"
         android:layout_gravity="center"
         />
 

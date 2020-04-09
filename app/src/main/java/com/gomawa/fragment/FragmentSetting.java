@@ -31,6 +31,8 @@ import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -148,14 +150,23 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener okBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // 로그아웃
-                        AuthUtils.logout(mContext);
-                        //new AuthUtils.DeleteTokenTask().execute(mContext);
+                        // todo: 로그아웃 작업 해줘야함~!~!~! 네이버와 로그아웃의 경우를 나눠서~!~!~!
 
-                        // 액티비티 전환
-                        Intent intent = new Intent(mActivity, MainActivity.class);
-                        startActivity(intent);
-                        mActivity.finish();
+                        /*// 로그아웃
+                        AuthUtils.logout(mContext);
+                        //new AuthUtils.DeleteTokenTask().execute(mContext);*/
+
+                        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                            @Override
+                            public void onCompleteLogout() {
+                                // 액티비티 전환
+                                Intent intent = new Intent(mActivity, MainActivity.class);
+                                startActivity(intent);
+                                mActivity.finish();
+                            }
+                        });
+
+
                     }
                 };
 

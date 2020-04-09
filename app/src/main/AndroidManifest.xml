@@ -14,7 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name="com.gomawa.application.GlobalApplication">
+
+        <!-- 카카오 로그인을 위한 메타 데이터 -->
+        <!-- todo: 네이티브 앱 키 옮기기 -->
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="fb4beae2e0d16fc80f0e844469687824" />
 
         <!-- FileProvider -->
         <provider

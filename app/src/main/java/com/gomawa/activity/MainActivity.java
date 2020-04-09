@@ -1,16 +1,20 @@
 package com.gomawa.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,16 +25,27 @@ import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.kakao.auth.ApiErrorCode;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.response.MeV2Response;
+import com.kakao.usermgmt.response.model.UserAccount;
+import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.Utility;
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.nhn.android.naverlogin.OAuthLoginHandler;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +61,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String OAUTH_CLIENT_SECRET = "gKxHB66vuC";
     private static final String OAUTH_CLIENT_NAME = "Gomawa";
 
-    // 로그인 관련 인스턴스
+    // 네이버 로그인 관련 인스턴스
     public static OAuthLogin mOAuthLoginModule = OAuthLogin.getInstance();
+
+    // 카카오 로그인 콜백 클래스
+    private SessionCallback sessionCallback;
 
     // 컨텍스트
     private Context mContext;
@@ -83,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
         );
 
         // 카카오 로그인 초기화 작업
+        sessionCallback = new SessionCallback();
+        Session.getCurrentSession().addCallback(sessionCallback);
+        // 자동 로그인 - 카카오로 로그인 한 적이 있으면 자동으로 로그인 된다고 함. 아직 안해봄.
+        //Session.getCurrentSession().checkAndImplicitOpen();
+
+        // 키 해시 값을 로그로 출력함
+        Log.d("KeyHash", getKeyHash(mContext));
     }
 
     private void initView() {
@@ -264,5 +289,119 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // 카카오 로그인 콜백 클래스
+    private class SessionCallback implements ISessionCallback {
+        @Override
+        public void onSessionOpened() {
+            // 로그인 세션이 정상적으로 열렸을 때
+            // 유저 정보를 받아오는 함수 = me()
+            UserManagement.getInstance().me(new MeV2ResponseCallback() {
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    // 로그인이 실패했을 때
+                    int result = errorResult.getErrorCode();
+
+                    if(result == ApiErrorCode.CLIENT_ERROR_CODE) {
+                        Toast.makeText(mContext, "네트워크 연결이 불안정합니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "로그인 도중 오류가 발생했습니다. : " + errorResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+                    // 로그인 도중 세션이 비정상적인 이유로 닫혔을 때 - 거의 없다고 함
+                    Toast.makeText(mContext, "로그인 도중 오류가 발생했습니다. : " + errorResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(MeV2Response result) {
+                    // 로그인 성공
+                    // 카카오 유저 정보가 담겨있음
+                    UserAccount userAccount = result.getKakaoAccount();
+
+                    Member member = new Member();
+
+                    member.setEmail(userAccount.getEmail());
+
+                    // Gender 동의가 이상하게 안됨
+                    //member.setGender(userAccount.getGender().getValue());
+                    member.setGender("M");
+
+                    member.setKey(result.getId());
+                    // Properties 에 닉네임 값이 담겨있음.
+                    Map<String, String> nickname = result.getProperties();
+                    member.setNickName(nickname.get("nickname"));
+
+                    // todo: asyncTask 로 빼자! 서버랑 통신하잖아!
+                    Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
+                    Callback<Member> callback = new Callback<Member>() {
+                        @Override
+                        public void onResponse(Call<Member> call, Response<Member> response) {
+                            if(response.isSuccessful()) {
+                                Member memberReceived = response.body();
+
+                                CommonUtils.setMember(memberReceived);
+
+                                // 액티비티 이동
+                                Intent intent = new Intent(mContext, ShareActivity.class);
+                                startActivity(intent);
+                            } else {
+                                // todo: 예외 처리
+                                Toast.makeText(MainActivity.this, "DB 통신 에러", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Member> call, Throwable t) {
+                            Log.d("api 로그인 통신 실패", t.getMessage());
+                        }
+                    };
+                    call.enqueue(callback);
+                }
+            });
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            // 로그인 세션이 정상적으로 열리지 않았을 때
+            // todo: 예외 처리
+            Toast.makeText(mContext, "카카오 로그인 세션이 비정상적으로 실행되었습니다. " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        // 카카오 로그인
+        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 카카오 로그인
+        Session.getCurrentSession().removeCallback(sessionCallback);
+    }
+
+    // 디버깅용 키 해시 값 얻는 메소드 - 카카오 로그인 시 등록 필요함
+    // 복사 붙여넣기 해서 코드의 상세내용은 모름
+    public String getKeyHash(final Context context) {
+        PackageInfo packageInfo = Utility.getPackageInfo(context, PackageManager.GET_SIGNATURES);
+        if (packageInfo == null)
+            return null;
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

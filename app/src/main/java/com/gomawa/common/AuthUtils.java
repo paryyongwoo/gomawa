@@ -139,6 +139,7 @@ public class AuthUtils {
                 });
         }
 
+        // TODO: 2020-04-12 회원 탈퇴 시 실행할 로직을 서비스 로직으로 나누기
         // 회원 탈퇴에 성공했다면 ~ DB 에서 Member 를 지우고, services 값 변경
         if(isUnLinkSuccess) {
             new RequestApi().execute();

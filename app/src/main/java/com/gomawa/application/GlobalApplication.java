@@ -37,6 +37,7 @@ public class GlobalApplication extends Application {
                         return new AuthType[] {AuthType.KAKAO_LOGIN_ALL};
                     }
 
+                    // 웹뷰로 로그인할 때 타이머를 설정한다
                     @Override
                     public boolean isUsingWebviewTimer() {
                         return false;

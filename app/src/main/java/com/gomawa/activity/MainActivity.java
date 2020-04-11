@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
             Map<String, String> nickname = result.getProperties();
             member.setNickName(nickname.get("nickname"));
 
-
+            // TODO: 2020-04-12 네이버 로그인과 카카오 로그인 Call, Callback 합치기
             Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
             Callback<Member> callback = new Callback<Member>() {
                 @Override
@@ -373,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
                     if(response.isSuccessful()) {
                         Member memberReceived = response.body();
 
+                        // TODO: 2020-04-12 액티비티 이동 onPost 로 빼기
                         CommonUtils.setMember(memberReceived);
 
                         // 액티비티 이동

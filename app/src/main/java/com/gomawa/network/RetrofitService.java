@@ -11,6 +11,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -48,4 +49,10 @@ public interface RetrofitService {
     @Headers("Accept: application/json")
     @PUT("/api/nickName")
     Call<Member> setNickName(@Body Member memberParam);
+
+
+
+    // DELETE
+    @DELETE("/api/member/{key}")
+    Call<Void> deleteMemberByKey(@Path("key") Long key);
 }

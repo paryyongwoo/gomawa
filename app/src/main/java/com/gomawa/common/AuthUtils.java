@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.gomawa.dto.Member;
+import com.gomawa.network.RetrofitHelper;
 import com.kakao.network.ApiErrorCode;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
@@ -13,6 +15,10 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.usermgmt.response.model.User;
 import com.nhn.android.naverlogin.OAuthLogin;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AuthUtils {
     // 로그인 서비스 Enum
@@ -133,10 +139,11 @@ public class AuthUtils {
                 });
         }
 
-        // TODO: 2020-04-11 DB에서 Member 삭제
-
-        // 회원 탈퇴에 성공했다면 로그아웃 되었다는 뜻
-        if(isUnLinkSuccess) { services = Services.NONE; }
+        // 회원 탈퇴에 성공했다면 ~ DB 에서 Member 를 지우고, services 값 변경
+        if(isUnLinkSuccess) {
+            new RequestApi().execute();
+            services = Services.NONE;
+        }
     }
 
     // 네이버 회원 탈퇴 Task
@@ -158,6 +165,40 @@ public class AuthUtils {
                 Log.d("login", "errorCode:" + mOAuthLoginModule.getLastErrorCode(mContext));
                 Log.d("login", "errorDesc:" + mOAuthLoginModule.getLastErrorDesc(mContext));
             }
+
+            return null;
+        }
+    }
+
+    // TODO: 2020-04-11 Task 있어야 할 자리로 옮기기
+    // DB 에서 Member 를 DELETE 하는 Task
+    public static class RequestApi extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            // 삭제할 멤버 ( 현재 로그인 되어 있는 멤버 )
+            Member member = CommonUtils.getMember();
+
+            // 해당 멤버의 Key 값
+            Long key = member.getKey();
+
+            Log.d("현재 멤버의 키 값", key.toString());
+
+            // 서버와 통신
+            Call<Void> call = RetrofitHelper.getInstance().getRetrofitService().deleteMemberByKey(key);
+            Callback<Void> callback = new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                   // DELETE 성공
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    // TODO: 2020-04-11 Delete Member By Key 통신 실패 예외 처리
+                    Log.d("api 로그인 통신 실패", t.getMessage());
+                }
+            };
+            call.enqueue(callback);
+
 
             return null;
         }

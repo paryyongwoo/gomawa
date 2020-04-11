@@ -1,6 +1,7 @@
 package com.gomawa.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -55,7 +56,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-
     // 상수
     private static final String OAUTH_CLIENT_ID = "bTO1NhHHokGVVEH3Ispo";
     private static final String OAUTH_CLIENT_SECRET = "gKxHB66vuC";
@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
     // 카카오 로그인 콜백 클래스
     private SessionCallback sessionCallback;
 
-    // 컨텍스트
+    // 컨텍스트 & 액티비티
     private Context mContext;
+    private Activity mActivity;
 
     // 뷰객체
     private Button loginBtnNaver;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
+        mActivity = this;
 
         initView();
 
@@ -91,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
          * 퍼미션 설정
          */
         tedPermission();
+
+        // services 변수 접근을 위한 accessibleActivity 설정
+        AuthUtils.setAccessibleActivity(this);
 
         // 네이버 로그인 초기화 작업
         mOAuthLoginModule.init(
@@ -123,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        CommonUtils.onBackPressedCheck(mContext, this);
+        CommonUtils.onBackPressedCheck(mContext, mActivity);
     }
 
     private void tedPermission() {
@@ -154,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
             // Naver 로그인 성공 & Token을 받는 데 성공
             if (success) {
                 String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+
+                // AuthUtils.services 의 값을 네이버로 변경
+                AuthUtils.setServices(AuthUtils.Services.NAVER, mActivity);
 
                 // 발급받은 accessToken을 가지고 네이버 프로필 정보를 얻는 요청을 보낸다.
                 new RequestApiTask().execute(accessToken);
@@ -244,9 +252,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("초기 닉네임", emailForSplit[0]);
 
-                // Member 객체 생성 todo: 왜 이 타이밍에 CommonUtils 에 등록하는가
-                // CommonUtils.setMember(member);
-
                 // addMemberOnStart 메소드 호출로 addMember와 동시에 닉네임을 설정함
                 Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
                 Callback<Member> callback = new Callback<Member>() {
@@ -257,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
                             Member memberReceived = response.body();
                             CommonUtils.setMember(memberReceived);
 
-                            Log.d("##### Member ", CommonUtils.getMember().toString());
-
                             Intent intent = new Intent(mContext, ShareActivity.class);
                             startActivity(intent);
                         } else {
@@ -267,12 +270,17 @@ public class MainActivity extends AppCompatActivity {
                             if (status == 403) {
                                 Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
                             }
+
+                            // TODO: 2020-04-11 로그인 성공 후의 에러 발생하는 부분에 AuthUtils.logout(mContext)을 넣어 로그아웃 처리와 services 값 변경 처리를 해줘야함
+                            AuthUtils.logout(mContext);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Member> call, Throwable t) {
                         Log.d("api 로그인 통신 실패", t.getMessage());
+
+                        AuthUtils.logout(mContext);
 
                         // 개발용 : 로그인 실패해도 액티비티 전환
                         // Intent intent = new Intent(mContext, ShareActivity.class);
@@ -283,11 +291,13 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // 로그인 실패
-                new AuthUtils.DeleteTokenTask().execute(mContext);
+                AuthUtils.logout(mContext);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            AuthUtils.logout(mContext);
         }
     }
 
@@ -319,47 +329,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(MeV2Response result) {
                     // 로그인 성공
-                    // 카카오 유저 정보가 담겨있음
-                    UserAccount userAccount = result.getKakaoAccount();
-
-                    Member member = new Member();
-
-                    member.setEmail(userAccount.getEmail());
-
-                    // Gender 동의가 이상하게 안됨
-                    //member.setGender(userAccount.getGender().getValue());
-                    member.setGender("M");
-
-                    member.setKey(result.getId());
-                    // Properties 에 닉네임 값이 담겨있음.
-                    Map<String, String> nickname = result.getProperties();
-                    member.setNickName(nickname.get("nickname"));
-
-                    // todo: asyncTask 로 빼자! 서버랑 통신하잖아!
-                    Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
-                    Callback<Member> callback = new Callback<Member>() {
-                        @Override
-                        public void onResponse(Call<Member> call, Response<Member> response) {
-                            if(response.isSuccessful()) {
-                                Member memberReceived = response.body();
-
-                                CommonUtils.setMember(memberReceived);
-
-                                // 액티비티 이동
-                                Intent intent = new Intent(mContext, ShareActivity.class);
-                                startActivity(intent);
-                            } else {
-                                // todo: 예외 처리
-                                Toast.makeText(MainActivity.this, "DB 통신 에러", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Member> call, Throwable t) {
-                            Log.d("api 로그인 통신 실패", t.getMessage());
-                        }
-                    };
-                    call.enqueue(callback);
+                    // services 를 KAKAO 로 변경 후 Task 실행
+                    AuthUtils.setServices(AuthUtils.Services.KAKAO, mActivity);
+                    new KakaoLoginTask().execute(result);
                 }
             });
         }
@@ -372,9 +344,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //
+    private class KakaoLoginTask extends AsyncTask {
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            // 로그인 성공 시 카카오에서 받아온 결과
+            MeV2Response result = (MeV2Response) objects[0];
+
+            // 카카오 유저 정보가 담겨있음
+            UserAccount userAccount = result.getKakaoAccount();
+
+            Member member = new Member();
+
+            // todo: 데이터 동의를 받지 못했을 때의 분기 처리
+
+            member.setKey(result.getId());
+            member.setEmail(userAccount.getEmail());
+            member.setGender(userAccount.getGender().getValue());
+            // Properties 에 닉네임 값이 담겨있음.
+            Map<String, String> nickname = result.getProperties();
+            member.setNickName(nickname.get("nickname"));
+
+
+            Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
+            Callback<Member> callback = new Callback<Member>() {
+                @Override
+                public void onResponse(Call<Member> call, Response<Member> response) {
+                    if(response.isSuccessful()) {
+                        Member memberReceived = response.body();
+
+                        CommonUtils.setMember(memberReceived);
+
+                        // 액티비티 이동
+                        Intent intent = new Intent(mContext, ShareActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // todo: 예외 처리
+                        Toast.makeText(MainActivity.this, "DB 통신 에러", Toast.LENGTH_SHORT).show();
+
+                        AuthUtils.logout(mContext);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Member> call, Throwable t) {
+                    Log.d("api 로그인 통신 실패", t.getMessage());
+
+                    AuthUtils.logout(mContext);
+                }
+            };
+            call.enqueue(callback);
+
+            return null;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        // 카카오 로그인
+        // 카카오 로그인 액티비티에서 돌아올 때
         if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -383,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 카카오 로그인
+        // 카카오 로그인을 위해 열어둔 Callback 종료
         Session.getCurrentSession().removeCallback(sessionCallback);
     }
 

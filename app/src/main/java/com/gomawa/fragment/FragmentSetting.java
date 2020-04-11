@@ -1,9 +1,7 @@
 package com.gomawa.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.gomawa.R;
 import com.gomawa.activity.MainActivity;
 import com.gomawa.activity.NoticeActivity;
@@ -31,8 +30,11 @@ import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
+import com.kakao.network.ApiErrorCode;
+import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -74,12 +76,29 @@ public class FragmentSetting extends Fragment {
 
         // 헤더 타이틀과 서브타이틀 Text 초기화
         TextView headerTitle = rootView.findViewById(R.id.header_title);
-        headerTitle.setText("설정");
+        headerTitle.setText(getResources().getString(R.string.fragment_setting_header_title));
         TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
-        headerSubTitle.setText("");
+        headerSubTitle.setText(getResources().getString(R.string.fragment_setting_header_sub_title));
 
         // 닉네임을 CommonUtils.Member 에서 가져와서 표시
         nicknameTextView.setText(CommonUtils.getMember().getNickName());
+
+        // 임시 회원 탈퇴 버튼 - 프로필 사진
+        CircleImageView imageView = rootView.findViewById(R.id.fragment_setting_profileImage_imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthUtils.unLink(mContext);
+
+                if(AuthUtils.isUnLinkSuccess) {
+                    Intent intent = new Intent(mActivity, MainActivity.class);
+                    startActivity(intent);
+                    mActivity.finish();
+                } else {
+                    Toast.makeText(mActivity, "회원 탈퇴 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         // 프로필 사진 변경 버튼 Listener
         ImageButton profileImageBtn = rootView.findViewById(R.id.fragment_setting_profileImage_btn);
@@ -150,23 +169,16 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener okBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // todo: 로그아웃 작업 해줘야함~!~!~! 네이버와 로그아웃의 경우를 나눠서~!~!~!
-
-                        /*// 로그아웃
+                        // 로그아웃
                         AuthUtils.logout(mContext);
-                        //new AuthUtils.DeleteTokenTask().execute(mContext);*/
 
-                        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                            @Override
-                            public void onCompleteLogout() {
-                                // 액티비티 전환
-                                Intent intent = new Intent(mActivity, MainActivity.class);
-                                startActivity(intent);
-                                mActivity.finish();
-                            }
-                        });
+                        // 다이얼로그 종료
+                        verticalTwoButtonDialog.dismiss();
 
-
+                        // 액티비티 이동
+                        Intent intent = new Intent(mActivity, MainActivity.class);
+                        startActivity(intent);
+                        mActivity.finish();
                     }
                 };
 

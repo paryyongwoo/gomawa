@@ -34,6 +34,7 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.UserAccount;
+import com.kakao.util.OptionalBoolean;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.Utility;
 import com.nhn.android.naverlogin.OAuthLogin;
@@ -252,43 +253,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("초기 닉네임", emailForSplit[0]);
 
-                // addMemberOnStart 메소드 호출로 addMember와 동시에 닉네임을 설정함
-                Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
-                Callback<Member> callback = new Callback<Member>() {
-                    @Override
-                    public void onResponse(Call<Member> call, Response<Member> response) {
-                        if (response.isSuccessful()) {
-                            // DB 작업이 성공적이면 받은 Member 를 CommonUtils의 Member로 설정함
-                            Member memberReceived = response.body();
-                            CommonUtils.setMember(memberReceived);
-
-                            Intent intent = new Intent(mContext, ShareActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Log.d("api 응답은 왔으나 실패", "status: " + response.code());
-                            int status = response.code();
-                            if (status == 403) {
-                                Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
-                            }
-
-                            // TODO: 2020-04-11 로그인 성공 후의 에러 발생하는 부분에 AuthUtils.logout(mContext)을 넣어 로그아웃 처리와 services 값 변경 처리를 해줘야함
-                            AuthUtils.logout(mContext);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Member> call, Throwable t) {
-                        Log.d("api 로그인 통신 실패", t.getMessage());
-
-                        AuthUtils.logout(mContext);
-
-                        // 개발용 : 로그인 실패해도 액티비티 전환
-                        // Intent intent = new Intent(mContext, ShareActivity.class);
-                        // startActivity(intent);
-                    }
-                };
-                call.enqueue(callback);
-
+                // DB에 멤버 등록
+                addMemberAfterLogin(member);
             } else {
                 // 로그인 실패
                 AuthUtils.logout(mContext);
@@ -356,48 +322,74 @@ public class MainActivity extends AppCompatActivity {
 
             Member member = new Member();
 
-            // todo: 데이터 동의를 받지 못했을 때의 분기 처리
-
-            member.setKey(result.getId());
-            member.setEmail(userAccount.getEmail());
-            member.setGender(userAccount.getGender().getValue());
             // Properties 에 닉네임 값이 담겨있음.
             Map<String, String> nickname = result.getProperties();
             member.setNickName(nickname.get("nickname"));
+            member.setKey(result.getId());
 
-            // TODO: 2020-04-12 네이버 로그인과 카카오 로그인 Call, Callback 합치기
-            Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
-            Callback<Member> callback = new Callback<Member>() {
-                @Override
-                public void onResponse(Call<Member> call, Response<Member> response) {
-                    if(response.isSuccessful()) {
-                        Member memberReceived = response.body();
+            // 이메일 과 성별 수집 동의 여부 - 동의하지 않았으면 "null" 입력
+            if(userAccount.emailNeedsAgreement() == OptionalBoolean.FALSE) {
+                member.setEmail(userAccount.getEmail());
+            } else {
+                member.setEmail("null");
+            }
 
-                        // TODO: 2020-04-12 액티비티 이동 onPost 로 빼기
-                        CommonUtils.setMember(memberReceived);
+            if(userAccount.genderNeedsAgreement() == OptionalBoolean.FALSE) {
+                member.setGender(userAccount.getGender().getValue());
+            } else {
+                member.setGender("null");
+            }
 
-                        // 액티비티 이동
-                        Intent intent = new Intent(mContext, ShareActivity.class);
-                        startActivity(intent);
-                    } else {
-                        // todo: 예외 처리
-                        Toast.makeText(MainActivity.this, "DB 통신 에러", Toast.LENGTH_SHORT).show();
+            return member;
+        }
 
-                        AuthUtils.logout(mContext);
+        @Override
+        protected void onPostExecute(Object o) {
+            Member member = (Member) o;
+
+            // DB에 멤버 등록
+            addMemberAfterLogin(member);
+        }
+    }
+
+    // 로그인에 성공하면 addMemberOnStart 를 호출하는 메소드 ( 액티비티 이동 때문에 onPost 에서 실행되어야 함 )
+    private void addMemberAfterLogin(Member member) {
+        Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
+        Callback<Member> callback = new Callback<Member>() {
+            @Override
+            public void onResponse(Call<Member> call, Response<Member> response) {
+                if (response.isSuccessful()) {
+                    // DB 작업이 성공적이면 받은 Member 를 CommonUtils의 Member로 설정함
+                    Member memberReceived = response.body();
+                    CommonUtils.setMember(memberReceived);
+
+                    // 액티비티 이동
+                    Intent intent = new Intent(mContext, ShareActivity.class);
+                    startActivity(intent);
+                } else {
+                    // todo: 예외 처리
+                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                    int status = response.code();
+                    if (status == 403) {
+                        Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
                     }
-                }
-
-                @Override
-                public void onFailure(Call<Member> call, Throwable t) {
-                    Log.d("api 로그인 통신 실패", t.getMessage());
 
                     AuthUtils.logout(mContext);
                 }
-            };
-            call.enqueue(callback);
+            }
 
-            return null;
-        }
+            @Override
+            public void onFailure(Call<Member> call, Throwable t) {
+                Log.d("api 로그인 통신 실패", t.getMessage());
+
+                AuthUtils.logout(mContext);
+
+                // 개발용 : 로그인 실패해도 액티비티 전환
+                // Intent intent = new Intent(mContext, ShareActivity.class);
+                // startActivity(intent);
+            }
+        };
+        call.enqueue(callback);
     }
 
     @Override

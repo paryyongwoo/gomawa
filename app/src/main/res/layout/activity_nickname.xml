@@ -41,8 +41,6 @@
             android:text="완료" />
     </LinearLayout>
 
-    <!-- todo: constraint > linear > constriant > (editText, Button) , textView -->
-    <!-- todo: 이 방법도 생각해보자 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_nickname_body"
         android:layout_width="match_parent"
@@ -52,7 +50,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" >
 
-        <!-- todo: 위 방법이 정해지면 EditText의 Margin 값 삭제-->
         <EditText
             android:id="@+id/activity_nickname_editText"
             android:layout_width="match_parent"

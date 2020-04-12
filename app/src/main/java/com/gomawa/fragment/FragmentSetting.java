@@ -88,15 +88,7 @@ public class FragmentSetting extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AuthUtils.unLink(mContext);
-
-                if(AuthUtils.isUnLinkSuccess) {
-                    Intent intent = new Intent(mActivity, MainActivity.class);
-                    startActivity(intent);
-                    mActivity.finish();
-                } else {
-                    Toast.makeText(mActivity, "회원 탈퇴 실패", Toast.LENGTH_SHORT).show();
-                }
+                AuthUtils.unLink(mContext, mActivity);
             }
         });
 

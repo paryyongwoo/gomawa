@@ -2,10 +2,12 @@ package com.gomawa.common;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.gomawa.activity.MainActivity;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.kakao.network.ApiErrorCode;
@@ -13,7 +15,6 @@ import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
-import com.kakao.usermgmt.response.model.User;
 import com.nhn.android.naverlogin.OAuthLogin;
 
 import retrofit2.Call;
@@ -78,31 +79,38 @@ public class AuthUtils {
 
         // 로그아웃이 완료되면 services 값 변경
         services = Services.NONE;
+
+        // 액티비티 이동은, ShareActivity 에서 백버튼 눌렀을 때에는 처리하지 않으므로 여기서 처리하지 않음
     }
 
     // 회원 탈퇴
-    public static boolean isUnLinkSuccess; // 회원 탈퇴 성공 여부 ( true = 성공 )
-    public static void unLink(final Context mContext) {
-        // 회원 탈퇴 요청이 오면 true 로 초기화
-        isUnLinkSuccess = true;
-
+    public static void unLink(final Context mContext, final Activity mActivity) {
         switch (services) {
             case NONE:
                 // 로그인이 되어 있지 않은 상황에서 회원 탈퇴 호출 : 에러
                 Toast.makeText(mContext, "로그인이 되어있지 않습니다.", Toast.LENGTH_SHORT).show();
-                isUnLinkSuccess = false;
                 break;
             case NAVER:
                 // 네이버 회원 탈퇴는 asyncTask 를 이용해야함 - 그렇지 않으면 android.os.NetworkOnMainThreadException 발생
                 // 무조건 로그아웃은 진행되니 회원 탈퇴 여부와 관계없이 isUnLinkSuccess 를 true 로 줘 액티비티를 이동시킴
                 // 로그아웃 & 회원탈퇴
-                new DeleteTokenTask().execute(mContext);
+                new DeleteTokenTask().execute(mContext, mActivity);
                 break;
             case KAKAO:
                 UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
                     @Override
                     public void onSuccess(Long result) {
+                        // DB 에서 Member 삭제
+                        new RequestApi().execute();
+
+                        // services 변경
+                        services = Services.NONE;
+
                         // 회원 탈퇴 성공
+                        Intent intent = new Intent(mContext, MainActivity.class);
+                        mActivity.startActivity(intent);
+
+                        mActivity.finish();
                     }
 
                     // TODO: 2020-04-11 카카오 회원 탈퇴 실패 시 예외 처리
@@ -116,34 +124,20 @@ public class AuthUtils {
                         } else {
                             Toast.makeText(mContext, "회원 탈퇴 실패 : " + errorResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
                         }
-
-                        // question: 이 문장이 실행되는 시점이 어딜까
-                        isUnLinkSuccess = false;
                     }
 
                     @Override
                     public void onSessionClosed(ErrorResult errorResult) {
                         // 회원 탈퇴 실패 ( 로그인이 안 되어 있을 경우가 여기 속함 )
                         Toast.makeText(mContext, "회원 탈퇴 실패 : " + errorResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
-
-                        isUnLinkSuccess = false;
                     }
 
                     @Override
                     public void onNotSignedUp() {
                         // 회원 탈퇴 실패 ( 가입되어있지 않은 아이디로 로그인 했을 경우 )
                         Toast.makeText(mContext, "회원 탈퇴 실패 : 가입되지 않은 아이디입니다.", Toast.LENGTH_SHORT).show();
-
-                        isUnLinkSuccess = false;
                     }
                 });
-        }
-
-        // TODO: 2020-04-12 회원 탈퇴 시 실행할 로직을 서비스 로직으로 나누기
-        // 회원 탈퇴에 성공했다면 ~ DB 에서 Member 를 지우고, services 값 변경
-        if(isUnLinkSuccess) {
-            new RequestApi().execute();
-            services = Services.NONE;
         }
     }
 
@@ -153,8 +147,9 @@ public class AuthUtils {
 
         @Override
         protected Void doInBackground(Object[] objects) {
-            // mContext
+            // mContext & mActivity
             Context mContext = (Context) objects[0];
+            Activity mActivity = (Activity) objects[1];
 
             isSuccessDeleteToken = mOAuthLoginModule.logoutAndDeleteToken(mContext);
             Log.d("로그아웃", "성공");
@@ -163,9 +158,24 @@ public class AuthUtils {
             if (!isSuccessDeleteToken) {
                 // 서버에서 token 삭제에 실패했어도 클라이언트에 있는 token 은 삭제되어 로그아웃된 상태이다
                 // 실패했어도 클라이언트 상에 token 정보가 없기 때문에 추가적으로 해줄 수 있는 것은 없음
+                // 회원 탈퇴 실패 후 유저에게 보여주는 메세지
+                Toast.makeText(mContext, "회원 탈퇴에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+
                 Log.d("login", "errorCode:" + mOAuthLoginModule.getLastErrorCode(mContext));
                 Log.d("login", "errorDesc:" + mOAuthLoginModule.getLastErrorDesc(mContext));
             }
+
+            // DB 에서 Member 삭제
+            new RequestApi().execute();
+
+            // services 변경
+            services = Services.NONE;
+
+            // 회원 탈퇴 이후 ( 실패해도 ) 액티비티 이동
+            Intent intent = new Intent(mContext, MainActivity.class);
+            mActivity.startActivity(intent);
+
+            mActivity.finish();
 
             return null;
         }

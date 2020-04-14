@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.gomawa.R;
@@ -41,7 +42,7 @@ public class ShareListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view = mLayoutInflater.inflate(R.layout.listview_item_share, null);
 
         ImageView profileImageView = (ImageView)view.findViewById(R.id.share_profile);
@@ -49,6 +50,15 @@ public class ShareListViewAdapter extends BaseAdapter {
         // Glide로 이미지 표시하기
         String imageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
         Glide.with(mContext).load(imageUrl).into(profileImageView);
+
+        // 좋아요 버튼 Listener
+        LinearLayout likeBtn = view.findViewById(R.id.listview_item_share_like);
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Long id = shareItemList.get(position).getId();
+            }
+        });
 
         return view;
     }

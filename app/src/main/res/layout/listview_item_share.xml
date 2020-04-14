@@ -75,4 +75,36 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/listview_item_share_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right" >
+
+        <LinearLayout
+            android:id="@+id/listview_item_share_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- todo: 좋아요 버튼 Drawable 추가 -->
+            <ImageButton
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/share_write_complete"
+                android:background="@null"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="좋아요"
+                android:textSize="12sp"
+                android:textColor="#ffffffff" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

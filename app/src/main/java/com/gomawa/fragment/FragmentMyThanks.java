@@ -1,6 +1,7 @@
 package com.gomawa.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -83,6 +85,13 @@ public class FragmentMyThanks extends Fragment {
     // 고마운 일 안내 문구
     private TextView guideSentence = null;
 
+    /**
+     * 상태 버튼들
+     */
+    private Button firstStepBtn = null;
+    private Button secondStepBtn = null;
+    private Button thirdStepBtn = null;
+
     // 뷰페이저에 보여줄 프래그먼트들
     private Fragment fragmentFirst = null;
     private Fragment fragmentSecond = null;
@@ -96,7 +105,7 @@ public class FragmentMyThanks extends Fragment {
         /**
          * rootView 생성
          */
-        rootView = (ViewGroup)inflater.inflate(R.layout.fragment_my_thanks, container, false);
+        rootView = (ViewGroup)inflater.inflate(R.layout.fragment_my_thanks_work, container, false);
 
         /**
          * activity 얻기
@@ -134,6 +143,13 @@ public class FragmentMyThanks extends Fragment {
         return rootView;
     }
 
+    public void moveChapter() {
+        Log.d("methodTest", "moveChapter");
+        if (currentPosition < 3) {
+            movePage(currentPosition + 1);
+        }
+    }
+
     private void initView() {
 
         /**
@@ -154,98 +170,129 @@ public class FragmentMyThanks extends Fragment {
         subTitleList.add(getResources().getString(R.string.sub_title3));
         subTitleList.add(getResources().getString(R.string.sub_title4));
 
-        /**
-         * drawableList에 버튼 이미지들 추가
-         */
-        Drawable btnOne = getResources().getDrawable(R.drawable.btn_one);
-        Drawable btnTwo = getResources().getDrawable(R.drawable.btn_two);
-        Drawable btnThree = getResources().getDrawable(R.drawable.btn_three);
-        Drawable btnComplete = getResources().getDrawable(R.drawable.btn_complete);
-        Drawable btnOneDisable = getResources().getDrawable(R.drawable.btn_one_disable);
-        Drawable btnTwoDisable = getResources().getDrawable(R.drawable.btn_two_disable);
-        Drawable btnThreeDisable = getResources().getDrawable(R.drawable.btn_three_disable);
-        Drawable btnCompleteDisable = getResources().getDrawable(R.drawable.btn_complete_disable);
+        firstStepBtn = rootView.findViewById(R.id.first_step_btn);
+        secondStepBtn = rootView.findViewById(R.id.second_step_btn);
+        thirdStepBtn = rootView.findViewById(R.id.third_step_btn);
 
-        btnList.add(btnOne);
-        btnList.add(btnTwo);
-        btnList.add(btnThree);
-        btnList.add(btnComplete);
-        disableBtnList.add(btnOneDisable);
-        disableBtnList.add(btnTwoDisable);
-        disableBtnList.add(btnThreeDisable);
-        disableBtnList.add(btnCompleteDisable);
-
-        /**
-         * 숫자 버튼 찾기
-         */
-        firstBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_first);
-        secondBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_second);
-        thirdBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_third);
-        fourthBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_fourth);
-
-        firstBtn.setOnClickListener(new View.OnClickListener() {
+        firstStepBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 movePage(0);
+                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
             }
         });
 
-        secondBtn.setOnClickListener(new View.OnClickListener() {
+        secondStepBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 movePage(1);
+                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
+                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
             }
         });
 
-        thirdBtn.setOnClickListener(new View.OnClickListener() {
+        thirdStepBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 movePage(2);
+                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
+                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
             }
         });
-
-        fourthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movePage(3);
-
-                /**
-                 * 뷰페이저의 마지막 페이지의 경우
-                 * 서버에 DailyThanks객체 전달 후 저장
-                 */
-                DailyThanks dailyThanks = setLastPage();
-                sendDailyThanks(dailyThanks);
-            }
-        });
-
-        numberBtnList.add(firstBtn);
-        numberBtnList.add(secondBtn);
-        numberBtnList.add(thirdBtn);
-        numberBtnList.add(fourthBtn);
 
         /**
-         * next, back 버튼
+         * drawableList에 버튼 이미지들 추가
          */
-        backBtn = rootView.findViewById(R.id.fragment_my_thanks_back);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (currentPosition > 0) {
-                    movePage(currentPosition - 1);
-                }
-            }
-        });
-
-        nextBtn = rootView.findViewById(R.id.fragment_my_thanks_next);
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPosition < 3) {
-                    movePage(currentPosition + 1);
-                }
-            }
-        });
+//        Drawable btnOne = getResources().getDrawable(R.drawable.btn_one);
+//        Drawable btnTwo = getResources().getDrawable(R.drawable.btn_two);
+//        Drawable btnThree = getResources().getDrawable(R.drawable.btn_three);
+//        Drawable btnComplete = getResources().getDrawable(R.drawable.btn_complete);
+//        Drawable btnOneDisable = getResources().getDrawable(R.drawable.btn_one_disable);
+//        Drawable btnTwoDisable = getResources().getDrawable(R.drawable.btn_two_disable);
+//        Drawable btnThreeDisable = getResources().getDrawable(R.drawable.btn_three_disable);
+//        Drawable btnCompleteDisable = getResources().getDrawable(R.drawable.btn_complete_disable);
+//
+//        btnList.add(btnOne);
+//        btnList.add(btnTwo);
+//        btnList.add(btnThree);
+//        btnList.add(btnComplete);
+//        disableBtnList.add(btnOneDisable);
+//        disableBtnList.add(btnTwoDisable);
+//        disableBtnList.add(btnThreeDisable);
+//        disableBtnList.add(btnCompleteDisable);
+//
+//        /**
+//         * 숫자 버튼 찾기
+//         */
+//        firstBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_first);
+//        secondBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_second);
+//        thirdBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_third);
+//        fourthBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_fourth);
+//
+//        firstBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                movePage(0);
+//            }
+//        });
+//
+//        secondBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                movePage(1);
+//            }
+//        });
+//
+//        thirdBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                movePage(2);
+//            }
+//        });
+//
+//        fourthBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                movePage(3);
+//
+//                /**
+//                 * 뷰페이저의 마지막 페이지의 경우
+//                 * 서버에 DailyThanks객체 전달 후 저장
+//                 */
+//                DailyThanks dailyThanks = setLastPage();
+//                sendDailyThanks(dailyThanks);
+//            }
+//        });
+//
+//        numberBtnList.add(firstBtn);
+//        numberBtnList.add(secondBtn);
+//        numberBtnList.add(thirdBtn);
+//        numberBtnList.add(fourthBtn);
+//
+//        /**
+//         * next, back 버튼
+//         */
+//        backBtn = rootView.findViewById(R.id.fragment_my_thanks_back);
+//        backBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (currentPosition > 0) {
+//                    movePage(currentPosition - 1);
+//                }
+//            }
+//        });
+//
+//        nextBtn = rootView.findViewById(R.id.fragment_my_thanks_next);
+//        nextBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (currentPosition < 3) {
+//                    movePage(currentPosition + 1);
+//                }
+//            }
+//        });
     }
 
     /**
@@ -271,12 +318,25 @@ public class FragmentMyThanks extends Fragment {
         // keyboard 내리기
         hideKeyboad(currentPosition);
 
-        // 숫자 버튼 처리
-        numberBtnList.get(currentPosition).setImageDrawable(disableBtnList.get(currentPosition));
-        numberBtnList.get(want).setImageDrawable(btnList.get(want));
-
         // 현재 위치 재설정
         currentPosition = want;
+
+        /**
+         * 상태바 색상
+         */
+        if (currentPosition == 0) {
+            secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+        }
+
+        if (currentPosition == 1) {
+            secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
+            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+        }
+
+        if (currentPosition == 2) {
+            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
+        }
 
         // 프래그먼트 전환
         mPager.setCurrentItem(currentPosition, true);

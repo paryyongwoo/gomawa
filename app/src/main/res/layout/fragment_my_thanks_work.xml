@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:background="@drawable/background">
+
+    <include
+        layout="@layout/header" />
+
+    <LinearLayout
+        android:id="@+id/fragment_my_thanks_header_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/first_step_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@color/backgroundColor"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/second_step_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@color/whiteColor"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/third_step_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@color/whiteColor"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.gomawa.viewpager.CustomViewPager
+        android:id="@+id/thanksPager"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_my_thanks_header_status" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

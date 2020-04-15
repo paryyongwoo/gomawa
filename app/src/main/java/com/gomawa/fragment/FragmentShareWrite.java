@@ -140,14 +140,23 @@ public class FragmentShareWrite extends Fragment {
 
                 /**
                  * 서버에 데이터 전송
+                 *
+                 * 이미지, 글을 함께 서버로 전송
+                 * Multipart/form-data 형식으로 서버에 요청해야함
+                 *
+                 * @RequestParam
+                 *                  * 1. 파일
+                 *                  * 2. 글내용
+                 *                  * 3. 작성자의 key -> 2,3의 경우 json형식의 문자열로 만들어 전달
                  */
                 MultipartBody.Part body = null;
                 if (uploadImageFile != null) {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), uploadImageFile);
-                    body = MultipartBody.Part.createFormData("files[0]", uploadImageFile.getName(), requestFile);
+                    body = MultipartBody.Part.createFormData("file", uploadImageFile.getName(), requestFile);
                 }
+                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: " + shareItem.getContent() + ", key: " + shareItem.getKey() + "}");
 
-                Call<String> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(shareItem, body);
+                Call<String> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
                 Callback<String> callback = new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -193,10 +202,6 @@ public class FragmentShareWrite extends Fragment {
                 // 이미지뷰에 보여주기
                 uploadImageFile = new File(imagePath);
                 Picasso.get().load(uploadImageFile).fit().into(writeBackgroundImageView);
-
-                /**
-                 * 서버 파일 저장소에 이미지파일 업로드
-                 */
             }
         }
     }

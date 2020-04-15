@@ -41,7 +41,7 @@ public interface RetrofitService {
     @Headers("Accept: application/hal+json")
     @Multipart
     @POST("/api/shareItem")
-    Call<String> addShareItem(@Body ShareItem shareItem, @Part MultipartBody.Part file);
+    Call<String> addShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
 
 
 

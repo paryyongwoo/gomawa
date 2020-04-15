@@ -13,7 +13,6 @@ import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.KakaoSDK;
 
 // 카카오 SDK 를 init 해주기 위한 Application
-// todo: 다시 공부할 것
 public class GlobalApplication extends Application {
     @Override
     public void onCreate() {

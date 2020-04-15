@@ -133,8 +133,6 @@ public class FragmentSetting extends Fragment {
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
                 verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromCameraBtnListener, fromGalleryBtnListener, "프로필 사진", "카메라에서 가져오기", "갤러리에서 가져오기");
-//                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
-//                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 verticalTwoButtonDialog.show();
             }
         });

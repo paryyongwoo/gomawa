@@ -6,7 +6,7 @@ import java.util.Date;
 public class NoticeItem {
     private String title;
     private String dsc;
-    // date 를 일단 String 값으로... 설정해놓음
+    // TODO: 2020-04-15 date 를 적절한 변수로 변환 
     private String date;
 
     public NoticeItem(String title, String dsc, String date) {

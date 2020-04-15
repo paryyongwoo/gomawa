@@ -48,7 +48,7 @@ public class NoticeListViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        // todo: 이게 뭔지 모르겠음
+        // 이게 뭔지 모르겠음
         return 0;
     }
 

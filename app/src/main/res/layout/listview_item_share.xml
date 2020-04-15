@@ -86,13 +86,13 @@
             android:id="@+id/listview_item_share_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <!-- todo: 좋아요 버튼 Drawable 추가 -->
             <ImageButton
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:src="@drawable/share_write_complete"
+                android:src="@drawable/menu_my_thanks_icon"
                 android:background="@null"
                 android:scaleType="fitCenter" />
 

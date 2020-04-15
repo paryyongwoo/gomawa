@@ -11,6 +11,7 @@ public class ShareItem {
     private String content;
     private String backgroundUrl;
     private int like;
+    private Member member;
 
     public ShareItem() {
 
@@ -71,6 +72,14 @@ public class ShareItem {
 
     public void setLike(int like) {
         this.like = like;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     // 좋아요 +1 해주는 함수수

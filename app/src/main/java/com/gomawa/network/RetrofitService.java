@@ -27,8 +27,6 @@ public interface RetrofitService {
     @GET("/api/notice")
     Call<List<NoticeItem>> getNoticeAll();
 
-
-
     //POST
     @Headers("Accept: application/json")
     @POST("/api/member")
@@ -38,12 +36,16 @@ public interface RetrofitService {
     @POST("/api/dailyThanks")
     Call<DailyThanks> addDailyThanks(@Body DailyThanks dailyThanks);
 
+    /**
+     * 글쓰기
+     * @param file 업로드 파일
+     * @param items { content: '', key: ''}
+     * @return
+     */
     @Headers("Accept: application/hal+json")
     @Multipart
     @POST("/api/shareItem")
-    Call<String> addShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
-
-
+    Call<Member> addShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
 
     // PUT
     @Headers("Accept: application/json")
@@ -52,8 +54,6 @@ public interface RetrofitService {
 
     @PUT("/api/shareItem/Like/{id}")
     Call<Void> addLike(@Path("id") Long id);
-
-
 
     // DELETE
     @DELETE("/api/member/{key}")

@@ -156,10 +156,10 @@ public class FragmentShareWrite extends Fragment {
                 }
                 RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: " + shareItem.getContent() + ", key: " + shareItem.getKey() + "}");
 
-                Call<String> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
-                Callback<String> callback = new Callback<String>() {
+                Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
+                Callback<Member> callback = new Callback<Member>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
+                    public void onResponse(Call<Member> call, Response<Member> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "setShareItem success" + response.body(), Toast.LENGTH_SHORT).show();
                         } else {
@@ -168,7 +168,7 @@ public class FragmentShareWrite extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<Member> call, Throwable t) {
                         Toast.makeText(getContext(), "failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("api", t.getMessage());
                     }

@@ -87,7 +87,7 @@ public class FragmentShareList extends Fragment {
             }
 
             // shareItem 생성
-            ShareItem shareItem = new ShareItem(jsonObject.getLong("id"), jsonObject.getLong("key"), date, jsonObject.getString("content"), jsonObject.getString("profileUrl"));
+            ShareItem shareItem = new ShareItem(jsonObject.getLong("id"), jsonObject.getLong("key"), date, jsonObject.getString("content"), jsonObject.getString("profileUrl"), 0);
             Log.d("share", shareItem.getDate().toString());
 
             shareItemList.add(shareItem);

@@ -2,53 +2,49 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog_vertical_two_button_linearLayout"
-    android:layout_width="300dp"
-    android:layout_height="150dp"
-    android:background="@drawable/shape_circle"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/dialog_vertical_two_button_textView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:paddingTop="50dp"
-        android:paddingLeft="30dp"
-        android:text="TextView"
-        android:textSize="15sp"
-        android:textColor="#ff000000"/>
+    android:layout_width="330dp"
+    android:layout_height="220dp"
+    android:paddingVertical="20dp"
+    android:background="@drawable/shape_circle" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- weight 설정을 위한 뷰 -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3" />
+        <TextView
+            android:id="@+id/dialog_vertical_two_button_textView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:text="TextView"
+            android:textColor="#ff000000"
+            android:gravity="center"/>
 
-        <Button
-            android:id="@+id/dialog_vertical_two_button_second_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#00000000"
-            android:text="Second"
-            android:textSize="12sp"
-            android:textColor="#ff000000"/>
+            android:src="@drawable/inactive_line" />
 
         <Button
             android:id="@+id/dialog_vertical_two_button_first_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#00000000"
-            android:text="First"
-            android:textSize="12sp"
-            android:textColor="#ff000000"/>
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3.5"
+            android:background="@null"
+            android:text="First Button"
+            android:textColor="#ff000000" />
+
+        <Button
+            android:id="@+id/dialog_vertical_two_button_second_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3.5"
+            android:background="@null"
+            android:text="Second Button"
+            android:textColor="#ff000000" />
+
     </LinearLayout>
 
 </LinearLayout>

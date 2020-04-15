@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.gomawa.R;
 import com.gomawa.activity.MainActivity;
 import com.gomawa.activity.NoticeActivity;
@@ -30,11 +29,7 @@ import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
-import com.kakao.network.ApiErrorCode;
-import com.kakao.network.ErrorResult;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.LogoutResponseCallback;
-import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -52,8 +47,11 @@ public class FragmentSetting extends Fragment {
     // 닉네임이 표시되는 TextView
     private TextView nicknameTextView;
 
+    // 수평 2 버튼 다이얼로그
+    private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
+
     // 수직 2 버튼 다이얼로그
-    private VerticalTwoButtonDialog verticalTwoButtonDialog;
+    private VerticalTwoButtonDialog verticalTwoButtonDialog = null;
 
     // 선택하고, Crop된 이미지 파일이 임시로 저장되는 변수
     private File tempFile = null;
@@ -134,9 +132,9 @@ public class FragmentSetting extends Fragment {
                 };
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromGalleryBtnListener, fromCameraBtnListener, "어디서 가져오시겠습니까?", "갤러리", "촬영");
-                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
-                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
+                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, fromCameraBtnListener, fromGalleryBtnListener, "프로필 사진", "카메라에서 가져오기", "갤러리에서 가져오기");
+//                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
+//                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 verticalTwoButtonDialog.show();
             }
         });
@@ -183,11 +181,11 @@ public class FragmentSetting extends Fragment {
                 };
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-                verticalTwoButtonDialog = new VerticalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "로그아웃 하시겠습니까?", "확인", "취소");
+                horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "로그아웃 하시겠습니까?", "확인", "취소");
                 // todo: 다이얼로그의 그래비티를 설정하고 애니메이션 설정하는 부분을 다이얼로그 클래스 파일에 넣을지 말지 결정해야함 (프로필사진 변경 버튼)
-                verticalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
-                verticalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
-                verticalTwoButtonDialog.show();
+                horizontalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
+                horizontalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
+                horizontalTwoButtonDialog.show();
             }
         });
 
@@ -284,6 +282,7 @@ public class FragmentSetting extends Fragment {
                 }
             }
 
+            // TODO: 2020-04-15 어떤 다이얼로그를 종료할 것인지에 대한 로직 수정이 필요
             // 다이얼로그 종료
             verticalTwoButtonDialog.dismiss();
         // 카메라에서 이미지 가져온 후 호출됨

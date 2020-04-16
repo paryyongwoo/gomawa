@@ -14,7 +14,7 @@
         android:id="@+id/fragment_my_thanks_header_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="100dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,35 +22,74 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/first_step_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_marginRight="1dp"
+            android:background="@color/backgroundColor"
+            android:layout_weight="1" />
+        <Button
+            android:id="@+id/second_step_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:background="@color/whiteColor"
+            android:layout_weight="1" />
+        <Button
+            android:id="@+id/third_step_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_marginLeft="1dp"
+            android:background="@color/whiteColor"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+        <LinearLayout
             android:layout_width="300dp"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/first_step_btn"
+            <TextView
+                android:id="@+id/first_text_view"
                 android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:background="@color/backgroundColor"
-                android:layout_weight="1" />
-            <Button
-                android:id="@+id/second_step_btn"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="첫번째"
+                android:textColor="@color/inactiveColor"
+                android:textSize="10dp" />
+            <TextView
+                android:id="@+id/second_text_view"
                 android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:background="@color/whiteColor"
-                android:layout_weight="1" />
-            <Button
-                android:id="@+id/third_step_btn"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:text="두번째"
+                android:textColor="@color/inactiveColor"
+                android:textSize="10dp" />
+            <TextView
+                android:id="@+id/third_text_view"
                 android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:background="@color/whiteColor"
-                android:layout_weight="1" />
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:text="세번째"
+                android:textColor="@color/inactiveColor"
+                android:textSize="10dp" />
         </LinearLayout>
+
     </LinearLayout>
 
     <com.gomawa.viewpager.CustomViewPager

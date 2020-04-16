@@ -92,6 +92,13 @@ public class FragmentMyThanks extends Fragment {
     private Button secondStepBtn = null;
     private Button thirdStepBtn = null;
 
+    /**
+     * 상태 텍스트뷰
+     */
+    private TextView firstTextView = null;
+    private TextView secondTextView = null;
+    private TextView thirdTextView = null;
+
     // 뷰페이저에 보여줄 프래그먼트들
     private Fragment fragmentFirst = null;
     private Fragment fragmentSecond = null;
@@ -180,6 +187,9 @@ public class FragmentMyThanks extends Fragment {
                 movePage(0);
                 secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
                 thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+                firstTextView.setVisibility(View.VISIBLE);
+                secondTextView.setVisibility(View.INVISIBLE);
+                thirdTextView.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -189,6 +199,9 @@ public class FragmentMyThanks extends Fragment {
                 movePage(1);
                 secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
                 thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+                firstTextView.setVisibility(View.INVISIBLE);
+                secondTextView.setVisibility(View.VISIBLE);
+                thirdTextView.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -198,8 +211,15 @@ public class FragmentMyThanks extends Fragment {
                 movePage(2);
                 secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
                 thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
+                firstTextView.setVisibility(View.INVISIBLE);
+                secondTextView.setVisibility(View.INVISIBLE);
+                thirdTextView.setVisibility(View.VISIBLE);
             }
         });
+
+        firstTextView = rootView.findViewById(R.id.first_text_view);
+        secondTextView = rootView.findViewById(R.id.second_text_view);
+        thirdTextView = rootView.findViewById(R.id.third_text_view);
 
         /**
          * drawableList에 버튼 이미지들 추가
@@ -327,15 +347,24 @@ public class FragmentMyThanks extends Fragment {
         if (currentPosition == 0) {
             secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
             thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+            firstTextView.setVisibility(View.VISIBLE);
+            secondTextView.setVisibility(View.INVISIBLE);
+            thirdTextView.setVisibility(View.INVISIBLE);
         }
 
         if (currentPosition == 1) {
             secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
             thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
+            firstTextView.setVisibility(View.INVISIBLE);
+            secondTextView.setVisibility(View.VISIBLE);
+            thirdTextView.setVisibility(View.INVISIBLE);
         }
 
         if (currentPosition == 2) {
             thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
+            firstTextView.setVisibility(View.INVISIBLE);
+            secondTextView.setVisibility(View.INVISIBLE);
+            thirdTextView.setVisibility(View.VISIBLE);
         }
 
         // 프래그먼트 전환

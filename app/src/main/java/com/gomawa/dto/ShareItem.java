@@ -6,20 +6,20 @@ import java.util.Date;
 
 public class ShareItem {
     private long id;
-    private long key;
+    private Member member;
     private Date date; // LocalDateTime이 지원하는 api레벨이 높아서 Date 객체를 사용.. String 고려..
     private String content;
     private String backgroundUrl;
     private int like;
-    private Member member;
+
 
     public ShareItem() {
 
     }
 
-    public ShareItem(long id, long key, Date date, String content, String backgroundUrl, int like) {
+    public ShareItem(long id, Member member, Date date, String content, String backgroundUrl, int like) {
         this.id = id;
-        this.key = key;
+        this.member = member;
         this.date = date;
         this.content = content;
         this.backgroundUrl = backgroundUrl;
@@ -40,14 +40,6 @@ public class ShareItem {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getKey() {
-        return key;
-    }
-
-    public void setKey(long key) {
-        this.key = key;
     }
 
     public String getContent() {
@@ -81,6 +73,4 @@ public class ShareItem {
     public void setMember(Member member) {
         this.member = member;
     }
-
-    // 좋아요 +1 해주는 함수수
 }

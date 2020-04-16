@@ -1,6 +1,7 @@
 package com.gomawa.dto;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Member {
 
@@ -13,7 +14,7 @@ public class Member {
     // 닉네임
     private String nickName;
     // 최초 로그인 시각
-    private LocalDateTime regDate;
+    private Date regDate;
     // 프로필 이미지 url
     private String profileImgUrl;
 
@@ -21,7 +22,7 @@ public class Member {
 
     }
 
-    public Member(Long key, String email, String gender, String nickName, LocalDateTime regDate, String profileImgUrl) {
+    public Member(Long key, String email, String gender, String nickName, Date regDate, String profileImgUrl) {
         this.key = key;
         this.email = email;
         this.gender = gender;
@@ -58,11 +59,11 @@ public class Member {
 
     public void setNickName(String nickName) { this.nickName = nickName; }
 
-    public LocalDateTime getRegDate() {
+    public Date getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(LocalDateTime regDate) {
+    public void setRegDate(Date regDate) {
         this.regDate = regDate;
     }
 

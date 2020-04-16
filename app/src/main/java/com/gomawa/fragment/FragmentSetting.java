@@ -180,7 +180,7 @@ public class FragmentSetting extends Fragment {
 
                 // 다이얼로그 인스턴스를 생성한 후에 띄워줌
                 horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "로그아웃 하시겠습니까?", "확인", "취소");
-                // todo: 다이얼로그의 그래비티를 설정하고 애니메이션 설정하는 부분을 다이얼로그 클래스 파일에 넣을지 말지 결정해야함 (프로필사진 변경 버튼)
+                // 다이얼로그 애니메이션
                 horizontalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
                 horizontalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
                 horizontalTwoButtonDialog.show();

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="500dp">
+    android:layout_height="wrap_content" >
 
     <LinearLayout
         android:id="@+id/listview_item_share_header"
@@ -45,17 +44,19 @@
             />
     </LinearLayout>
 
+    <!-- height 값 변경함 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/listview_item_share_body"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingVertical="10dp"
         android:paddingHorizontal="20dp"
         >
 
         <ImageView
+            android:id="@+id/listview_item_share_background_imageview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="400dp"
             android:src="@drawable/share_item_background"
             android:background="@color/inactiveColor"
             android:scaleType="fitXY"
@@ -87,9 +88,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center" >
 
             <ImageButton
+                android:id="@+id/listview_item_share_like_button"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/menu_my_thanks_icon"
@@ -104,6 +106,14 @@
                 android:textColor="#ffffffff" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/listview_item_share_like_num"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:text="Num"
+            android:textSize="12sp"
+            android:textColor="#ff000000" />
 
     </LinearLayout>
 

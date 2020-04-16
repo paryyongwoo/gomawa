@@ -136,7 +136,8 @@ public class FragmentShareWrite extends Fragment {
                 shareItem.setContent(editText.getText().toString());
                 // 작성자 설정
                 Member member = CommonUtils.getMember();
-                shareItem.setKey(member.getKey());
+                //shareItem.setKey(member.getKey());
+                shareItem.setMember(member);
 
                 /**
                  * 서버에 데이터 전송
@@ -154,21 +155,22 @@ public class FragmentShareWrite extends Fragment {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), uploadImageFile);
                     body = MultipartBody.Part.createFormData("file", uploadImageFile.getName(), requestFile);
                 }
-                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: " + shareItem.getContent() + ", key: " + shareItem.getKey() + "}");
+                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: " + shareItem.getContent() + ", key: " + shareItem.getMember().getKey() + "}");
 
-                Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
-                Callback<Member> callback = new Callback<Member>() {
+                Call<ShareItem> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
+                Callback<ShareItem> callback = new Callback<ShareItem>() {
                     @Override
-                    public void onResponse(Call<Member> call, Response<Member> response) {
+                    public void onResponse(Call<ShareItem> call, Response<ShareItem> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "setShareItem success" + response.body(), Toast.LENGTH_SHORT).show();
+                            Log.d("반환받은 ShareItem : ", response.body().getContent());
                         } else {
                             Toast.makeText(getContext(), "setShareItem failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<Member> call, Throwable t) {
+                    public void onFailure(Call<ShareItem> call, Throwable t) {
                         Toast.makeText(getContext(), "failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("api", t.getMessage());
                     }

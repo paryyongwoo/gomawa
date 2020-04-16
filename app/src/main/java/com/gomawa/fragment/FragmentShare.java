@@ -59,6 +59,9 @@ public class FragmentShare extends Fragment {
          */
         fm = getChildFragmentManager();
 
+        // 임시 - replace 를 하기 위해 미리 초기화를 시킴
+        writeFragment = new FragmentShareWrite();
+
         if (listFragment == null) {
             listFragment = new FragmentShareList();
             fm.beginTransaction().add(R.id.share_frame_layout, listFragment).commit();
@@ -114,8 +117,12 @@ public class FragmentShare extends Fragment {
         listBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+                // hide 와 show 를 모두 replace 로 교체함 - listFragment의 Oncreate 를 매번 실행시켜주기 위해
+                // 이 부분은 자세한 검증은 하지 않았으므로 여러 테스트가 필요함 ex) 프래그먼트 전환 간에 데이터가 남는 지 여부 등
+
+//                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
+//                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+                fm.beginTransaction().replace(R.id.share_frame_layout, listFragment).commit();
             }
         });
 
@@ -125,12 +132,15 @@ public class FragmentShare extends Fragment {
         writeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (writeFragment == null) {
-                    writeFragment = new FragmentShareWrite();
-                    fm.beginTransaction().add(R.id.share_frame_layout, writeFragment).commit();
-                }
-                if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().hide(listFragment).commit();
+//                if (writeFragment == null) {
+//                    writeFragment = new FragmentShareWrite();
+//                    fm.beginTransaction().add(R.id.share_frame_layout, writeFragment).commit();
+//                }
+//                if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
+//                if (listFragment != null) fm.beginTransaction().hide(listFragment).commit();
+
+
+                fm.beginTransaction().replace(R.id.share_frame_layout, writeFragment).commit();
             }
         });
 
@@ -140,8 +150,10 @@ public class FragmentShare extends Fragment {
         myListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+//                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
+//                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+
+                fm.beginTransaction().replace(R.id.share_frame_layout, listFragment).commit();
             }
         });
     }

@@ -47,7 +47,7 @@ public class FragmentShareList extends Fragment {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_share_list, container, false);
 
         // 모든 게시글을 가져오는 Task
-        new RequestApi().execute();
+        executeRequestApi();
 
         // Task 후 return 함수
         return rootView;
@@ -61,6 +61,10 @@ public class FragmentShareList extends Fragment {
 
         // 리스트뷰에 어댑터 연결
         shareListView.setAdapter(shareListViewAdapter);
+    }
+
+    public void executeRequestApi() {
+        new RequestApi().execute();
     }
 
     // 모든 게시글을 가져오는 Task
@@ -87,6 +91,7 @@ public class FragmentShareList extends Fragment {
                             for(int i=0; i<size; i++) {
                                 // 받은 데이터를 shareItemList 에 옮겨담는 작업
                                 shareItemList.add(shareItemsReceived.get(i));
+                                System.out.println(shareItemsReceived.get(i).getBackgroundUrl());
                             }
 
                             initView();

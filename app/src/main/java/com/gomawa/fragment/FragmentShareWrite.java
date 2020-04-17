@@ -1,7 +1,6 @@
 package com.gomawa.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,8 +22,6 @@ import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
-import com.gomawa.common.ImageUtils;
-import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
@@ -70,7 +66,6 @@ public class FragmentShareWrite extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_share_write, container, false);
-        Log.d("writeFragment", "write" + (writeBackgroundImageView == null));
 
         initView();
 
@@ -143,7 +138,6 @@ public class FragmentShareWrite extends Fragment {
                 shareItem.setContent(editText.getText().toString());
                 // 작성자 설정
                 Member member = CommonUtils.getMember();
-                //shareItem.setKey(member.getKey());
                 shareItem.setMember(member);
 
                 /**
@@ -161,6 +155,9 @@ public class FragmentShareWrite extends Fragment {
                 if (uploadImageFile != null) {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), uploadImageFile);
                     body = MultipartBody.Part.createFormData("file", uploadImageFile.getName(), requestFile);
+                } else {
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), "");
+                    body = MultipartBody.Part.createFormData("file", "Not Exist", requestFile);
                 }
                 RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: \"" + shareItem.getContent() + "\", key: " + shareItem.getMember().getKey() + "}");
 
@@ -170,7 +167,12 @@ public class FragmentShareWrite extends Fragment {
                     public void onResponse(Call<ShareItem> call, Response<ShareItem> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "setShareItem success" + response.body(), Toast.LENGTH_SHORT).show();
-                            Log.d("반환받은 ShareItem : ", response.body().getContent());
+
+                            /**
+                             * 글작성 성공 후에, 글목록 화면으로 이동해서 방금 작성한 글을 보여줌
+                             */
+                            FragmentShare parentFragment = (FragmentShare) getParentFragment();
+                            parentFragment.moveShareList();
                         } else {
                             Toast.makeText(getContext(), "setShareItem failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }

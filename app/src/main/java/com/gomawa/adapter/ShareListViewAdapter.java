@@ -62,6 +62,7 @@ public class ShareListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        Log.d("listView", "position: " + getCount());
         View view = mLayoutInflater.inflate(R.layout.listview_item_share, null);
 
         ShareItem shareItemPicked = shareItemList.get(position);
@@ -74,8 +75,10 @@ public class ShareListViewAdapter extends BaseAdapter {
         // Picasso로 배경 이미지 표시하기
         ImageView backgroundImageView = view.findViewById(R.id.listview_item_share_background_imageview);
         String backgroundImageUrl = shareItemPicked.getBackgroundUrl();
-        Log.d("### backGroundUrl : ", backgroundImageUrl);
-        Picasso.get().load(backgroundImageUrl).into(backgroundImageView);
+        if (backgroundImageUrl != null) {
+            Log.d("### backGroundUrl : ", backgroundImageUrl);
+            Picasso.get().load(backgroundImageUrl).into(backgroundImageView);
+        }
 
         // 닉네임 표시
         TextView nickNameTextView = view.findViewById(R.id.share_nickname);

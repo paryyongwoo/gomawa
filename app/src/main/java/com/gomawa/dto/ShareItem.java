@@ -10,20 +10,20 @@ public class ShareItem {
     private Date date; // LocalDateTime이 지원하는 api레벨이 높아서 Date 객체를 사용.. String 고려..
     private String content;
     private String backgroundUrl;
-    private int like;
+    private int likeNum;
 
 
     public ShareItem() {
 
     }
 
-    public ShareItem(long id, Member member, Date date, String content, String backgroundUrl, int like) {
+    public ShareItem(long id, Member member, Date date, String content, String backgroundUrl, int likeNum) {
         this.id = id;
         this.member = member;
         this.date = date;
         this.content = content;
         this.backgroundUrl = backgroundUrl;
-        this.like = like;
+        this.likeNum = likeNum;
     }
 
     public Date getDate() {
@@ -58,12 +58,12 @@ public class ShareItem {
         this.backgroundUrl = backgroundUrl;
     }
 
-    public int getLike() {
-        return like;
+    public int getLikeNum() {
+        return likeNum;
     }
 
-    public void setLike(int like) {
-        this.like = like;
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
     }
 
     public Member getMember() {

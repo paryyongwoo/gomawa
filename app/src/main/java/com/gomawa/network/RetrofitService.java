@@ -55,8 +55,8 @@ public interface RetrofitService {
     @PUT("/api/nickName")
     Call<Member> setNickName(@Body Member memberParam);
 
-    @PUT("/api/shareItem/like/{id}")
-    Call<ShareItem> addLike(@Path("id") Long id);
+    @PUT("/api/like/{shareItemId}/{memberKey}")
+    Call<ShareItem> updateLike(@Path("memberKey") Long memberKey, @Path("shareItemId") Long shareItemId);
 
     // DELETE
     @DELETE("/api/member/{key}")

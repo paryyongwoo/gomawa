@@ -70,10 +70,17 @@ public class FragmentShareWrite extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_share_write, container, false);
+        Log.d("writeFragment", "write" + (writeBackgroundImageView == null));
 
         initView();
 
         return rootView;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("writeFragment", "onDetach");
     }
 
     private void initView() {
@@ -155,7 +162,7 @@ public class FragmentShareWrite extends Fragment {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), uploadImageFile);
                     body = MultipartBody.Part.createFormData("file", uploadImageFile.getName(), requestFile);
                 }
-                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: " + shareItem.getContent() + ", key: " + shareItem.getMember().getKey() + "}");
+                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: \"" + shareItem.getContent() + "\", key: " + shareItem.getMember().getKey() + "}");
 
                 Call<ShareItem> call = RetrofitHelper.getInstance().getRetrofitService().addShareItem(body, items);
                 Callback<ShareItem> callback = new Callback<ShareItem>() {

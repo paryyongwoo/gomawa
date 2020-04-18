@@ -1,32 +1,25 @@
 package com.gomawa.fragment;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
-import com.gomawa.adapter.ShareListViewAdapter;
-import com.gomawa.common.AuthUtils;
-import com.gomawa.dto.Member;
+import com.gomawa.adapter.ShareRecyclerViewAdapter;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,10 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentShareList extends Fragment {
-
     private ViewGroup rootView = null;
-
-    private ListView shareListView = null;
 
     private ArrayList<ShareItem> shareItemList = null;
 
@@ -54,13 +44,18 @@ public class FragmentShareList extends Fragment {
     }
 
     private void initView() {
-        shareListView = rootView.findViewById(R.id.share_list_view);
+        // 레이아웃 매니저 설정
+        RecyclerView recyclerView = rootView.findViewById(R.id.share_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
 
-        // 어댑터 설정 - DB 에서 가져온 ShareItemList 를 매개변수로 보내 적용함
-        ShareListViewAdapter shareListViewAdapter = new ShareListViewAdapter(getContext(), shareItemList);
+        Log.d("initView: ", String.valueOf(shareItemList.size()));
 
-        // 리스트뷰에 어댑터 연결
-        shareListView.setAdapter(shareListViewAdapter);
+        // Adapter 설정
+        ShareRecyclerViewAdapter adapter = new ShareRecyclerViewAdapter(shareItemList);
+        recyclerView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
     }
 
     public void executeRequestApi() {
@@ -91,7 +86,6 @@ public class FragmentShareList extends Fragment {
                             for(int i=0; i<size; i++) {
                                 // 받은 데이터를 shareItemList 에 옮겨담는 작업
                                 shareItemList.add(shareItemsReceived.get(i));
-                                System.out.println(shareItemsReceived.get(i).getBackgroundUrl());
                             }
 
                             initView();

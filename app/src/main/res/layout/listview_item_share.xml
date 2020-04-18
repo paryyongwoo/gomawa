@@ -83,29 +83,22 @@
         android:orientation="horizontal"
         android:gravity="right" >
 
-        <LinearLayout
+        <ImageButton
             android:id="@+id/listview_item_share_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center" >
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/menu_my_thanks_icon"
+            android:background="@null"
+            android:scaleType="fitCenter" />
 
-            <ImageButton
-                android:id="@+id/listview_item_share_like_button"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/menu_my_thanks_icon"
-                android:background="@null"
-                android:scaleType="fitCenter" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="좋아요"
-                android:textSize="12sp"
-                android:textColor="#ffffffff" />
-
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/listview_item_share_download"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/download"
+            android:background="@null"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/listview_item_share_like_num"

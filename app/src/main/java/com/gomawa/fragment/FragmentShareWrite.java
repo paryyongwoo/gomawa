@@ -126,6 +126,7 @@ public class FragmentShareWrite extends Fragment {
             }
         });
 
+        // TODO: 2020-04-18 글쓰기 완료 시 글쓰기 프래그먼트의 배경 이미지, 텍스트 삭제
         completeBtn = rootView.findViewById(R.id.share_write_complete);
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

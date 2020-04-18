@@ -1,5 +1,6 @@
 package com.gomawa.network;
 
+import com.gomawa.dto.Comment;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.NoticeItem;
@@ -30,6 +31,9 @@ public interface RetrofitService {
     @GET("/api/shareItem")
     Call<List<ShareItem>> getShareItemAll();
 
+    @GET("/api/comment/{shareItemId}")
+    Call<List<Comment>> getCommentByShareItemId(@Path("shareItemId") Long shareItemId);
+
     //POST
     @Headers("Accept: application/json")
     @POST("/api/member")
@@ -49,6 +53,10 @@ public interface RetrofitService {
     @Multipart
     @POST("/api/shareItem")
     Call<ShareItem> addShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
+
+    @Headers("Accept: application/json")
+    @POST("/api/comment")
+    Call<Comment> addComment(@Body Comment comment);
 
     // PUT
     @Headers("Accept: application/json")

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@drawable/background">
+
+    <LinearLayout
+        android:id="@+id/activity_comment_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/activity_comment_header_back_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@null"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/activity_comment_header_title_textView"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:text="Title"
+            android:textColor="#ff000000"
+            android:textSize="15sp"
+            android:gravity="center_vertical" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_comment_body_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/activity_comment_header_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/activity_comment_body_profile_imageView"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/activity_share_profile"
+            app:civ_border_width="@null" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/activity_comment_body_nickName_textView"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:text="aaaaaaaaaa"
+                android:textColor="#ff000000"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/activity_comment_body_content_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ShareItem's Content"
+                android:textColor="#ff000000" />
+
+            <TextView
+                android:id="@+id/activity_comment_body_date_textView"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:text="ShareItem's Date"
+                android:textColor="@color/inactiveColor"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/activity_comment_body_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/activity_comment_body_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/inactive_line"
+        android:scaleType="fitXY" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_comment_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/activity_comment_body_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/activity_comment_recyclerView_line"
+        android:layout_marginTop="5dp" />
+
+    <ImageView
+        android:id="@+id/activity_comment_recyclerView_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/activity_comment_recyclerView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/activity_comment_bottom_layout"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/inactive_line"
+        android:scaleType="fitXY" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_comment_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="28dp"
+        app:layout_constraintTop_toBottomOf="@id/activity_comment_recyclerView_line"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="5dp"
+        android:background="#ffffffff"
+        android:paddingHorizontal="5dp">
+
+        <EditText
+            android:id="@+id/activity_comment_bottom_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/activity_comment_bottom_ok_button"
+            android:minHeight="28dp"
+            android:background="#ffffffff"
+            android:text="Comment is here"
+            android:textColor="#ff000000" />
+
+        <ImageButton
+            android:id="@+id/activity_comment_bottom_ok_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/activity_comment_bottom_editText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/btn_complete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

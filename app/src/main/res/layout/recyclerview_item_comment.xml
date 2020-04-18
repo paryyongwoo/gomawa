@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/recyclerView_profile_imageView"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/activity_share_profile"
+        app:civ_border_width="@null" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/recyclerView_nickName_textView"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:text="aaaaaaaaaa"
+            android:textColor="#ff000000"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/recyclerView_content_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comment's Content"
+            android:textColor="#ff000000" />
+
+        <TextView
+            android:id="@+id/recyclerView_date_textView"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Comment's date"
+            android:textColor="@color/inactiveColor"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/inactive_line"
+            android:scaleType="fitXY" />
+
+    </LinearLayout>
+
+</LinearLayout>

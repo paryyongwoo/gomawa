@@ -109,12 +109,27 @@
             android:textColor="@color/inactiveColor"
             />
 
+        <!-- 구분선 -->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:src="@drawable/inactive_line"
             android:scaleType="fitXY" />
+
+        <FrameLayout
+            android:id="@+id/listview_item_share_comment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/listview_item_share_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="댓글 모두 보기" />
+        </FrameLayout>
+
     </LinearLayout>
 
 </LinearLayout>

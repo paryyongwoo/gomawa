@@ -1,6 +1,7 @@
 package com.gomawa.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gomawa.R;
+import com.gomawa.activity.CommentActivity;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
@@ -67,14 +70,16 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         ImageView backgroundImageView = null;
         // 본문 글
         TextView contentTextView = null;
-
-        // 바텀
         // 좋아요 버튼
         ImageButton likeButton = null;
         // 다운로드 버튼
         ImageButton downloadButton = null;
         // 좋아요 수
         TextView likeTextView = null;
+
+        // 바텀
+        // 댓글 모두 보기
+        TextView commentTextView = null;
 
         public ShareRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,11 +94,12 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             // 바디
             backgroundImageView = itemView.findViewById(R.id.listview_item_share_background_imageview);
             contentTextView = itemView.findViewById(R.id.listview_item_share_body_textview);
-
-            // 바텀
             likeButton = itemView.findViewById(R.id.listview_item_share_like);
             downloadButton = itemView.findViewById(R.id.listview_item_share_download);
             likeTextView = itemView.findViewById(R.id.listview_item_share_like_num);
+
+            // 바텀
+            commentTextView = itemView.findViewById(R.id.listview_item_share_comment);
         }
     }
 
@@ -118,7 +124,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
     @Override
     public void onBindViewHolder(@NonNull ShareRecyclerViewHolder holder, final int position) {
         // ShareItem List 에서 Position Index 의 ShareItem 을 가져옴
-        ShareItem shareItemSelected = shareItemList.get(position);
+        final ShareItem shareItemSelected = shareItemList.get(position);
 
         Log.d("onBindViewHolder: ", String.valueOf(position));
 
@@ -134,9 +140,9 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         String nickName = shareItemSelected.getMember().getNickName();
         holder.nickNameTextView.setText(nickName);
 
-        // 날짜 표시
-        String date = shareItemSelected.getDate().toString();
-        holder.dateTextView.setText(date);
+        // TODO: 2020-04-18 날짜 표시
+        //String date = shareItemSelected.getDate().toString();
+        holder.dateTextView.setText("");
 
         // 배경 이미지 표시
         String backgroundImageUrl = shareItemSelected.getBackgroundUrl();
@@ -161,6 +167,30 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         // 좋아요 수 표시
         String likeNum = String.valueOf(shareItemSelected.getLikeNum());
         holder.likeTextView.setText(likeNum);
+
+        // 댓글 모두 보기 Listener
+        holder.commentTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+
+                // ShareItem 을 분해하는 과정...
+                intent.putExtra("memberKey", shareItemSelected.getMember().getKey());
+                intent.putExtra("memberEmail", shareItemSelected.getMember().getEmail());
+                intent.putExtra("memberGender", shareItemSelected.getMember().getGender());
+                intent.putExtra("memberNickName", shareItemSelected.getMember().getNickName());
+                intent.putExtra("memberProfileImgUrl", shareItemSelected.getMember().getProfileImgUrl());
+                //intent.putExtra("memberDateString", shareItemSelected.getMember().getRegDate());
+
+                intent.putExtra("id", shareItemSelected.getId());
+                intent.putExtra("content", shareItemSelected.getContent());
+                intent.putExtra("backgroundUrl", shareItemSelected.getBackgroundUrl());
+                intent.putExtra("likeNum", shareItemSelected.getLikeNum());
+                //intent.putExtra("dateString", shareItemSelected.getDate());
+
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

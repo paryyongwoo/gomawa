@@ -45,12 +45,13 @@
     </LinearLayout>
 
     <!-- height 값 변경함 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/listview_item_share_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="10dp"
         android:paddingHorizontal="20dp"
+        android:orientation="vertical"
         >
 
         <ImageView
@@ -60,54 +61,60 @@
             android:src="@drawable/share_item_background"
             android:background="@color/inactiveColor"
             android:scaleType="fitXY"
-            app:layout_constraintTop_toTopOf="@id/listview_item_share_body"
-            app:layout_constraintStart_toStartOf="@+id/listview_item_share_body"
             >
 
         </ImageView>
+
+        <LinearLayout
+            android:id="@+id/listview_item_share_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="right" >
+
+            <ImageButton
+                android:id="@+id/listview_item_share_like"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/menu_my_thanks_icon"
+                android:background="@null"
+                android:scaleType="fitCenter" />
+
+            <ImageButton
+                android:id="@+id/listview_item_share_download"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/download"
+                android:background="@null"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/listview_item_share_like_num"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="Num"
+                android:textSize="12sp"
+                android:textColor="#ff000000" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/listview_item_share_body_textview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             android:text="안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요안녕하세요"
             android:textColor="@color/inactiveColor"
-            app:layout_constraintTop_toTopOf="@id/listview_item_share_body"
-            app:layout_constraintStart_toStartOf="@+id/listview_item_share_body"
             />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/listview_item_share_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="right" >
-
-        <ImageButton
-            android:id="@+id/listview_item_share_like"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/menu_my_thanks_icon"
-            android:background="@null"
-            android:scaleType="fitCenter" />
-
-        <ImageButton
-            android:id="@+id/listview_item_share_download"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/download"
-            android:background="@null"
-            android:scaleType="fitCenter" />
-
-        <TextView
-            android:id="@+id/listview_item_share_like_num"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:text="Num"
-            android:textSize="12sp"
-            android:textColor="#ff000000" />
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/inactive_line"
+            android:scaleType="fitXY" />
     </LinearLayout>
 
 </LinearLayout>

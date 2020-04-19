@@ -16,6 +16,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class CommonUtils {
     // 멤버
@@ -149,5 +152,22 @@ public class CommonUtils {
         }
 
         return newFile;
+    }
+
+    /**
+     * 1. Date 를 Default Format 의 String 으로 변환해주는 함수 ("yyyy-MM-dd'T'HH:mm:ss.SSS")
+     * 2. 두 번째 매개변수로 Format 을 넣을 수도 있음
+     */
+    public static String convertFromDateToString(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.KOREA);
+        String str = format.format(date);
+
+        return str;
+    }
+    public static String convertFromDateToString(Date date, String formatStr) {
+        SimpleDateFormat format = new SimpleDateFormat(formatStr, Locale.KOREA);
+        String str = format.format(date);
+
+        return str;
     }
 }

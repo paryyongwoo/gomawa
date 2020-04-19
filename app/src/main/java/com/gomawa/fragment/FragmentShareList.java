@@ -113,7 +113,7 @@ public class FragmentShareList extends Fragment {
 
             if(type == Constants.ALL_LIST) {
                 // 모든 게시물 보기
-                call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll();
+                call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(CommonUtils.getMember().getId());
             } else if(type == Constants.MY_LIST) {
                 // 나의 게시물 보기
 

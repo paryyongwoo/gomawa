@@ -75,7 +75,7 @@ public class CommentActivity extends Activity {
         // TODO: 2020-04-18 Date To String 작업
         // Date memberDate =
         String memberProfileImgUrl = intent.getExtras().getString("memberProfileImgUrl");
-        Member member = new Member(memberKey, memberEmail, memberGender, memberNickName, null, memberProfileImgUrl);
+        Member member = new Member(id, memberKey, memberEmail, memberGender, memberNickName, null, memberProfileImgUrl);
 
         //String dateString = intent.getExtras().getString("dateString");
         // TODO: 2020-04-18 Date To String 작업

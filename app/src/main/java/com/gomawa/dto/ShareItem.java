@@ -9,7 +9,7 @@ public class ShareItem {
     private String content;
     private String backgroundUrl;
     private int likeNum;
-
+    private boolean isLike; // 좋아요 클릭 여부
 
     public ShareItem() {
 
@@ -70,5 +70,13 @@ public class ShareItem {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public boolean getIsLike() {
+        return isLike;
+    }
+
+    public void setIsLike(boolean isLike) {
+        this.isLike = isLike;
     }
 }

@@ -24,6 +24,7 @@ import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -140,9 +141,10 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         String nickName = shareItemSelected.getMember().getNickName();
         holder.nickNameTextView.setText(nickName);
 
-        // TODO: 2020-04-18 날짜 표시
-        //String date = shareItemSelected.getDate().toString();
-        holder.dateTextView.setText("");
+        // 날짜 표시
+        Date date = shareItemSelected.getDate();
+        String dateString = CommonUtils.convertFromDateToString(date, "YYYY.MM.dd");
+        holder.dateTextView.setText(dateString);
 
         // 배경 이미지 표시
         String backgroundImageUrl = shareItemSelected.getBackgroundUrl();
@@ -150,7 +152,6 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             // DB 에서 가져온 ShareItem 의 BackgroundURL 이 null 이면 아래 코드를 진행하지 않음 - 기본 src 속성으로 지정된 drawable 이 표시됨
             Picasso.get().load(backgroundImageUrl).into(holder.backgroundImageView);
         }
-
 
         // 본문 표시
         String content = shareItemSelected.getContent();

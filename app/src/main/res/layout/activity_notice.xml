@@ -44,12 +44,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" >
 
-        <!-- 리스트 뷰 -->
-        <ListView
-            android:id="@+id/activity_notice_listView"
+        <!-- 리사이클러 뷰 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_notice_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <!-- 본문 -->
         <LinearLayout

@@ -7,12 +7,12 @@ public class NoticeItem {
     private String title;
     private String dsc;
     // TODO: 2020-04-15 date 를 적절한 변수로 변환 
-    private String date;
+    private Date regDate;
 
-    public NoticeItem(String title, String dsc, String date) {
+    public NoticeItem(String title, String dsc, Date regDate) {
         this.title = title;
         this.dsc = dsc;
-        this.date = date;
+        this.regDate = regDate;
     }
 
     public String getTitle() {
@@ -31,11 +31,11 @@ public class NoticeItem {
         this.dsc = dsc;
     }
 
-    public String getDate() {
-        return date;
+    public Date getRegDate() {
+        return regDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setRegDate(Date regDate) {
+        this.regDate = regDate;
     }
 }

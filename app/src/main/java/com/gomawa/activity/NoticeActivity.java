@@ -12,13 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
-import com.gomawa.adapter.NoticeListViewAdapter;
+import com.gomawa.adapter.NoticeRecyclerViewAdapter;
+import com.gomawa.common.CommonUtils;
 import com.gomawa.dto.NoticeItem;
+import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,15 +32,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NoticeActivity extends Activity {
-    // Adapter
-    private NoticeListViewAdapter noticeListViewAdapter = null;
+    // 공지사항 리스트
+    private List<NoticeItem> noticeItemList = new ArrayList<>();
 
     // Header - Title & Back Button
     private ImageButton backBtn = null;
     private TextView titleTextView = null;
 
-    // Body - List View
-    private ListView listView = null;
+    // Body - Recycler View
+    private RecyclerView recyclerView = null;
+    private NoticeRecyclerViewAdapter recyclerViewAdapter = null;
 
     // Body - dsc View
     private LinearLayout linearLayout = null;
@@ -49,8 +56,7 @@ public class NoticeActivity extends Activity {
         initView();
 
         // DB에서 공지사항 Item 을 전부 가져와서 Adapter에 넘겨준 다음 화면에 띄워줌.
-        // question: Item 가져온 이후의 작업은 꼭 onResponse 안에서 해야하나?... 밖에 빼놓으니 null 값이 들어간다.
-        new RequestApi().execute();
+        new GetNoticeAllApi().execute();
     }
 
     private void initView() {
@@ -67,12 +73,15 @@ public class NoticeActivity extends Activity {
             }
         });
 
-        // ListView 에 Adapter 연결 & Visibility 설정
-        listView = findViewById(R.id.activity_notice_listView);
-        noticeListViewAdapter = new NoticeListViewAdapter(this);
-        listView.setAdapter(noticeListViewAdapter);
+        // Recylcer View
+        recyclerView = findViewById(R.id.activity_notice_recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
 
-        listView.setVisibility(View.VISIBLE);
+        recyclerViewAdapter = new NoticeRecyclerViewAdapter(noticeItemList, this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+        recyclerView.setVisibility(View.VISIBLE);
 
         // dsc TextView 연결 & Visibility 설정
         linearLayout = findViewById(R.id.activity_notice_linearLayout);
@@ -81,7 +90,7 @@ public class NoticeActivity extends Activity {
         dscDateTextView = findViewById(R.id.activity_notice_dsc_date);
     }
 
-    private class RequestApi extends AsyncTask {
+    private class GetNoticeAllApi extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
             Call<List<NoticeItem>> call = RetrofitHelper.getInstance().getRetrofitService().getNoticeAll();
@@ -90,16 +99,15 @@ public class NoticeActivity extends Activity {
                 public void onResponse(Call<List<NoticeItem>> call, Response<List<NoticeItem>> response) {
                     if(response.isSuccessful()) {
                         // DB 에서 받아온 공지사항 Item List 와 그 List 의 Size
-                        List<NoticeItem> noticeItems = response.body();
-                        int noticeItemsCnt = noticeItems.size();
+                        List<NoticeItem> noticeItemListReceived = response.body();
+                        int size = noticeItemListReceived.size();
 
-                        // Adapter 의 List 에 받아온 List 를 추가
-                        for(int i=0; i<noticeItemsCnt; i++) {
-                            noticeListViewAdapter.addNoticeItem(noticeItems.get(i));
+                        for(int i=0; i<size; i++) {
+                            noticeItemList.add(noticeItemListReceived.get(i));
                         }
 
                         // Adapter 새로고침 메소드
-                        noticeListViewAdapter.notifyDataSetChanged();
+                        recyclerViewAdapter.notifyDataSetChanged();
                     } else {
                         // todo: 예외 처리
                         Toast.makeText(getApplicationContext(), "공지사항 불러오기 실패", Toast.LENGTH_SHORT).show();
@@ -118,21 +126,19 @@ public class NoticeActivity extends Activity {
         }
     }
 
-    // question: 이 함수 과연 괜찮은가?
-    public void selectItem(int i) {
-        // 선택한 아이템의 id 값으로 데이터를 가져옴
-        NoticeItem selectedItem = (NoticeItem) noticeListViewAdapter.getItem(i);
-        String title = selectedItem.getTitle();
-        String dsc = selectedItem.getDsc();
-        String date = selectedItem.getDate();
+    public void selectItem(NoticeItem noticeItemSelected) {
+        String title = noticeItemSelected.getTitle();
+        String dsc = noticeItemSelected.getDsc();
+        Date regDate = noticeItemSelected.getRegDate();
+        String regDateStr = CommonUtils.convertFromDateToString(regDate);
 
         // 각 View 에 데이터 입력
         titleTextView.setText(title);
         dscTextView.setText(dsc);
-        dscDateTextView.setText(date);
+        dscDateTextView.setText(regDateStr);
 
         // 기존의 리스트 뷰를 숨김
-        listView.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
 
         // Linear Layout 보여줌
         linearLayout.setVisibility(View.VISIBLE);
@@ -141,15 +147,15 @@ public class NoticeActivity extends Activity {
     // 백 버튼 눌렀을 때 호출되는 메소드
     private void backFunc() {
         // 분기점으로 삼을 리스트 뷰의 Visibility 속성 값
-        int visibilityOfListView = listView.getVisibility();
+        int visibilityOfListView = recyclerView.getVisibility();
 
         if(visibilityOfListView == View.VISIBLE) {
-            // 리스트 뷰가 보여지고 있다면 ~ 액티비티 종료
+            // 리사이클러 뷰가 보여지고 있다면 ~ 액티비티 종료
             finish();
         } else if(visibilityOfListView == View.INVISIBLE) {
-            // 리스트 뷰가 보여지지 않고 있다면 ~ dsc View 가 보여지고 있음 ~ 리스트 뷰로 돌아감
+            // 리사이클러 뷰가 보여지지 않고 있다면 ~ dsc View 가 보여지고 있음 ~ 리사이클러 뷰로 돌아감
             linearLayout.setVisibility(View.INVISIBLE);
-            listView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
 
             // Header - Title Text 값 돌려받기 & dsc View 의 데이터 삭제
             titleTextView.setText("공지사항");

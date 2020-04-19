@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gomawa.R;
 import com.gomawa.adapter.ShareRecyclerViewAdapter;
@@ -34,7 +35,16 @@ public class FragmentShareList extends Fragment {
 
     private ViewGroup rootView = null;
 
-    private ArrayList<ShareItem> shareItemList = null;
+    private ArrayList<ShareItem> shareItemList = new ArrayList<>();
+
+    // Recycler View Adapter
+    ShareRecyclerViewAdapter shareRecyclerViewAdapter = null;
+
+    // initView 가 실행되었는지 체크하는 스위치
+    private boolean initViewCheck = false;
+
+    // 스와이프 새로고침 레이아웃
+    SwipeRefreshLayout swipeRefreshLayout = null;
 
     // 이 리스트가 All 인 지 MY 인 지를 가져오기 위한 생성자
     public FragmentShareList(int type) {
@@ -63,6 +73,16 @@ public class FragmentShareList extends Fragment {
     }
 
     private void initView() {
+        Log.d("initView 실행", "정상입니다");
+
+        swipeRefreshLayout = rootView.findViewById(R.id.share_recycler_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                executeRequestApi();
+            }
+        });
+
         // 레이아웃 매니저 설정
         RecyclerView recyclerView = rootView.findViewById(R.id.share_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -71,13 +91,14 @@ public class FragmentShareList extends Fragment {
         Log.d("initView: ", String.valueOf(shareItemList.size()));
 
         // Adapter 설정
-        ShareRecyclerViewAdapter adapter = new ShareRecyclerViewAdapter(shareItemList);
-        recyclerView.setAdapter(adapter);
+        shareRecyclerViewAdapter = new ShareRecyclerViewAdapter(shareItemList);
+        recyclerView.setAdapter(shareRecyclerViewAdapter);
 
-        adapter.notifyDataSetChanged();
+        // 다음 RequestApi 부터는 initView 를 실행하지 않음
+        initViewCheck = true;
     }
 
-    // 모든 게시글을 가져오는 Task
+    // 게시글을 가져오는 Task
     private class RequestApi extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -100,8 +121,8 @@ public class FragmentShareList extends Fragment {
                 @Override
                 public void onResponse(Call<List<ShareItem>> call, Response<List<ShareItem>> response) {
                     if(response.isSuccessful()) {
-                        // shareItemList 초기화
-                        shareItemList = new ArrayList<ShareItem>();
+                        // add 를 해주기 위해 먼저 ShareItem List 를 Clear 해줌
+                        shareItemList.clear();
 
                         // Response 에서 받아온 List
                         List<ShareItem> shareItemsReceived = response.body();
@@ -117,7 +138,16 @@ public class FragmentShareList extends Fragment {
                                 shareItemList.add(shareItemsReceived.get(i));
                             }
 
-                            initView();
+                            // initView 가 실행된 적이 있다면 initView 는 다시 실행하지 않음
+                            if(initViewCheck == false) {
+                                initView();
+                            }
+
+                            // 정보 갱신
+                            shareRecyclerViewAdapter.notifyDataSetChanged();
+
+                            // 새로고침 아이콘 제거
+                            swipeRefreshLayout.setRefreshing(false);
                         }
                     } else {
                         Log.d("api 응답은 왔으나 실패", "status: " + response.code());

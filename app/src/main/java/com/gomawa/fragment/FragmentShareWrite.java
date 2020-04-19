@@ -3,6 +3,7 @@ package com.gomawa.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -173,6 +174,11 @@ public class FragmentShareWrite extends Fragment {
                              * 글작성 성공 후에, 글목록 화면으로 이동해서 방금 작성한 글을 보여줌
                              */
                             FragmentShare parentFragment = (FragmentShare) getParentFragment();
+
+                            // 배경 이미지와 EditText 초기화
+                            writeBackgroundImageView.setImageResource(R.drawable.share_write_background);
+                            editText.setText("");
+
                             parentFragment.moveShareList();
                         } else {
                             Toast.makeText(getContext(), "setShareItem failed: " + response.code(), Toast.LENGTH_SHORT).show();

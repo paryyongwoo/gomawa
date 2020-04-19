@@ -161,7 +161,7 @@ public class FragmentSetting extends Fragment {
                         AuthUtils.logout(mContext);
 
                         // 다이얼로그 종료
-                        verticalTwoButtonDialog.dismiss();
+                        horizontalTwoButtonDialog.dismiss();
 
                         // 액티비티 이동
                         Intent intent = new Intent(mActivity, MainActivity.class);

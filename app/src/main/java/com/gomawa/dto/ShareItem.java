@@ -1,13 +1,11 @@
 package com.gomawa.dto;
 
-import androidx.annotation.NonNull;
-
 import java.util.Date;
 
 public class ShareItem {
     private long id;
     private Member member;
-    private Date date; // LocalDateTime이 지원하는 api레벨이 높아서 Date 객체를 사용.. String 고려..
+    private Date regDate; // LocalDateTime이 지원하는 api레벨이 높아서 Date 객체를 사용.. String 고려..
     private String content;
     private String backgroundUrl;
     private int likeNum;
@@ -17,21 +15,21 @@ public class ShareItem {
 
     }
 
-    public ShareItem(long id, Member member, Date date, String content, String backgroundUrl, int likeNum) {
+    public ShareItem(long id, Member member, Date regDate, String content, String backgroundUrl, int likeNum) {
         this.id = id;
         this.member = member;
-        this.date = date;
+        this.regDate = regDate;
         this.content = content;
         this.backgroundUrl = backgroundUrl;
         this.likeNum = likeNum;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getRegDate() {
+        return regDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRegDate(Date regDate) {
+        this.regDate = regDate;
     }
 
     public long getId() {

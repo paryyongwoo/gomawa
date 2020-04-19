@@ -142,7 +142,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         holder.nickNameTextView.setText(nickName);
 
         // 날짜 표시
-        Date date = shareItemSelected.getDate();
+        Date date = shareItemSelected.getRegDate();
         String dateString = CommonUtils.convertFromDateToString(date, "YYYY.MM.dd");
         holder.dateTextView.setText(dateString);
 

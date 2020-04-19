@@ -37,14 +37,20 @@ public class FragmentShareList extends Fragment {
 
     private ArrayList<ShareItem> shareItemList = new ArrayList<>();
 
+    // Recycler View
+    private RecyclerView recyclerView = null;
+
+    // Recycler View Layout Manager
+    private LinearLayoutManager layoutManager = null;
+
     // Recycler View Adapter
-    ShareRecyclerViewAdapter shareRecyclerViewAdapter = null;
+    private ShareRecyclerViewAdapter shareRecyclerViewAdapter = null;
 
     // initView 가 실행되었는지 체크하는 스위치
     private boolean initViewCheck = false;
 
     // 스와이프 새로고침 레이아웃
-    SwipeRefreshLayout swipeRefreshLayout = null;
+    private SwipeRefreshLayout swipeRefreshLayout = null;
 
     // 이 리스트가 All 인 지 MY 인 지를 가져오기 위한 생성자
     public FragmentShareList(int type) {
@@ -84,8 +90,8 @@ public class FragmentShareList extends Fragment {
         });
 
         // 레이아웃 매니저 설정
-        RecyclerView recyclerView = rootView.findViewById(R.id.share_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView = rootView.findViewById(R.id.share_recycler_view);
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
         Log.d("initView: ", String.valueOf(shareItemList.size()));
@@ -145,6 +151,9 @@ public class FragmentShareList extends Fragment {
 
                             // 정보 갱신
                             shareRecyclerViewAdapter.notifyDataSetChanged();
+
+                            // 최상단으로 스크롤
+                            recyclerView.smoothScrollToPosition(0);
 
                             // 새로고침 아이콘 제거
                             swipeRefreshLayout.setRefreshing(false);

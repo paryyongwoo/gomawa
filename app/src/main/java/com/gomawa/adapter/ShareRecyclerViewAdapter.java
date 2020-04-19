@@ -164,6 +164,10 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                 new LikeApi().execute(position);
             }
         });
+        boolean isLike = shareItemList.get(position).getIsLike();
+        if (isLike) {
+            holder.likeButton.setImageResource(R.drawable.btn_complete);
+        }
 
         // 좋아요 수 표시
         String likeNum = String.valueOf(shareItemSelected.getLikeNum());

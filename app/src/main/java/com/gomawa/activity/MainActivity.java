@@ -48,8 +48,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -246,7 +252,10 @@ public class MainActivity extends AppCompatActivity {
                 member.setKey(key);
                 member.setEmail(email);
                 member.setGender(gender);
+                // 현재 날짜를 저장함
+                member.setRegDate(new Date());
 
+                // 디폴트 닉네임
                 String[] emailForSplit = email.split("@");
 
                 member.setNickName(emailForSplit[0]);
@@ -326,6 +335,9 @@ public class MainActivity extends AppCompatActivity {
             Map<String, String> nickname = result.getProperties();
             member.setNickName(nickname.get("nickname"));
             member.setKey(result.getId());
+
+            // 현재 날짜를 회원 가입 날짜로 저장
+            member.setRegDate(new Date());
 
             // 이메일 과 성별 수집 동의 여부 - 동의하지 않았으면 "null" 입력
             if(userAccount.emailNeedsAgreement() == OptionalBoolean.FALSE) {

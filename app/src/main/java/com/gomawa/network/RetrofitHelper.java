@@ -44,6 +44,7 @@ public class RetrofitHelper {
          * gson 빌더
          */
         Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
                 .setLenient()
                 .create();
 

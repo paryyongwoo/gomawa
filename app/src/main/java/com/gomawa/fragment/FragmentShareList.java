@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
 import com.gomawa.adapter.ShareRecyclerViewAdapter;
+import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Constants;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 
@@ -27,20 +29,37 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentShareList extends Fragment {
+    // ALL or MY
+    private int type;
+
     private ViewGroup rootView = null;
 
     private ArrayList<ShareItem> shareItemList = null;
+
+    // 이 리스트가 All 인 지 MY 인 지를 가져오기 위한 생성자
+    public FragmentShareList(int type) {
+        this.type = type;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_share_list, container, false);
 
-        // 모든 게시글을 가져오는 Task
         executeRequestApi();
 
         // Task 후 return 함수
         return rootView;
+    }
+
+    public void executeRequestApi() {
+        if(type == Constants.ALL_LIST) {
+            // 모든 게시물 보기
+            new RequestApi().execute();
+        } else if(type == Constants.MY_LIST) {
+            // 나의 게시물 보기
+            new RequestApi().execute(CommonUtils.getMember().getKey());
+        }
     }
 
     private void initView() {
@@ -58,15 +77,25 @@ public class FragmentShareList extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void executeRequestApi() {
-        new RequestApi().execute();
-    }
-
     // 모든 게시글을 가져오는 Task
     private class RequestApi extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            Call<List<ShareItem>> call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll();
+            Long memberKey;
+            Call<List<ShareItem>> call = null;
+
+            if(type == Constants.ALL_LIST) {
+                // 모든 게시물 보기
+                call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll();
+            } else if(type == Constants.MY_LIST) {
+                // 나의 게시물 보기
+
+                // Index 0: Long memberKey
+                memberKey = (Long) objects[0];
+
+                call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByMemberKey(memberKey);
+            }
+
             Callback<List<ShareItem>> callback = new Callback<List<ShareItem>>() {
                 @Override
                 public void onResponse(Call<List<ShareItem>> call, Response<List<ShareItem>> response) {
@@ -100,7 +129,13 @@ public class FragmentShareList extends Fragment {
                     Log.d("api 로그인 통신 실패", t.getMessage());
                 }
             };
-            call.enqueue(callback);
+
+            try{
+                call.enqueue(callback);
+            } catch(NullPointerException e) {
+                Log.d("ListFragment Type 분류 실패", e.getMessage());
+            }
+
 
             return null;
         }

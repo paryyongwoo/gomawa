@@ -11,6 +11,10 @@ public class Constants {
     public static final int CROP_IMAGE = 22;
     public static final int PICK_FROM_CAMERA = 33;
 
+    // ShareItem Fragment 에서 All List 인지 My List 인지 구분할 때 쓰는 상수
+    public static final int ALL_LIST = 99;
+    public static final int MY_LIST = 999;
+
     // 닉네임 글자 수 제한
     public static final int NICKNAME_LIMIT = 10;
 

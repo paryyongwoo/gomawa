@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
+import com.gomawa.common.Constants;
 
 public class FragmentShare extends Fragment {
 
@@ -33,7 +34,8 @@ public class FragmentShare extends Fragment {
      * 글쓰기, 목록, 내글 프래그먼트
      */
     private Fragment writeFragment = null;
-    private Fragment listFragment = null;
+    private Fragment allListFragment = null;
+    private Fragment myListFragment = null;
 
     /**
      * 프래그먼트 매니저
@@ -59,12 +61,12 @@ public class FragmentShare extends Fragment {
          */
         fm = getChildFragmentManager();
 
-        if (listFragment == null) {
+        if (allListFragment == null) {
             /**
              * fm에 프래그먼트를 add 할때, tag를 지정해준다. (글작성 후에 listFragment의 데이터 로딩 함수를 호출하기 위해)
              */
-            listFragment = new FragmentShareList();
-            fm.beginTransaction().add(R.id.share_frame_layout, listFragment, "listFragment").commit();
+            allListFragment = new FragmentShareList(Constants.ALL_LIST);
+            fm.beginTransaction().add(R.id.share_frame_layout, allListFragment, "allListFragment").commit();
         }
 
         return rootView;
@@ -118,7 +120,8 @@ public class FragmentShare extends Fragment {
             @Override
             public void onClick(View v) {
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+                if (allListFragment != null) fm.beginTransaction().show(allListFragment).commit();
+                if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
             }
         });
 
@@ -133,7 +136,8 @@ public class FragmentShare extends Fragment {
                     fm.beginTransaction().add(R.id.share_frame_layout, writeFragment, "writeFragment").commit();
                 }
                 if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().hide(listFragment).commit();
+                if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
+                if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
             }
         });
 
@@ -143,8 +147,14 @@ public class FragmentShare extends Fragment {
         myListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (myListFragment == null) {
+                    myListFragment = new FragmentShareList(Constants.MY_LIST);
+                    fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
+                }
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (listFragment != null) fm.beginTransaction().show(listFragment).commit();
+                if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
+                if (myListFragment != null) fm.beginTransaction().show(myListFragment).commit();
+
             }
         });
     }
@@ -153,10 +163,15 @@ public class FragmentShare extends Fragment {
      * 글작성 완료 후에, 최신 상태의 shareList를 가져오기 위한 함수
      */
     public void moveShareList() {
-        FragmentShareList listFragment = (FragmentShareList) fm.findFragmentByTag("listFragment");
-        listFragment.executeRequestApi();
+        // TODO: 2020-04-19 두 통신이 동시에?
+        FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
+        allListFragment.executeRequestApi();
+
+        // myListFragment 는 Null 값일 수 있음 ( 한 번도 My List 를 클릭하지 않았을 때 )
+        FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
+        if(myListFragment != null) { myListFragment.executeRequestApi(); }
 
         if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-        if (this.listFragment != null) fm.beginTransaction().show(this.listFragment).commit();
+        if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
     }
 }

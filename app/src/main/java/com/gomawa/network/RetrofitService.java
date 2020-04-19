@@ -31,8 +31,13 @@ public interface RetrofitService {
     @GET("/api/shareItem")
     Call<List<ShareItem>> getShareItemAll();
 
+    @GET("/api/shareItem/{memberKey}")
+    Call<List<ShareItem>> getShareItemByMemberKey(@Path("memberKey") Long memberKey);
+
     @GET("/api/comment/{shareItemId}")
     Call<List<Comment>> getCommentByShareItemId(@Path("shareItemId") Long shareItemId);
+
+
 
     //POST
     @Headers("Accept: application/json")

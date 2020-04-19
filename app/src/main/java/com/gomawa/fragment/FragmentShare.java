@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -120,7 +121,17 @@ public class FragmentShare extends Fragment {
             @Override
             public void onClick(View v) {
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (allListFragment != null) fm.beginTransaction().show(allListFragment).commit();
+                if (allListFragment != null) {
+                    if(!(allListFragment.isHidden())) {
+                        // 이미 보여지고 있었다면 새로고침
+                        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
+
+                        FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
+                        allListFragment.executeRequestApi();
+                    }
+
+                    fm.beginTransaction().show(allListFragment).commit();
+                }
                 if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
             }
         });
@@ -150,11 +161,22 @@ public class FragmentShare extends Fragment {
                 if (myListFragment == null) {
                     myListFragment = new FragmentShareList(Constants.MY_LIST);
                     fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
+
+                    fm.beginTransaction().show(myListFragment).commit();
+                } else {
+                    if(!(myListFragment.isHidden())) {
+                        // 이미 보여지고 있었다면 새로고침
+                        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
+
+                        FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
+                        myListFragment.executeRequestApi();
+                    }
+
+                    fm.beginTransaction().show(myListFragment).commit();
                 }
+
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
                 if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
-                if (myListFragment != null) fm.beginTransaction().show(myListFragment).commit();
-
             }
         });
     }

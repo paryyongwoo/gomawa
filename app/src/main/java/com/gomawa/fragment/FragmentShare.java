@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
+import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 
 public class FragmentShare extends Fragment {
@@ -30,6 +31,7 @@ public class FragmentShare extends Fragment {
     private ImageButton writeBtn = null;
     private ImageButton listBtn = null;
     private ImageButton myListBtn = null;
+    private TextView pageTextView = null;
 
     /**
      * 글쓰기, 목록, 내글 프래그먼트
@@ -95,6 +97,9 @@ public class FragmentShare extends Fragment {
 
     private void initView() {
 
+        // 임시로 현재 페이지를 알려주는 TextView
+        pageTextView = rootView.findViewById(R.id.share_header_page);
+
         /**
          * 헤더 텍스트 설정
          */
@@ -114,6 +119,8 @@ public class FragmentShare extends Fragment {
         writeBtn = rootView.findViewById(R.id.write_btn);
         myListBtn = rootView.findViewById(R.id.my_list_btn);
 
+        // TODO: 2020-04-20 버튼 눌렀을 때 adapter notify 해줘야함 ( 좋아요 반영이 안됨 ) 스크롤은 안 해야함
+        
         /**
          * 목록 (목록과 내글보기는 프래그먼트 전환시 구분자를 함께 전달해줘야함)
          */
@@ -133,6 +140,9 @@ public class FragmentShare extends Fragment {
                     fm.beginTransaction().show(allListFragment).commit();
                 }
                 if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
+
+                // 페이지 표시
+                pageTextView.setText("All List");
             }
         });
 
@@ -149,6 +159,9 @@ public class FragmentShare extends Fragment {
                 if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
                 if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
                 if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
+
+                // 페이지 표시
+                pageTextView.setText("Write");
             }
         });
 
@@ -177,6 +190,9 @@ public class FragmentShare extends Fragment {
 
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
                 if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
+
+                // 페이지 표시
+                pageTextView.setText("My List");
             }
         });
     }

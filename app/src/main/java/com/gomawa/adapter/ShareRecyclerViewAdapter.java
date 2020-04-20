@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Constants;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
@@ -43,7 +44,6 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
 
     // 생성자
     public ShareRecyclerViewAdapter(ArrayList<ShareItem> shareItemList) {
-        Log.d("#####", "생성자 진입");
         this.shareItemList = shareItemList;
     }
 
@@ -165,8 +165,11 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             }
         });
         boolean isLike = shareItemList.get(position).getIsLike();
+        Log.d("isLike : ", String.valueOf(isLike));
         if (isLike) {
             holder.likeButton.setImageResource(R.drawable.btn_complete);
+        } else {
+            holder.likeButton.setImageResource(R.drawable.menu_my_thanks_icon);
         }
 
         // 좋아요 수 표시
@@ -225,6 +228,8 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                         ShareItem shareItemReceived = response.body();
 
                         shareItemList.set(position, shareItemReceived);
+
+                        Log.d("likeNum", String.valueOf(shareItemList.get(position).getLikeNum()));
 
                         // 리스트뷰 갱신
                         shareRecyclerViewAdapter.notifyDataSetChanged();

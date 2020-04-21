@@ -31,6 +31,9 @@ public class FragmentShare extends Fragment {
     private ImageButton writeBtn = null;
     private ImageButton listBtn = null;
     private ImageButton myListBtn = null;
+    private TextView writeTextView = null;
+    private TextView listTextView = null;
+    private TextView myListTextView = null;
     private TextView pageTextView = null;
 
     /**
@@ -44,6 +47,10 @@ public class FragmentShare extends Fragment {
      * 프래그먼트 매니저
      */
     private FragmentManager fm = null;
+
+    private final String WRITE = "WRITE";
+    private final String LIST = "LIST";
+    private final String MY_LIST = "MY_LIST";
 
     @Nullable
     @Override
@@ -118,6 +125,9 @@ public class FragmentShare extends Fragment {
         listBtn = rootView.findViewById(R.id.list_btn);
         writeBtn = rootView.findViewById(R.id.write_btn);
         myListBtn = rootView.findViewById(R.id.my_list_btn);
+        listTextView = rootView.findViewById(R.id.list_textview);
+        writeTextView = rootView.findViewById(R.id.write_textview);
+        myListTextView = rootView.findViewById(R.id.my_list_textview);
 
         // TODO: 2020-04-20 버튼 눌렀을 때 adapter notify 해줘야함 ( 좋아요 반영이 안됨 ) 스크롤은 안 해야함
         
@@ -143,6 +153,7 @@ public class FragmentShare extends Fragment {
 
                 // 페이지 표시
                 pageTextView.setText("All List");
+                setMenuActive(LIST);
             }
         });
 
@@ -162,6 +173,7 @@ public class FragmentShare extends Fragment {
 
                 // 페이지 표시
                 pageTextView.setText("Write");
+                setMenuActive(WRITE);
             }
         });
 
@@ -189,6 +201,7 @@ public class FragmentShare extends Fragment {
 
                 // 페이지 표시
                 pageTextView.setText("My List");
+                setMenuActive(MY_LIST);
             }
         });
     }
@@ -199,5 +212,37 @@ public class FragmentShare extends Fragment {
     public void moveShareList() {
         if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
         if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
+    }
+
+    /**
+     * 상단 메뉴 클릭시 리소스 변경해주는 메소드
+     * @param menuType
+     */
+    private void setMenuActive(String menuType) {
+        switch (menuType) {
+            case WRITE:
+                writeBtn.setImageResource(R.drawable.write_btn);
+                listBtn.setImageResource(R.drawable.list_btn_disable);
+                myListBtn.setImageResource(R.drawable.user_btn_disable);
+                writeTextView.setTextColor(getResources().getColor(R.color.mainColor));
+                listTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                myListTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                break;
+            case LIST:
+                writeBtn.setImageResource(R.drawable.write_btn_disable);
+                listBtn.setImageResource(R.drawable.list_btn);
+                myListBtn.setImageResource(R.drawable.user_btn_disable);
+                writeTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                listTextView.setTextColor(getResources().getColor(R.color.mainColor));
+                myListTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                break;
+            case MY_LIST:
+                writeBtn.setImageResource(R.drawable.write_btn_disable);
+                listBtn.setImageResource(R.drawable.list_btn_disable);
+                myListBtn.setImageResource(R.drawable.user_btn);
+                writeTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                listTextView.setTextColor(getResources().getColor(R.color.blackColor));
+                myListTextView.setTextColor(getResources().getColor(R.color.mainColor));
+        }
     }
 }

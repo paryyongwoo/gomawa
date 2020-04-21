@@ -156,7 +156,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         // 본문 표시
         String content = shareItemSelected.getContent();
         holder.contentTextView.setText(content);
-        CommonUtils.setReadMore(holder.contentTextView, content, 3);
+        CommonUtils.setReadMore(holder.contentTextView, content, 5);
 
         // 좋아요 버튼 Listener
         holder.likeButton.setOnClickListener(new View.OnClickListener() {

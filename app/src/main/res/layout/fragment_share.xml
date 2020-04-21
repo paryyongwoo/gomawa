@@ -41,6 +41,7 @@
                     android:src="@drawable/list_btn_disable" />
 
                 <TextView
+                    android:id="@+id/list_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/inactiveColor"
@@ -61,14 +62,16 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="@null"
-                    android:src="@drawable/write_btn_disable" />
+                    android:src="@drawable/write_btn" />
 
                 <TextView
+                    android:id="@+id/write_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/inactiveColor"
+                    android:textColor="@color/mainColor"
                     android:textSize="10dp"
-                    android:text="글쓰기" />
+                    android:text="글쓰기"
+                    />
 
             </LinearLayout>
 
@@ -87,6 +90,7 @@
                     android:src="@drawable/user_btn_disable" />
 
                 <TextView
+                    android:id="@+id/my_list_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/inactiveColor"

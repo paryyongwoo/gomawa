@@ -134,7 +134,7 @@ public class FragmentShare extends Fragment {
                         Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
 
                         FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-                        allListFragment.executeRequestApi();
+                        allListFragment.getShareItems();
                     }
 
                     fm.beginTransaction().show(allListFragment).commit();
@@ -174,17 +174,13 @@ public class FragmentShare extends Fragment {
                 if (myListFragment == null) {
                     myListFragment = new FragmentShareList(Constants.MY_LIST);
                     fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
-
                     fm.beginTransaction().show(myListFragment).commit();
                 } else {
                     if(!(myListFragment.isHidden())) {
                         // 이미 보여지고 있었다면 새로고침
-                        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
-
                         FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-                        myListFragment.executeRequestApi();
+                        myListFragment.getShareItems();
                     }
-
                     fm.beginTransaction().show(myListFragment).commit();
                 }
 
@@ -201,14 +197,6 @@ public class FragmentShare extends Fragment {
      * 글작성 완료 후에, 최신 상태의 shareList를 가져오기 위한 함수
      */
     public void moveShareList() {
-        // TODO: 2020-04-19 두 통신이 동시에?
-        FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-        allListFragment.executeRequestApi();
-
-        // myListFragment 는 Null 값일 수 있음 ( 한 번도 My List 를 클릭하지 않았을 때 )
-        FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-        if(myListFragment != null) { myListFragment.executeRequestApi(); }
-
         if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
         if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
     }

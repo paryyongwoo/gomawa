@@ -73,10 +73,19 @@ public class FragmentShareWrite extends Fragment {
         return rootView;
     }
 
+    /**
+     * 프래그먼트의 visible 상태가 변경될때 호출되는 라이프사이클 함수
+     *  => 키보드 표시 로직
+     */
     @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("writeFragment", "onDetach");
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d("writeFragment", "onHiddenChanged" + hidden);
+        if (hidden) {
+            CommonUtils.hideKeyboard(getActivity(), editText);
+        } else {
+            CommonUtils.showKeyboard(getActivity(), editText);
+        }
     }
 
     private void initView() {
@@ -168,8 +177,6 @@ public class FragmentShareWrite extends Fragment {
                     @Override
                     public void onResponse(Call<ShareItem> call, Response<ShareItem> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), "setShareItem success" + response.body(), Toast.LENGTH_SHORT).show();
-
                             /**
                              * 글작성 성공 후에, 글목록 화면으로 이동해서 방금 작성한 글을 보여줌
                              */

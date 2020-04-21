@@ -34,6 +34,8 @@ import retrofit2.Response;
 public class FragmentShareList extends Fragment {
     // ALL or MY
     private int type;
+    // 현재 게시물 페이지
+    private int page = 0;
 
     private ViewGroup rootView = null;
 
@@ -82,17 +84,27 @@ public class FragmentShareList extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            getShareItems();
+            /**
+             * 글을 작성하고나서 이동된 경우: 글목록 로딩
+             * 헤더의 메뉴를 클릭해서 이동한 경우: 현화면 유지
+             */
+            FragmentShare parentFragment = (FragmentShare) getParentFragment();
+            boolean isWrite = parentFragment.isWrite;
+            if (isWrite) {
+                getShareItems();
+                parentFragment.isWrite = false;
+            }
         }
     }
 
     public void getShareItems() {
+        page = 0; // 현재 페이지 0으로 초기화
         Long memberKey = CommonUtils.getMember().getKey();
         Call<List<ShareItem>> call = null;
 
         if (type == Constants.ALL_LIST) {
             // 모든 게시물 보기
-            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(CommonUtils.getMember().getId());
+            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(CommonUtils.getMember().getId(), page);
         } else if(type == Constants.MY_LIST) {
             // 나의 게시물 보기
             call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByMemberKey(memberKey);

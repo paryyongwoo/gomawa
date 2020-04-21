@@ -28,8 +28,8 @@ public interface RetrofitService {
     @GET("/api/notice")
     Call<List<NoticeItem>> getNoticeAll();
 
-    @GET("/api/shareItems/{memberId}")
-    Call<List<ShareItem>> getShareItemAll(@Path("memberId") Long memberId);
+    @GET("/api/shareItems/{memberId}/{page}")
+    Call<List<ShareItem>> getShareItemAll(@Path("memberId") Long memberId, @Path("page") int page);
 
     @GET("/api/shareItem/{memberKey}")
     Call<List<ShareItem>> getShareItemByMemberKey(@Path("memberKey") Long memberKey);

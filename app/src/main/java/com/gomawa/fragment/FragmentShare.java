@@ -48,9 +48,14 @@ public class FragmentShare extends Fragment {
      */
     private FragmentManager fm = null;
 
+    /**
+     * 현재 선택한 메뉴 값
+     */
     private final String WRITE = "WRITE";
     private final String LIST = "LIST";
     private final String MY_LIST = "MY_LIST";
+
+    public boolean isWrite = false;
 
     @Nullable
     @Override
@@ -147,8 +152,7 @@ public class FragmentShare extends Fragment {
                 }
                 if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
 
-                // 페이지 표시
-                pageTextView.setText("All List");
+                // 메뉴 활성화
                 setMenuActive(LIST);
             }
         });
@@ -167,8 +171,7 @@ public class FragmentShare extends Fragment {
                 if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
                 if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
 
-                // 페이지 표시
-                pageTextView.setText("Write");
+                // 메뉴 활성화
                 setMenuActive(WRITE);
             }
         });
@@ -195,8 +198,7 @@ public class FragmentShare extends Fragment {
                 if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
                 if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
 
-                // 페이지 표시
-                pageTextView.setText("My List");
+                // 메뉴 활성화
                 setMenuActive(MY_LIST);
             }
         });
@@ -206,6 +208,7 @@ public class FragmentShare extends Fragment {
      * 글작성 완료 후에, 최신 상태의 shareList를 가져오기 위한 함수
      */
     public void moveShareList() {
+        isWrite = true;
         if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
         if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
     }

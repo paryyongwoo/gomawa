@@ -156,6 +156,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         // 본문 표시
         String content = shareItemSelected.getContent();
         holder.contentTextView.setText(content);
+        CommonUtils.setReadMore(holder.contentTextView, content, 3);
 
         // 좋아요 버튼 Listener
         holder.likeButton.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +168,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         boolean isLike = shareItemList.get(position).getIsLike();
         Log.d("isLike : ", String.valueOf(isLike));
         if (isLike) {
-            holder.likeButton.setImageResource(R.drawable.btn_complete);
+            holder.likeButton.setImageResource(R.drawable.heart);
         } else {
             holder.likeButton.setImageResource(R.drawable.menu_my_thanks_icon);
         }

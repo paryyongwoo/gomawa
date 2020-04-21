@@ -103,10 +103,6 @@ public class FragmentShare extends Fragment {
     }
 
     private void initView() {
-
-        // 임시로 현재 페이지를 알려주는 TextView
-        pageTextView = rootView.findViewById(R.id.share_header_page);
-
         /**
          * 헤더 텍스트 설정
          */

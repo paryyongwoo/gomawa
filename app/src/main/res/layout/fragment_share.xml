@@ -100,18 +100,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 임시 -->
-        <TextView
-            android:id="@+id/share_header_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="140dp"
-            android:layout_marginLeft="10dp"
-            android:text="myList"
-            android:textColor="#ff000000" />
-
         <!-- height 값 wrap 에서 고정 수치로 변경 -->
         <FrameLayout
             android:id="@+id/share_frame_layout"

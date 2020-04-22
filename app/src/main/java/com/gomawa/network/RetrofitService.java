@@ -71,6 +71,11 @@ public interface RetrofitService {
     @PUT("/api/like/{shareItemId}/{memberKey}")
     Call<ShareItem> updateLike(@Path("memberKey") Long memberKey, @Path("shareItemId") Long shareItemId);
 
+    @Headers("Accept: application/hal+json")
+    @Multipart
+    @PUT("/api/shareItem")
+    Call<Void> updateShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
+
     // DELETE
     @DELETE("/api/member/{key}")
     Call<Void> deleteMemberByKey(@Path("key") Long key);

@@ -1,6 +1,7 @@
 package com.gomawa.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,13 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.gomawa.R;
+import com.gomawa.activity.UpdateActivity;
 import com.gomawa.adapter.ShareRecyclerViewAdapter;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,6 +53,9 @@ public class FragmentShareList extends Fragment {
 
     // Recycler View Adapter
     private ShareRecyclerViewAdapter shareRecyclerViewAdapter = null;
+
+    // 앨범에서 가져오기 request code
+    private static final int PICK_FROM_ALBUM = 1;
 
     // initView 가 실행되었는지 체크하는 스위치
     private boolean initViewCheck = false;
@@ -180,7 +187,7 @@ public class FragmentShareList extends Fragment {
         Log.d("initView: ", String.valueOf(shareItemList.size()));
 
         // Adapter 설정
-        shareRecyclerViewAdapter = new ShareRecyclerViewAdapter(shareItemList);
+        shareRecyclerViewAdapter = new ShareRecyclerViewAdapter(shareItemList, getActivity(), this);
         recyclerView.setAdapter(shareRecyclerViewAdapter);
 
         // 다음 RequestApi 부터는 initView 를 실행하지 않음
@@ -188,5 +195,34 @@ public class FragmentShareList extends Fragment {
 
         // 게시글 없을때 문구
         noContentTextView = rootView.findViewById(R.id.no_content);
+    }
+
+    // 수정 액티비티를 띄워주는 메소드 ( 어댑터에서는 액티비티에서 값을 반환받을 수 없음 )
+    public void startUpdateActivity(ShareItem shareItem) {
+        Intent intent = new Intent(getActivity(), UpdateActivity.class);
+
+        // DB 작업을 위해서 보냄
+        intent.putExtra("id", shareItem.getId());
+        // VIEW 작업을 위해서 보냄
+        Date regDate = shareItem.getRegDate();
+        String regDateString = CommonUtils.convertFromDateToString(regDate, "YYYY.MM.dd");
+        intent.putExtra("regDate", regDateString);
+        intent.putExtra("content", shareItem.getContent());
+        intent.putExtra("backgroundUrl", shareItem.getBackgroundUrl());
+
+        startActivityForResult(intent, Constants.REQUEST_UPDATE);
+    }
+
+    // 수정 액티비티에서 돌아왔을 때 호출
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case Constants.REQUEST_UPDATE:
+                if(resultCode == Constants.RESULT_OK) {
+                    getShareItems();
+                } else if(resultCode == Constants.RESULT_CANCEL) {
+
+                }
+        }
     }
 }

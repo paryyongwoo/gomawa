@@ -137,30 +137,14 @@
 
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/recyclerView_item_share_body_content"
+        <TextView
+            android:id="@+id/recyclerView_item_share_body_content_textView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp" >
-
-            <TextView
-                android:id="@+id/recyclerView_item_share_body_content_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="13sp"
-                android:textColor="@color/inactiveColor"
-                android:visibility="visible" />
-
-            <EditText
-                android:id="@+id/recyclerView_item_share_body_content_editText"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="EditText"
-                android:textSize="13sp"
-                android:visibility="invisible" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="13sp"
+            android:textColor="@color/inactiveColor"
+            android:visibility="visible" />
 
         <!-- 구분선 -->
         <ImageView
@@ -172,12 +156,18 @@
 
     </LinearLayout>
 
-    <!-- BOTTOM - 댓글 보기 & 수정 완료 todo: 나중에 레이아웃으로 감싸주는 게 예쁨 -->
-    <TextView
-        android:id="@+id/recyclerView_item_share_bottom_textView"
+    <LinearLayout
+        android:id="@+id/recyclerView_item_share_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:text="Comment And Edit Finish" />
+        android:layout_marginHorizontal="20dp" >
+
+        <TextView
+            android:id="@+id/recyclerView_item_share_bottom_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comment" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,12 +1,18 @@
 package com.gomawa.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,18 +23,28 @@ import androidx.annotation.RestrictTo;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
+import com.gomawa.activity.ShareActivity;
+import com.gomawa.activity.UpdateActivity;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
+import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
+import com.gomawa.fragment.FragmentShareList;
 import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,18 +53,26 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
     // this
     private ShareRecyclerViewAdapter shareRecyclerViewAdapter = this;
 
-    // Context
+    // Context Activity
     private Context mContext = null;
+    private Activity mActivity;
+
+    private final int PICK_FROM_ALBUM = 1;
+
+    // FragmentShareList ( getShareItemAll 사용을 위해 )
+    private FragmentShareList fragmentShareList;
 
     // 삭제 확인 다이얼로그
-    HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
+    private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
 
     // ShareItem List
     private ArrayList<ShareItem> shareItemList;
 
     // 생성자
-    public ShareRecyclerViewAdapter(ArrayList<ShareItem> shareItemList) {
+    public ShareRecyclerViewAdapter(ArrayList<ShareItem> shareItemList, Activity mActivity, FragmentShareList fragmentShareList) {
         this.shareItemList = shareItemList;
+        this.mActivity = mActivity;
+        this.fragmentShareList = fragmentShareList;
     }
 
     /**
@@ -73,30 +97,28 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         // 바디
             // 배경 이미지
         ImageView backgroundImageView = null;
-            // 나의 메뉴
+                // 나의 메뉴
         LinearLayout myMenuLinearLayout = null;
-                // 삭제 버튼
+                    // 삭제 버튼
         ImageButton deleteButton = null;
-                // 수정 버튼
+                    // 수정 버튼
         ImageButton editButton = null;
-            // 공통 메뉴
-                // 좋아요 버튼
+                // 공통 메뉴
+                    // 좋아요 버튼
         ImageButton likeButton = null;
-                // 좋아요 수
+                    // 좋아요 수
         TextView likeTextView = null;
-                // 다운로드 버튼
+                    // 다운로드 버튼
         ImageButton downloadButton = null;
             // 본문 글
         TextView contentTextView = null;
 
         // 바텀
-            // 댓글 모두 보기
-        TextView commentTextView = null;
+            // 댓글 보기
+        TextView bottomTextView = null;
 
         public ShareRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            Log.d("#####", "ShareRecyclerViewHolder 생성자 진입");
 
             // 헤더
             profileImageView = itemView.findViewById(R.id.share_profile);
@@ -116,7 +138,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             contentTextView = itemView.findViewById(R.id.recyclerView_item_share_body_content_textView);
 
             // 바텀
-            commentTextView = itemView.findViewById(R.id.recyclerView_item_share_bottom_textView);
+            bottomTextView = itemView.findViewById(R.id.recyclerView_item_share_bottom_textView);
         }
     }
 
@@ -139,7 +161,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
      * 3. onBindViewHolder
      */
     @Override
-    public void onBindViewHolder(@NonNull ShareRecyclerViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ShareRecyclerViewHolder holder, final int position) {
         // ShareItem List 에서 Position Index 의 ShareItem 을 가져옴
         final ShareItem shareItemSelected = shareItemList.get(position);
 
@@ -175,7 +197,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         CommonUtils.setReadMore(holder.contentTextView, content, 5);
 
         // 내 글이라면 ~
-        if(shareItemSelected.getMember().getId() == CommonUtils.getMember().getId()) {
+        if(shareItemSelected.getMember().getId().equals(CommonUtils.getMember().getId())) {
             // myMenu 를 보여줌
             holder.myMenuLinearLayout.setVisibility(View.VISIBLE);
 
@@ -211,7 +233,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             holder.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: 2020-04-22 수정 처리리
+                    fragmentShareList.startUpdateActivity(shareItemSelected);
                 }
             });
         }
@@ -235,8 +257,12 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         String likeNum = String.valueOf(shareItemSelected.getLikeNum());
         holder.likeTextView.setText(likeNum);
 
+        // TODO: 2020-04-22 댓글 몇개 보기 로 수정
+        // 댓글 모두 보기 Text 설정
+        holder.bottomTextView.setText("댓글 모두 보기");
+
         // 댓글 모두 보기 Listener
-        holder.commentTextView.setOnClickListener(new View.OnClickListener() {
+        holder.bottomTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, CommentActivity.class);
@@ -265,9 +291,12 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         return shareItemList.size();
     }
 
+
+
     /**
-     * 좋아요 버튼 클릭 시 실행되는 Task
+     * APIs
      */
+    // 좋아요 버튼 클릭 시 실행되는 Task todo: 일반 메소드로 바꾸기
     private class LikeApi extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -320,7 +349,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                 if(response.isSuccessful()) {
                     shareItemList.remove(shareItemSelected);
 
-                    shareRecyclerViewAdapter.notifyDataSetChanged();
+                    fragmentShareList.getShareItems();
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                 }

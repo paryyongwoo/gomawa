@@ -186,6 +186,8 @@ public class FragmentShareWrite extends Fragment {
                             writeBackgroundImageView.setImageResource(R.drawable.share_write_background);
                             editText.setText("");
 
+                            // TODO: 2020-04-22 uploadImage 초기화
+
                             parentFragment.moveShareList();
                         } else {
                             Toast.makeText(getContext(), "setShareItem failed: " + response.code(), Toast.LENGTH_SHORT).show();

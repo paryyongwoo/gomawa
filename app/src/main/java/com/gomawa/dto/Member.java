@@ -1,5 +1,8 @@
 package com.gomawa.dto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gomawa.common.CommonUtils;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -88,7 +91,8 @@ public class Member {
     @Override
     public String toString() {
         return "Member{" +
-                "key=" + key +
+                "id=" + id +
+                ", key=" + key +
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", nickName='" + nickName + '\'' +

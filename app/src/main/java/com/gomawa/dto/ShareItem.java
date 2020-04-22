@@ -79,4 +79,17 @@ public class ShareItem {
     public void setIsLike(boolean isLike) {
         this.isLike = isLike;
     }
+
+    @Override
+    public String toString() {
+        return "ShareItem{" +
+                "id=" + id +
+                ", member=" + member +
+                ", regDate=" + regDate +
+                ", content='" + content + '\'' +
+                ", backgroundUrl='" + backgroundUrl + '\'' +
+                ", likeNum=" + likeNum +
+                ", isLike=" + isLike +
+                '}';
+    }
 }

@@ -15,6 +15,11 @@ public class Constants {
     public static final int ALL_LIST = 99;
     public static final int MY_LIST = 999;
 
+    // ShareItem Update 액티비티 request code & result code
+    public static final int REQUEST_UPDATE = 55;
+    public static final int RESULT_OK = 66;
+    public static final int RESULT_CANCEL = 77;
+
     // 닉네임 글자 수 제한
     public static final int NICKNAME_LIMIT = 10;
 

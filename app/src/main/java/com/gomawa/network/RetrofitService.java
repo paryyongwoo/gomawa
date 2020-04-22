@@ -74,4 +74,7 @@ public interface RetrofitService {
     // DELETE
     @DELETE("/api/member/{key}")
     Call<Void> deleteMemberByKey(@Path("key") Long key);
+
+    @DELETE("/api/shareItem/{shareItemId}")
+    Call<Void> deleteShareItemById(@Path("shareItemId") Long shareItemId);
 }

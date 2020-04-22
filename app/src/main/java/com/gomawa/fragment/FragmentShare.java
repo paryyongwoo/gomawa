@@ -145,7 +145,7 @@ public class FragmentShare extends Fragment {
                         Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
 
                         FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-                        allListFragment.getShareItems();
+                        allListFragment.getShareItems(0);
                     }
 
                     fm.beginTransaction().show(allListFragment).commit();
@@ -190,7 +190,7 @@ public class FragmentShare extends Fragment {
                     if(!(myListFragment.isHidden())) {
                         // 이미 보여지고 있었다면 새로고침
                         FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-                        myListFragment.getShareItems();
+                        myListFragment.getShareItems(0);
                     }
                     fm.beginTransaction().show(myListFragment).commit();
                 }

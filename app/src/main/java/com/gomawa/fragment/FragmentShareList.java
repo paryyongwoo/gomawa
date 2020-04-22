@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,8 @@ public class FragmentShareList extends Fragment {
         this.type = type;
     }
 
+    private boolean isLoading = false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,7 +84,7 @@ public class FragmentShareList extends Fragment {
         /**
          * 게시글 로딩
          */
-        getShareItems();
+        getShareItems(0);
 
         // Task 후 return 함수
         return rootView;
@@ -98,20 +101,30 @@ public class FragmentShareList extends Fragment {
             FragmentShare parentFragment = (FragmentShare) getParentFragment();
             boolean isWrite = parentFragment.isWrite;
             if (isWrite) {
-                getShareItems();
+                getShareItems(0);
                 parentFragment.isWrite = false;
             }
         }
     }
 
-    public void getShareItems() {
-        page = 0; // 현재 페이지 0으로 초기화
+    /**
+     * 게시글 로딩하는 함수
+     * @param pageParam 현재 페이지, 초기 로딩의 경우 0을 넘겨줌
+     */
+    public void getShareItems(int pageParam) {
+        final int page = pageParam;
+        if (page == 0) {
+            this.page = 0;
+            // add 를 해주기 위해 먼저 ShareItem List 를 Clear 해줌
+            shareItemList.clear();
+        }
         Long memberKey = CommonUtils.getMember().getKey();
         Call<List<ShareItem>> call = null;
 
         if (type == Constants.ALL_LIST) {
             // 모든 게시물 보기
             call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(CommonUtils.getMember().getId(), page);
+            this.page += 1;
         } else if(type == Constants.MY_LIST) {
             // 나의 게시물 보기
             call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByMemberKey(memberKey);
@@ -121,9 +134,6 @@ public class FragmentShareList extends Fragment {
             @Override
             public void onResponse(Call<List<ShareItem>> call, Response<List<ShareItem>> response) {
                 if(response.isSuccessful()) {
-                    // add 를 해주기 위해 먼저 ShareItem List 를 Clear 해줌
-                    shareItemList.clear();
-
                     // Response 에서 받아온 List
                     List<ShareItem> shareItemsReceived = response.body();
 
@@ -136,7 +146,7 @@ public class FragmentShareList extends Fragment {
                         /**
                          * ShareItem 개수가 0일 경우 '게시글이 없습니다' 문구 표시
                          */
-                        if (size == 0) {
+                        if (size == 0 && page == 0) {
                             noContentTextView.setVisibility(View.VISIBLE);
                             recyclerView.setVisibility(View.GONE);
                         } else {
@@ -144,6 +154,9 @@ public class FragmentShareList extends Fragment {
                                 // 받은 데이터를 shareItemList 에 옮겨담는 작업
                                 shareItemList.add(shareItemsReceived.get(i));
                             }
+                            /**
+                             * '게시글이 없습니다' 문구 삭제
+                             */
                             noContentTextView.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
@@ -151,11 +164,11 @@ public class FragmentShareList extends Fragment {
                         // 정보 갱신
                         shareRecyclerViewAdapter.notifyDataSetChanged();
 
-                        // 최상단으로 스크롤
-                        recyclerView.smoothScrollToPosition(0);
-
                         // 새로고침 아이콘 제거
                         swipeRefreshLayout.setRefreshing(false);
+
+                        // 최상단으로 스크롤
+                        if (page == 0) recyclerView.smoothScrollToPosition(0);
                     }
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());
@@ -175,7 +188,7 @@ public class FragmentShareList extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getShareItems();
+                getShareItems(0);
             }
         });
 
@@ -195,6 +208,43 @@ public class FragmentShareList extends Fragment {
 
         // 게시글 없을때 문구
         noContentTextView = rootView.findViewById(R.id.no_content);
+
+        /**
+         * 리사이클러뷰에 스크롤 이벤트 리스너 추가
+         */
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!isLoading) {
+                    if (layoutManager != null && layoutManager.findLastVisibleItemPosition() == shareItemList.size() - 1) {
+                        Toast.makeText(getContext(), "로딩" + page, Toast.LENGTH_SHORT).show();
+                        loadMore();
+                        isLoading = true;
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 추가 게시글 로딩 함수
+     * 딜레이를 주기 위해 핸들러 사용
+     */
+    private void loadMore() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getShareItems(page);
+                isLoading = false;
+            }
+        }, 2000);
     }
 
     // 수정 액티비티를 띄워주는 메소드 ( 어댑터에서는 액티비티에서 값을 반환받을 수 없음 )

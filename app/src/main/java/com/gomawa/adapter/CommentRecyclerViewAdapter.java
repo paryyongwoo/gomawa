@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,16 +33,20 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     public class CommentRecyclerViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profileImageView;
         TextView nickNameTextView;
+        ImageButton updateButton;
+        ImageButton deleteButton;
         TextView contentTextView;
         TextView dateTextView;
 
         public CommentRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            profileImageView = itemView.findViewById(R.id.recyclerView_profile_imageView);
-            nickNameTextView = itemView.findViewById(R.id.recyclerView_nickName_textView);
-            contentTextView = itemView.findViewById(R.id.recyclerView_content_textView);
-            dateTextView = itemView.findViewById(R.id.recyclerView_date_textView);
+            profileImageView = itemView.findViewById(R.id.recyclerView_comment_profile_imageView);
+            nickNameTextView = itemView.findViewById(R.id.recyclerView_comment_nickName_textView);
+            updateButton = itemView.findViewById(R.id.recyclerView_comment_update_button);
+            deleteButton = itemView.findViewById(R.id.recyclerView_comment_delete_button);
+            contentTextView = itemView.findViewById(R.id.recyclerView_comment_content_textView);
+            dateTextView = itemView.findViewById(R.id.recyclerView_comment_date_textView);
         }
     }
 

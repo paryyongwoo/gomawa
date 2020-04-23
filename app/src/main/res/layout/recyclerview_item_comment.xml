@@ -64,12 +64,27 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/recyclerView_comment_content_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Comment's Content"
-            android:textColor="#ff000000" />
+        <FrameLayout
+            android:id="@+id/recyclerView_comment_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/recyclerView_comment_content_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Comment's Content"
+                android:textColor="#ff000000" />
+
+            <EditText
+                android:id="@+id/recyclerView_comment_content_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Comment's Contet"
+                android:textSize="14sp"
+                android:textColor="#ff000000" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/recyclerView_comment_date_textView"

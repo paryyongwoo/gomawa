@@ -166,6 +166,9 @@ public class CommentActivity extends Activity {
         });
     }
 
+    /**
+     * API
+     */
     public void getCommentByShareItemIdApi() {
         Long shareItemId = parentShareItem.getId();
 

@@ -76,6 +76,10 @@ public interface RetrofitService {
     @PUT("/api/shareItem")
     Call<Void> updateShareItem(@Part MultipartBody.Part file, @Part("items") RequestBody items);
 
+    @Headers("Accept: application/json")
+    @PUT("/api/comment")
+    Call<Void> updateComment(@Body Comment comment);
+
     // DELETE
     @DELETE("/api/member/{key}")
     Call<Void> deleteMemberByKey(@Path("key") Long key);

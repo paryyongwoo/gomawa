@@ -349,7 +349,8 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                 if(response.isSuccessful()) {
                     shareItemList.remove(shareItemSelected);
 
-                    fragmentShareList.getShareItems();
+                    // TODO: 2020-04-23 임시로 0 들어감
+                    fragmentShareList.getShareItems(0);
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                 }

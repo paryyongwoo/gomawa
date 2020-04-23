@@ -269,7 +269,7 @@ public class FragmentShareList extends Fragment {
         switch(requestCode) {
             case Constants.REQUEST_UPDATE:
                 if(resultCode == Constants.RESULT_OK) {
-                    getShareItems();
+                    getShareItems(0);
                 } else if(resultCode == Constants.RESULT_CANCEL) {
 
                 }

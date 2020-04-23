@@ -82,4 +82,7 @@ public interface RetrofitService {
 
     @DELETE("/api/shareItem/{shareItemId}")
     Call<Void> deleteShareItemById(@Path("shareItemId") Long shareItemId);
+
+    @DELETE("/api/comment/{id}")
+    Call<Void> deleteCommentById(@Path("id") Long id);
 }

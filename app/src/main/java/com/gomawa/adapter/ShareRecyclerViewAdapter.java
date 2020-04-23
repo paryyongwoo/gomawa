@@ -267,19 +267,15 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, CommentActivity.class);
 
-                // ShareItem 을 분해하는 과정...
-                intent.putExtra("memberKey", shareItemSelected.getMember().getKey());
-                intent.putExtra("memberEmail", shareItemSelected.getMember().getEmail());
-                intent.putExtra("memberGender", shareItemSelected.getMember().getGender());
+                // 필요한 정보들만 액티비티로 전달
                 intent.putExtra("memberNickName", shareItemSelected.getMember().getNickName());
                 intent.putExtra("memberProfileImgUrl", shareItemSelected.getMember().getProfileImgUrl());
-                //intent.putExtra("memberDateString", shareItemSelected.getMember().getRegDate());
 
                 intent.putExtra("id", shareItemSelected.getId());
                 intent.putExtra("content", shareItemSelected.getContent());
-                intent.putExtra("backgroundUrl", shareItemSelected.getBackgroundUrl());
-                intent.putExtra("likeNum", shareItemSelected.getLikeNum());
-                //intent.putExtra("dateString", shareItemSelected.getDate());
+                Date regDate = shareItemSelected.getRegDate();
+                String regDateString = CommonUtils.convertFromDateToString(regDate, "YYYY.MM.dd");
+                intent.putExtra("dateString", regDateString);
 
                 mContext.startActivity(intent);
             }

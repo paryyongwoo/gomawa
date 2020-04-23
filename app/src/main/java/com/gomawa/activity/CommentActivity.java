@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,53 +39,53 @@ public class CommentActivity extends Activity {
     private Activity mActivity = this;
 
     // Comment List
-    private List<Comment> commentList = null;
+    private List<Comment> commentList = new ArrayList<>();
 
     // Parent ShareItem
     private ShareItem parentShareItem = null;
+    private String parentShareItemRegDate = null;
+
+    // RecyclerView
+    private RecyclerView recyclerView = null;
 
     // RecyclerView Adapter
-    CommentRecyclerViewAdapter adapter = null;
+    private CommentRecyclerViewAdapter commentRecyclerViewAdapter = null;
 
     // EditText
-    EditText editText = null;
+    private EditText editText = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        // 이전 액티비티에서 전달한 ShareItem 을 받아옴
+        // 이전 액티비티에서 전달한 ShareItem 을 받아옴 - 필요한 정보만 담겨있는 ShareItem 으로 사용에 주의해야함
         Intent intent = getIntent();
         parentShareItem = getParentShareItem(intent);
 
-        // DB 에서 ShareItemId 를 이용해 댓글 리스트를 가져옴
-        new GetCommentByShareItemIdApi().execute();
+        // 댓글 전부 가져오는 API
+        getCommentByShareItemIdApi();
+
+        // 뷰 설정
+        initView();
     }
 
     // 이전 액티비티에서 보낸 Extras 를 가져와서 ShareItem 인스턴스를 생성하는 메소드
     private ShareItem getParentShareItem(Intent intent) {
         Long id = intent.getExtras().getLong("id");
 
-        Long memberKey = intent.getExtras().getLong("memberKey");
-        String memberEmail = intent.getExtras().getString("memberEmail");
-        String memberGender = intent.getExtras().getString("memberGender");
         String memberNickName = intent.getExtras().getString("memberNickName");
-        //String memberDateString = intent.getExtras().getString("memberDateString");
-        // TODO: 2020-04-18 Date To String 작업
-        // Date memberDate =
         String memberProfileImgUrl = intent.getExtras().getString("memberProfileImgUrl");
-        Member member = new Member(id, memberKey, memberEmail, memberGender, memberNickName, null, memberProfileImgUrl);
+        Member member = new Member();
+        member.setNickName(memberNickName);
+        member.setProfileImgUrl(memberProfileImgUrl);
 
-        //String dateString = intent.getExtras().getString("dateString");
-        // TODO: 2020-04-18 Date To String 작업
-        // Date date =
-
+        parentShareItemRegDate = intent.getExtras().getString("dateString");
         String content = intent.getExtras().getString("content");
-        String backgroundUrl = intent.getExtras().getString("backgroundUrl");
-        int likeNum = intent.getExtras().getInt("likeNum");
-
-        ShareItem shareItem = new ShareItem(id, member, null, content, backgroundUrl, likeNum);
+        ShareItem shareItem = new ShareItem();
+        shareItem.setId(id);
+        shareItem.setContent(content);
+        shareItem.setMember(member);
 
         return shareItem;
     }
@@ -99,7 +99,6 @@ public class CommentActivity extends Activity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 2020-04-18 CommentActivity Back Button Listener
                 finish();
             }
         });
@@ -128,20 +127,18 @@ public class CommentActivity extends Activity {
 
         // 날짜
         TextView dateTextView = findViewById(R.id.activity_comment_body_date_textView);
-        // TODO: 2020-04-18 날짜
-        // String date = parentShareItem.getDate().toString();
-        String date = null;
-        dateTextView.setText(date);
+        String regDateString = parentShareItemRegDate;
+        dateTextView.setText(regDateString);
 
         /**
          * Recycler View
          */
-        RecyclerView recyclerView = findViewById(R.id.activity_comment_recyclerView);
+        recyclerView = findViewById(R.id.activity_comment_recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new CommentRecyclerViewAdapter(commentList);
-        recyclerView.setAdapter(adapter);
+        commentRecyclerViewAdapter = new CommentRecyclerViewAdapter(commentList, this);
+        recyclerView.setAdapter(commentRecyclerViewAdapter);
 
         /**
          * Bottom
@@ -158,86 +155,88 @@ public class CommentActivity extends Activity {
             public void onClick(View view) {
                 // 새 Comment 인스턴스를 만듬
                 Comment comment = new Comment();
-                comment.setId(0l);
+                //comment.setId(0l);
                 comment.setContent(editText.getText().toString());
                 comment.setMember(CommonUtils.getMember());
                 comment.setShareItem(parentShareItem);
-                // TODO: 2020-04-18 Date 를 서버로 보내는 방법
-                comment.setRegDate(null);
+                comment.setRegDate(new Date());
 
-                new AddCommentApi().execute(comment);
+                addCommentApi(comment);
             }
         });
     }
 
-    private class GetCommentByShareItemIdApi extends AsyncTask {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            Long shareItemId = parentShareItem.getId();
+    public void getCommentByShareItemIdApi() {
+        Long shareItemId = parentShareItem.getId();
 
-            Call<List<Comment>> call = RetrofitHelper.getInstance().getRetrofitService().getCommentByShareItemId(shareItemId);
-            Callback<List<Comment>> callback = new Callback<List<Comment>>() {
-                @Override
-                public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-                    if(response.isSuccessful()) {
-                       commentList = response.body();
+        Call<List<Comment>> call = RetrofitHelper.getInstance().getRetrofitService().getCommentByShareItemId(shareItemId);
+        Callback<List<Comment>> callback = new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                if(response.isSuccessful()) {
+                    // Comment List add 작업을 위해 초기화
+                    commentList.clear();
 
-                       if(commentList == null) {
-                           // 응답이 NULL 일 때
-                           Log.d("response.body() is null", "");
-                       } else {
-                           initView();
-                       }
-                    } else {
-                        Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                    // 서버에서 반환받은 Comment List
+                    List<Comment> commentListReceived = response.body();
+                    int size = commentListReceived.size();
+
+                    for(int i=0; i<size; i++) {
+                        commentList.add(commentListReceived.get(i));
                     }
-                }
 
-                @Override
-                public void onFailure(Call<List<Comment>> call, Throwable t) {
-                    Log.d("api 로그인 통신 실패", t.getMessage());
-                }
-            };
-            call.enqueue(callback);
+                    if(commentList == null) {
+                        // 응답이 NULL 일 때
+                        Log.d("response.body() is null", "");
+                    } else {
+                        // 정보 갱신
+                        commentRecyclerViewAdapter.notifyDataSetChanged();
 
-            return null;
-        }
+                        // 새로고침 아이콘 제거
+                        // swipeRefreshLayout.setRefreshing(false);
+
+                        // 스크롤
+                        recyclerView.smoothScrollToPosition(0);
+                    }
+                } else {
+                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                Log.d("api 로그인 통신 실패", t.getMessage());
+            }
+        };
+        call.enqueue(callback);
     }
 
-    private class AddCommentApi extends AsyncTask {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            // Index 0: Comment comment
-            Comment comment = (Comment) objects[0];
+    private void addCommentApi(Comment comment) {
+        Call<Comment> call = RetrofitHelper.getInstance().getRetrofitService().addComment(comment);
+        Callback<Comment> callback = new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if(response.isSuccessful()) {
+                    Comment comment = response.body();
 
-            Call<Comment> call = RetrofitHelper.getInstance().getRetrofitService().addComment(comment);
-            Callback<Comment> callback = new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
-                    if(response.isSuccessful()) {
-                        Comment comment = response.body();
-
-                        if(comment == null) {
-                            // 응답이 Null 일 때
-                            Log.d("response.body() is null", "");
-                        } else {
-                            commentList.add(comment);
-
-                            adapter.notifyDataSetChanged();
-                        }
+                    if(comment == null) {
+                        // 응답이 Null 일 때
+                        Log.d("response.body() is null", "");
                     } else {
-                        Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                        commentList.add(comment);
+
+                        getCommentByShareItemIdApi();
                     }
+                } else {
+                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
-                    Log.d("api 로그인 통신 실패", t.getMessage());
-                }
-            };
-            call.enqueue(callback);
-
-            return null;
-        }
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                Log.d("api 로그인 통신 실패", t.getMessage());
+            }
+        };
+        call.enqueue(callback);
     }
 }

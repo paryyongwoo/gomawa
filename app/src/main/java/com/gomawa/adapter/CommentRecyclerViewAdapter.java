@@ -19,6 +19,8 @@ import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
+import com.gomawa.dialog.OnlyVerticalTwoButtonDialog;
+import com.gomawa.dialog.UpdateCommentDialog;
 import com.gomawa.dto.Comment;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
@@ -40,8 +42,14 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     // Comment List
     private List<Comment> commentList;
 
+    // 댓글 눌렀을 때 뜨는 다이얼로그
+    private OnlyVerticalTwoButtonDialog menuDialog = null;
+
+    // 댓글 수정 다이얼로그
+    private UpdateCommentDialog updateCommentDialog = null;
+
     // 삭제 버튼 확인 다이얼로그
-    private HorizontalTwoButtonDialog horizontalTwoButtonDialog;
+    private HorizontalTwoButtonDialog deleteDialog = null;
 
     public CommentRecyclerViewAdapter(List<Comment> commentList, CommentActivity mActivity) {
         this.commentList = commentList;
@@ -51,30 +59,81 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     public class CommentRecyclerViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profileImageView;
         TextView nickNameTextView;
-
-        LinearLayout buttonsLayout;
-        ImageButton updateButton;
-        ImageButton deleteButton;
-
-        FrameLayout contentLayout;
+        
         TextView contentTextView;
-        EditText contentEditText;
 
         TextView dateTextView;
 
         public CommentRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            // 댓글을 선택했을 때
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 선택된 댓글의 Position
+                    int position = getAdapterPosition();
+
+                    // 선택된 댓글의 인스턴스
+                    final Comment comment = commentList.get(position);
+
+                    // 댓글 쓴 멤버와 현재 접속된 멤버가 같을 때만 실행됨
+                    if(comment.getMember().getKey().equals(CommonUtils.getMember().getKey())) {
+                        // 수정 버튼 in Dialog Listener
+                        View.OnClickListener updateBtnListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // 수정 다이얼로그
+                                updateCommentDialog = new UpdateCommentDialog(mContext, mActivity, comment);
+
+                                menuDialog.dismiss();
+
+                                updateCommentDialog.show();
+                            }
+                        };
+
+                        // 삭제 버튼 in Dialog Listener
+                        View.OnClickListener deleteBtnListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // 확인 버튼 in Dialog, Listener
+                                View.OnClickListener okBtnListener = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        deleteCommentApi(comment.getId());
+
+                                        deleteDialog.dismiss();
+                                    }
+                                };
+
+                                // 취소 버튼 in Dialog, Listener
+                                View.OnClickListener cancelBtnListener = new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        deleteDialog.dismiss();
+                                    }
+                                };
+
+                                deleteDialog = new HorizontalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "삭제하시겠습니까?", "확인", "취소");
+
+                                menuDialog.dismiss();
+
+                                deleteDialog.show();
+
+                            }
+                        };
+
+                        // 다이얼로그
+                        menuDialog = new OnlyVerticalTwoButtonDialog(mContext, updateBtnListener, deleteBtnListener, "댓글 수정", "댓글 삭제");
+                        menuDialog.show();
+                    }
+                }
+            });
+
             profileImageView = itemView.findViewById(R.id.recyclerView_comment_profile_imageView);
             nickNameTextView = itemView.findViewById(R.id.recyclerView_comment_nickName_textView);
 
-            buttonsLayout = itemView.findViewById(R.id.recyclerView_comment_buttons);
-            updateButton = itemView.findViewById(R.id.recyclerView_comment_update_button);
-            deleteButton = itemView.findViewById(R.id.recyclerView_comment_delete_button);
-
-            contentLayout = itemView.findViewById(R.id.recyclerView_comment_content);
             contentTextView = itemView.findViewById(R.id.recyclerView_comment_content_textView);
-            contentEditText = itemView.findViewById(R.id.recyclerView_comment_content_editText);
 
             dateTextView = itemView.findViewById(R.id.recyclerView_comment_date_textView);
         }
@@ -97,10 +156,6 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         // Position Index Comment
         final Comment comment = commentList.get(position);
 
-        // 미리 설정해둔 Layout Params
-        final FrameLayout.LayoutParams showLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final FrameLayout.LayoutParams hideLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-
         // 댓글 쓴 Member
         Member member = comment.getMember();
 
@@ -113,92 +168,9 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         String nickName = member.getNickName();
         holder.nickNameTextView.setText(nickName);
 
-        // Buttons Layout Visibility
-        if(comment.getMember().getId().equals(CommonUtils.getMember().getId())) {
-            // 댓글이 현재 유저의 댓글이라면 ~
-            holder.buttonsLayout.setVisibility(View.VISIBLE);
-        } else {
-            holder.buttonsLayout.setVisibility(View.INVISIBLE);
-        }
-
-        // 수정 버튼
-        holder.updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 2020-04-23 CommentActivity 의 EditText를 안보이게 하거나, 스타일을 완전 바꾸거나
-                // TextView hide
-                holder.contentTextView.setVisibility(View.INVISIBLE);
-                holder.contentTextView.setLayoutParams(hideLayoutParams);
-
-                // EditText show
-                holder.contentEditText.setVisibility(View.VISIBLE);
-                holder.contentEditText.setLayoutParams(showLayoutParams);
-
-                // EditText setText
-                holder.contentEditText.setText(holder.contentTextView.getText().toString());
-
-                // EditText Focus
-                CommonUtils.showKeyboard(mActivity, holder.contentEditText);
-
-                // 수정 완료 버튼 리스너
-                holder.updateButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // EditText 의 Text
-                        String content = holder.contentEditText.getText().toString();
-
-                        // 수정 후의 Content 가 변화가 없으면 ~
-                        if(content.equals(comment.getContent())) {
-                            // 뷰만 다시 변경해줌
-                            holder.contentTextView.setVisibility(View.VISIBLE);
-                            holder.contentTextView.setLayoutParams(showLayoutParams);
-                            holder.contentEditText.setVisibility(View.INVISIBLE);
-                            holder.contentEditText.setLayoutParams(hideLayoutParams);
-                            holder.contentEditText.setText("");
-                        } else {
-                            // Content 변화가 있으면 서버에서 수정 작업
-                            updateCommentApi(comment, content);
-                        }
-                    }
-                });
-            }
-        });
-
-        // 삭제 버튼
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // 확인 버튼 Listener
-                View.OnClickListener okBtnListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteCommentApi(comment.getId());
-
-                        horizontalTwoButtonDialog.dismiss();
-                    }
-                };
-
-                // 취소 버튼 Listener
-                View.OnClickListener cancelBtnListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        horizontalTwoButtonDialog.dismiss();
-                    }
-                };
-
-                horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "삭제하시겠습니까?", "확인", "취소");
-                horizontalTwoButtonDialog.show();
-            }
-        });
-
         // 댓글 본문
         String content = comment.getContent();
-        holder.contentTextView.setVisibility(View.VISIBLE);
-        holder.contentTextView.setLayoutParams(showLayoutParams);
         holder.contentTextView.setText(content);
-        holder.contentEditText.setVisibility(View.INVISIBLE);
-        holder.contentEditText.setLayoutParams(hideLayoutParams);
-        holder.contentEditText.setText("");
 
         // 댓글 날짜
         Date regDate = comment.getRegDate();
@@ -211,6 +183,8 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         return commentList.size();
     }
 
+
+
     /**
      * API
      */
@@ -220,33 +194,6 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
-                    mActivity.getCommentByShareItemIdApi();
-                } else {
-                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("api 로그인 통신 실패", t.getMessage());
-            }
-        };
-        call.enqueue(callback);
-    }
-
-    private void updateCommentApi(Comment comment, String content) {
-        Comment newComment = new Comment();
-        newComment.setId(comment.getId());
-        newComment.setRegDate(comment.getRegDate());
-        newComment.setShareItem(comment.getShareItem());
-        newComment.setMember(comment.getMember());
-        newComment.setContent(content);
-
-        Call<Void> call = RetrofitHelper.getInstance().getRetrofitService().updateComment(newComment);
-        Callback<Void> callback = new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
                     mActivity.getCommentByShareItemIdApi();
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());

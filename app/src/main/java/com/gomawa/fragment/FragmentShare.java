@@ -1,5 +1,6 @@
 package com.gomawa.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +19,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
+import com.gomawa.activity.WriteActivity;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FragmentShare extends Fragment {
 
@@ -202,6 +205,18 @@ public class FragmentShare extends Fragment {
                 setMenuActive(MY_LIST);
             }
         });
+
+        /**
+         * Floating Button
+         */
+        FloatingActionButton floatingActionButton = rootView.findViewById(R.id.share_floating_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), WriteActivity.class);
+                startActivityForResult(intent, Constants.REQUEST_WRITE);
+            }
+        });
     }
 
     /**
@@ -242,6 +257,22 @@ public class FragmentShare extends Fragment {
                 writeTextView.setTextColor(getResources().getColor(R.color.blackColor));
                 listTextView.setTextColor(getResources().getColor(R.color.blackColor));
                 myListTextView.setTextColor(getResources().getColor(R.color.mainColor));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Constants.REQUEST_WRITE) {
+            if(resultCode == Constants.RESULT_OK) {
+                FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
+                allListFragment.getShareItems(0);
+
+                if(myListFragment != null) {
+                    FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
+                    myListFragment.getShareItems(0);
+                }
+
+            }
         }
     }
 }

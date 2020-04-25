@@ -15,8 +15,9 @@ public class Constants {
     public static final int ALL_LIST = 99;
     public static final int MY_LIST = 999;
 
-    // ShareItem Update 액티비티 request code & result code
+    // ShareItem Update / Write 액티비티 request code & result code
     public static final int REQUEST_UPDATE = 55;
+    public static final int REQUEST_WRITE = 44;
     public static final int RESULT_OK = 66;
     public static final int RESULT_CANCEL = 77;
 

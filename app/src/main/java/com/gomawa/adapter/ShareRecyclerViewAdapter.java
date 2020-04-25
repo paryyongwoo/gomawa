@@ -107,7 +107,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                     // 좋아요 버튼
         ImageButton likeButton = null;
                     // 좋아요 수
-        TextView likeTextView = null;
+//        TextView likeTextView = null;
                     // 다운로드 버튼
         ImageButton downloadButton = null;
             // 본문 글
@@ -128,12 +128,14 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             // 바디
             backgroundImageView = itemView.findViewById(R.id.recyclerView_item_share_body_background_imageView);
             // 나의 메뉴
-            myMenuLinearLayout = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my);
-            deleteButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_delete);
-            editButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_edit);
+            // TODO: 2020/04/25 글수정, 삭제 버튼을 컨텍스트 메뉴로 옮기는 작업 필요
+//            myMenuLinearLayout = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my);
+//            deleteButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_delete);
+//            editButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_edit);
             // 공통 메뉴
             likeButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_like);
-            likeTextView = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_likeNum);
+            // TODO: 2020/04/25 좋아요 수의 표시에 대해선 논의 필요
+//            likeTextView = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_likeNum);
             downloadButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_download);
             contentTextView = itemView.findViewById(R.id.recyclerView_item_share_body_content_textView);
 
@@ -198,6 +200,8 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
 
         // 내 글이라면 ~
         if(shareItemSelected.getMember().getId().equals(CommonUtils.getMember().getId())) {
+
+            /*
             // myMenu 를 보여줌
             holder.myMenuLinearLayout.setVisibility(View.VISIBLE);
 
@@ -236,6 +240,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                     fragmentShareList.startUpdateActivity(shareItemSelected);
                 }
             });
+          */
         }
 
         // 좋아요 버튼 Listener
@@ -254,8 +259,8 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         }
 
         // 좋아요 수 표시
-        String likeNum = String.valueOf(shareItemSelected.getLikeNum());
-        holder.likeTextView.setText(likeNum);
+//        String likeNum = String.valueOf(shareItemSelected.getLikeNum());
+//        holder.likeTextView.setText(likeNum);
 
         // TODO: 2020-04-22 댓글 몇개 보기 로 수정
         // 댓글 모두 보기 Text 설정

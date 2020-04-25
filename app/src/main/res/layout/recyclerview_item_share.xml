@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/share_profile"
@@ -28,7 +29,8 @@
             android:text="귀요미"
             android:layout_weight="5"
             android:layout_marginLeft="10dp"
-            android:textSize="12dp"
+            android:textSize="14dp"
+            android:textColor="@color/inactiveColor"
             />
 
         <TextView
@@ -36,10 +38,19 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:textSize="12dp"
+            android:textSize="10dp"
             android:layout_weight="5"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
+            android:textColor="@color/inactiveColor"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/share"
+            android:background="@null"
+            android:layout_gravity="center_vertical"
             />
     </LinearLayout>
 
@@ -70,35 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:orientation="horizontal"
-            android:gravity="right" >
-
-            <LinearLayout
-                android:id="@+id/recyclerView_item_share_body_menu_my"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="start"
-                android:visibility="invisible" >
-
-                <ImageButton
-                    android:id="@+id/recyclerView_item_share_body_menu_my_delete"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/logout"
-                    android:background="@null"
-                    android:scaleType="fitCenter" />
-
-                <ImageButton
-                    android:id="@+id/recyclerView_item_share_body_menu_my_edit"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/pen"
-                    android:background="@null"
-                    android:scaleType="fitCenter" />
-
-            </LinearLayout>
+            android:gravity="left" >
 
             <LinearLayout
                 android:id="@+id/recyclerView_item_share_body_menu_all"
@@ -106,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:gravity="end" >
+                android:gravity="start" >
 
                 <ImageButton
                     android:id="@+id/recyclerView_item_share_body_menu_all_like"
@@ -115,14 +98,6 @@
                     android:src="@drawable/menu_my_thanks_icon"
                     android:background="@null"
                     android:scaleType="fitCenter" />
-
-                <TextView
-                    android:id="@+id/recyclerView_item_share_body_menu_all_likeNum"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:text="Num"
-                    android:textSize="12sp"
-                    android:textColor="#ff000000" />
 
                 <ImageButton
                     android:id="@+id/recyclerView_item_share_body_menu_all_download"

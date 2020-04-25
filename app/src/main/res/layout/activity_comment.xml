@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <ImageButton
             android:id="@+id/activity_comment_header_back_button"
@@ -64,7 +65,9 @@
                 android:text="aaaaaaaaaa"
                 android:textColor="#ff000000"
                 android:textSize="13sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                />
 
             <TextView
                 android:id="@+id/activity_comment_body_content_textView"
@@ -92,6 +95,7 @@
         app:layout_constraintTop_toBottomOf="@id/activity_comment_body_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         android:src="@drawable/inactive_line"
+        android:paddingVertical="10dp"
         android:scaleType="fitXY" />
 
     <androidx.recyclerview.widget.RecyclerView

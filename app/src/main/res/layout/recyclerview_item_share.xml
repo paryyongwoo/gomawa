@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    >
 
     <!-- HEADER - 프로필 이미지 & 닉네임 & Date -->
     <LinearLayout
@@ -47,8 +49,8 @@
 
         <ImageButton
             android:id="@+id/recyclerView_item_share_header_menu"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:src="@drawable/share"
             android:background="@null"
             android:scaleType="fitCenter"

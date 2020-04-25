@@ -31,6 +31,7 @@ import com.gomawa.activity.UpdateActivity;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
+import com.gomawa.dialog.OnlyVerticalTwoButtonDialog;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.fragment.FragmentShareList;
@@ -57,13 +58,14 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
     private Context mContext = null;
     private Activity mActivity;
 
-    private final int PICK_FROM_ALBUM = 1;
-
     // FragmentShareList ( getShareItemAll 사용을 위해 )
     private FragmentShareList fragmentShareList;
 
+    // 메뉴 버튼 다이얼로그
+    private OnlyVerticalTwoButtonDialog menuDialog = null;
+
     // 삭제 확인 다이얼로그
-    private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
+    private HorizontalTwoButtonDialog deleteDialog = null;
 
     // ShareItem List
     private ArrayList<ShareItem> shareItemList;
@@ -93,22 +95,18 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         TextView nickNameTextView = null;
             // 날짜
         TextView dateTextView = null;
+            // 메뉴 버튼
+        ImageButton menuButton = null;
 
         // 바디
             // 배경 이미지
         ImageView backgroundImageView = null;
-                // 나의 메뉴
-        LinearLayout myMenuLinearLayout = null;
-                    // 삭제 버튼
-        ImageButton deleteButton = null;
-                    // 수정 버튼
-        ImageButton editButton = null;
-                // 공통 메뉴
-                    // 좋아요 버튼
+            // 메뉴
+                // 좋아요 버튼
         ImageButton likeButton = null;
-                    // 좋아요 수
+                // 좋아요 수
 //        TextView likeTextView = null;
-                    // 다운로드 버튼
+                // 다운로드 버튼
         ImageButton downloadButton = null;
             // 본문 글
         TextView contentTextView = null;
@@ -121,22 +119,18 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             super(itemView);
 
             // 헤더
-            profileImageView = itemView.findViewById(R.id.share_profile);
-            nickNameTextView = itemView.findViewById(R.id.share_nickname);
-            dateTextView = itemView.findViewById(R.id.share_date);
+            profileImageView = itemView.findViewById(R.id.recyclerView_item_share_header_profile);
+            nickNameTextView = itemView.findViewById(R.id.recyclerView_item_share_header_nickName);
+            dateTextView = itemView.findViewById(R.id.recyclerView_item_share_header_date);
+            menuButton = itemView.findViewById(R.id.recyclerView_item_share_header_menu);
 
             // 바디
             backgroundImageView = itemView.findViewById(R.id.recyclerView_item_share_body_background_imageView);
-            // 나의 메뉴
-            // TODO: 2020/04/25 글수정, 삭제 버튼을 컨텍스트 메뉴로 옮기는 작업 필요
-//            myMenuLinearLayout = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my);
-//            deleteButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_delete);
-//            editButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_my_edit);
-            // 공통 메뉴
-            likeButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_like);
+                // 메뉴
+            likeButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_like);
             // TODO: 2020/04/25 좋아요 수의 표시에 대해선 논의 필요
 //            likeTextView = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_likeNum);
-            downloadButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_all_download);
+            downloadButton = itemView.findViewById(R.id.recyclerView_item_share_body_menu_download);
             contentTextView = itemView.findViewById(R.id.recyclerView_item_share_body_content_textView);
 
             // 바텀
@@ -200,47 +194,60 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
 
         // 내 글이라면 ~
         if(shareItemSelected.getMember().getId().equals(CommonUtils.getMember().getId())) {
+            // 메뉴 버튼을 보여줌
+            holder.menuButton.setVisibility(View.VISIBLE);
 
-            /*
-            // myMenu 를 보여줌
-            holder.myMenuLinearLayout.setVisibility(View.VISIBLE);
-
-            // 삭제 버튼 Listener
-            holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            // 메뉴 버튼 Listener
+            holder.menuButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 다이얼로그 확인 버튼
-                    View.OnClickListener okButtonOnClickListener = new View.OnClickListener() {
+                    // 수정 버튼 in Dialog Listener
+                    View.OnClickListener updateBtnListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            horizontalTwoButtonDialog.dismiss();
+                            menuDialog.dismiss();
 
-                            deleteShareItemApi(shareItemSelected);
+                            fragmentShareList.startUpdateActivity(shareItemSelected);
                         }
                     };
 
-                    // 다이얼로그 취소 버튼
-                    View.OnClickListener cancelButtonOnClickListener = new View.OnClickListener() {
+                    // 삭제 버튼 in Dialog Listener
+                    final View.OnClickListener deleteBtnListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            horizontalTwoButtonDialog.dismiss();
+                            // 확인 버튼 in Dialog Listener
+                            View.OnClickListener okBtnListener = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    deleteDialog.dismiss();
+
+                                    deleteShareItemApi(shareItemSelected);
+                                }
+                            };
+
+                            // 취소 버튼 in Dialog Listener
+                            View.OnClickListener cancelBtnListener = new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    deleteDialog.dismiss();
+                                }
+                            };
+
+                            deleteDialog = new HorizontalTwoButtonDialog(mContext, okBtnListener, cancelBtnListener, "정말 삭제하시겠습니까?", "확인", "취소");
+
+                            menuDialog.dismiss();
+
+                            deleteDialog.show();
                         }
                     };
 
-                    // 다이얼로그 표시
-                    horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(mContext, okButtonOnClickListener, cancelButtonOnClickListener, "정말 삭제하시겠습니까?", "확인", "취소");
-                    horizontalTwoButtonDialog.show();
+                    menuDialog = new OnlyVerticalTwoButtonDialog(mContext, updateBtnListener, deleteBtnListener, "글 수정", "글 삭제");
+                    menuDialog.show();
                 }
             });
-
-            // 수정 버튼 Listener
-            holder.editButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fragmentShareList.startUpdateActivity(shareItemSelected);
-                }
-            });
-          */
+        } else {
+            // 내 글이 아니라면 ~
+            holder.menuButton.setVisibility(View.INVISIBLE);
         }
 
         // 좋아요 버튼 Listener

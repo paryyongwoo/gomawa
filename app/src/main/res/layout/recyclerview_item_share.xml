@@ -15,14 +15,14 @@
         android:paddingHorizontal="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/share_profile"
+            android:id="@+id/recyclerView_item_share_header_profile"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/activity_share_profile"
             app:civ_border_width="@null" />
 
         <TextView
-            android:id="@+id/share_nickname"
+            android:id="@+id/recyclerView_item_share_header_nickName"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -34,7 +34,7 @@
             />
 
         <TextView
-            android:id="@+id/share_date"
+            android:id="@+id/recyclerView_item_share_header_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -46,10 +46,12 @@
             />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/recyclerView_item_share_header_menu"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/share"
             android:background="@null"
+            android:scaleType="fitCenter"
             android:layout_gravity="center_vertical"
             />
     </LinearLayout>
@@ -83,32 +85,22 @@
             android:orientation="horizontal"
             android:gravity="left" >
 
-            <LinearLayout
-                android:id="@+id/recyclerView_item_share_body_menu_all"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="start" >
+            <ImageButton
+                android:id="@+id/recyclerView_item_share_body_menu_like"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/menu_my_thanks_icon"
+                android:background="@null"
+                android:scaleType="fitCenter" />
 
-                <ImageButton
-                    android:id="@+id/recyclerView_item_share_body_menu_all_like"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/menu_my_thanks_icon"
-                    android:background="@null"
-                    android:scaleType="fitCenter" />
-
-                <ImageButton
-                    android:id="@+id/recyclerView_item_share_body_menu_all_download"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/download"
-                    android:background="@null"
-                    android:scaleType="fitCenter" />
-
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/recyclerView_item_share_body_menu_download"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/download"
+                android:background="@null"
+                android:scaleType="fitCenter" />
 
         </LinearLayout>
 

@@ -26,6 +26,7 @@
         android:background="@color/whiteColor"
         app:itemIconTint="@drawable/bottom_navigation_color"
         app:itemTextColor="@drawable/bottom_navigation_color"
+        app:labelVisibilityMode="selected"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

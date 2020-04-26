@@ -74,11 +74,11 @@
 
         <activity
             android:name=".activity.UpdateActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/WriteAndUpdateStyle" />
 
         <activity
             android:name=".activity.WriteActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/WriteAndUpdateStyle" />
 
     </application>
 

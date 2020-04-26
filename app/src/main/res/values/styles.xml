@@ -41,4 +41,9 @@
         <item name="android:windowExitAnimation">@anim/anim_dialog_close</item>
     </style>
 
+    <!-- 글 쓰기/수정 액티비티 전용 Style -->
+    <style name="WriteAndUpdateStyle" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorAccent">@color/mainColor</item>
+    </style>
+
 </resources>

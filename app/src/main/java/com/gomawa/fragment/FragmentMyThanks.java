@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,6 +145,9 @@ public class FragmentMyThanks extends Fragment {
         /**
          * 헤더 텍스트 설정
          */
+        ImageView headerImageView = rootView.findViewById(R.id.header_imageView);
+        headerImageView.setVisibility(View.INVISIBLE);
+
         String headerTitle = getResources().getString(R.string.header_title);
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);

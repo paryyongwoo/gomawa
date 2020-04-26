@@ -11,7 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
 import com.gomawa.activity.MainActivity;
 import com.gomawa.activity.NoticeActivity;
+import com.gomawa.adapter.SettingRecyclerViewAdapter;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
@@ -34,8 +37,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentSetting extends Fragment {
     // mActivity & mContext
@@ -44,8 +47,11 @@ public class FragmentSetting extends Fragment {
 
     private ViewGroup rootView;
 
-    // 닉네임이 표시되는 TextView
-    private TextView nicknameTextView;
+    // 프로필 이미지가 표시되는 ImageView
+    private ImageView headerImageView = null;
+
+    // 서브 타이틀
+    TextView headerSubTitle = null;
 
     // 수평 2 버튼 다이얼로그
     private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
@@ -70,29 +76,25 @@ public class FragmentSetting extends Fragment {
     }
 
     private void initView() {
-        nicknameTextView = rootView.findViewById(R.id.fragment_setting_nickname_textView);
+        // 헤더 이미지 변경
+        headerImageView = rootView.findViewById(R.id.header_imageView);
+        headerImageView.setVisibility(View.VISIBLE);
+        //Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).into(headerImageView);
+        headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
 
-        // 헤더 타이틀과 서브타이틀 Text 초기화
+        // 헤더 타이틀 Text 초기화
         TextView headerTitle = rootView.findViewById(R.id.header_title);
         headerTitle.setText(getResources().getString(R.string.fragment_setting_header_title));
-        //TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
-        //headerSubTitle.setText(getResources().getString(R.string.fragment_setting_header_sub_title));
 
-        // 닉네임을 CommonUtils.Member 에서 가져와서 표시
-        nicknameTextView.setText(CommonUtils.getMember().getNickName());
+        // 헤더 서브 타이틀 Text 초기화
+        headerSubTitle = rootView.findViewById(R.id.header_sub_title);
+        headerSubTitle.setText(makeSubTitle());
 
-        // 임시 회원 탈퇴 버튼 - 프로필 사진
-        CircleImageView imageView = rootView.findViewById(R.id.fragment_setting_profileImage_imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AuthUtils.unLink(mContext, mActivity);
-            }
-        });
+        // 리사이클러 뷰에 들어갈 OnClickListener
+        List<View.OnClickListener> onClickListenerList = new ArrayList<>();
 
-        // 프로필 사진 변경 버튼 Listener
-        ImageButton profileImageBtn = rootView.findViewById(R.id.fragment_setting_profileImage_btn);
-        profileImageBtn.setOnClickListener(new View.OnClickListener() {
+        // Position 0: 프로필 사진 변경 Listener
+        onClickListenerList.add(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 갤러리에서 가져오기 버튼 Listener
@@ -137,9 +139,8 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        // 닉네임 변경 버튼 Listener
-        ImageButton nicknameBtn = rootView.findViewById(R.id.fragment_setting_nickname_btn);
-        nicknameBtn.setOnClickListener(new View.OnClickListener() {
+        // Position 1: 닉네임 변경
+        onClickListenerList.add(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), NicknameActivity.class);
@@ -148,9 +149,45 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        // 로그아웃 버튼 Listener
-        ImageButton logoutBtn = rootView.findViewById(R.id.fragment_setting_logout_btn);
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
+        // Position 2: 공지사항
+        onClickListenerList.add(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 공지사항 버튼은 데이터를 주고 받을 게 없으므로 startActivity 메소드를 사용함
+                Intent intent = new Intent(mContext, NoticeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Position 3: 앱 평점 주기
+        onClickListenerList.add(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // todo: 아래 주석 처리 된 두 라인은 향후에 플레이스토어에 우리 어플이 등록되면 사용하면 됨.
+                // 바로 우리 어플로 이어짐
+                //String packageName = mActivity.getPackageName();
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                //intent.setData(Uri.parse("market://details?id=" + packageName));
+                intent.setData(Uri.parse("http://play.google.com/store/search?q=" + Constants.APPNAME + "&c=apps"));
+
+                startActivity(intent);
+            }
+        });
+
+        // Position 4: 문의하기
+        onClickListenerList.add(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("plain/Text");
+                email.putExtra(Intent.EXTRA_EMAIL, Constants.EMAIL);
+                startActivity(email);
+            }
+        });
+
+        // Position 5: 로그아웃
+        onClickListenerList.add(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 확인 버튼 Listener
@@ -187,46 +224,25 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        // 공지사항 버튼 Listener
-        ImageButton noticeBtn = rootView.findViewById(R.id.fragment_setting_notice_btn);
-        noticeBtn.setOnClickListener(new View.OnClickListener() {
+        // Position 6: (임시) 회원 탈퇴
+        onClickListenerList.add(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 공지사항 버튼은 데이터를 주고 받을 게 없으므로 startActivity 메소드를 사용함
-                Intent intent = new Intent(mContext, NoticeActivity.class);
-                startActivity(intent);
+                AuthUtils.unLink(mContext, mActivity);
             }
         });
 
-        // 평점주기 버튼 Listener
-        ImageButton rateBtn = rootView.findViewById(R.id.fragment_setting_rate_btn);
-        rateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // todo: 아래 주석 처리 된 두 라인은 향후에 플레이스토어에 우리 어플이 등록되면 사용하면 됨.
-                // 바로 우리 어플로 이어짐
-                //String packageName = mActivity.getPackageName();
+        // 리사이클러 뷰
+        RecyclerView recyclerView = rootView.findViewById(R.id.fragment_setting_recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(layoutManager);
 
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                //intent.setData(Uri.parse("market://details?id=" + packageName));
-                intent.setData(Uri.parse("http://play.google.com/store/search?q=" + Constants.APPNAME + "&c=apps"));
-
-                startActivity(intent);
-            }
-        });
-
-        // 문의하기 버튼 Listener
-        ImageButton emailBtn = rootView.findViewById(R.id.fragment_setting_email_btn);
-        emailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent email = new Intent(Intent.ACTION_SEND);
-                email.setType("plain/Text");
-                email.putExtra(Intent.EXTRA_EMAIL, Constants.EMAIL);
-                startActivity(email);
-            }
-        });
+        SettingRecyclerViewAdapter recyclerViewAdapter = new SettingRecyclerViewAdapter(onClickListenerList);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
+
+    // 서브타이틀 문자열을 만들어주는 메소드
+    private String makeSubTitle() { return "안녕하세요, " + CommonUtils.getMember().getNickName() + "님!"; }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -240,7 +256,7 @@ public class FragmentSetting extends Fragment {
                     break;
                 // NicknameActivity - okBtn - textView 의 Text 값을 현재 닉네임으로 변경
                 case Constants.RESULT_SUCESS_NICKNAME:
-                    nicknameTextView.setText(CommonUtils.getMember().getNickName());
+                    headerSubTitle.setText(makeSubTitle());
                     break;
                 // 비정상적인 종료
                 default:
@@ -305,9 +321,8 @@ public class FragmentSetting extends Fragment {
             // 프로필 이미지 파일에 tempFile 을 대입
             ImageUtils.profileImageFile = tempFile;
 
-            // 프로필 이미지뷰의 이미지를 바꿔줌
-            CircleImageView imageView = rootView.findViewById(R.id.fragment_setting_profileImage_imageView);
-            Picasso.get().load(tempFile).into(imageView);
+            // 프로필 이미지를 바꿔줌
+            Picasso.get().load(tempFile).fit().centerCrop().into(headerImageView);
 
             // todo: 복사된 이미지 파일의 삭제가 이루어져야함. 나중에 S3에 복사된 이미지를 저장한 후에 삭제하는 코드를 적으면 되지 않을까 싶음
             // 지금 기능으로는 복사된 이미지 파일의 삭제가 이루어지지 않으니, 일일이 삭제해야함

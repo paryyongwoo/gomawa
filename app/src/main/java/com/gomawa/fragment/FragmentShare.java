@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,9 +121,16 @@ public class FragmentShare extends Fragment {
         /**
          * 헤더 텍스트 설정
          */
+        ImageView headerImageView = rootView.findViewById(R.id.header_imageView);
+        headerImageView.setVisibility(View.INVISIBLE);
+
         String headerTitle = getResources().getString(R.string.header_title_share);
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);
+
+        // TODO: 2020-04-26 subText 작업
+        TextView headerSubText = rootView.findViewById(R.id.header_sub_title);
+        headerSubText.setVisibility(View.INVISIBLE);
 
         /**
          * 헤더 버튼 설정

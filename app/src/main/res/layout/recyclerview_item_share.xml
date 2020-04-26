@@ -95,14 +95,14 @@
                 android:background="@null"
                 android:scaleType="fitCenter" />
 
-            <ImageButton
-                android:id="@+id/recyclerView_item_share_body_menu_download"
-                android:layout_width="28dp"
+            <TextView
+                android:id="@+id/recyclerView_item_share_body_menu_likeNum"
+                android:layout_width="wrap_content"
                 android:layout_height="28dp"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/download"
-                android:background="@null"
-                android:scaleType="fitCenter" />
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:text="likeNum" />
+
 
         </LinearLayout>
 

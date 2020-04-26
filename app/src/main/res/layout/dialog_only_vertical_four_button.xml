@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_only_vertical_four_button_linearLayout"
+    android:layout_width="240dp"
+    android:layout_height="260dp"
+    android:paddingVertical="20dp"
+    android:background="@drawable/shape_circle" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/dialog_only_vertical_four_button_first_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="First Button"
+            android:textColor="#ff000000" />
+
+        <Button
+            android:id="@+id/dialog_only_vertical_four_button_second_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="Second Button"
+            android:textColor="#ff000000" />
+
+        <Button
+            android:id="@+id/dialog_only_vertical_four_button_third_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="Third Button"
+            android:textColor="#ff000000" />
+
+        <Button
+            android:id="@+id/dialog_only_vertical_four_button_fourth_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="Fourth Button"
+            android:textColor="#ff000000" />
+
+    </LinearLayout>
+
+</LinearLayout>

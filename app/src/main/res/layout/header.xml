@@ -11,11 +11,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/header_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/share_item_background"
+            android:scaleType="center" />
+
         <LinearLayout
+            android:id="@+id/header_title_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="40dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
@@ -41,12 +49,24 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/header_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/header_title_layout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="30dp"
+            android:gravity="start|center_vertical"
+            android:text="헤더 서브 타이틀"
+            android:textColor="@color/inactiveColor"
+            android:textSize="15sp" />
+
         <ImageButton
             android:id="@+id/header_menu_button"
             android:layout_width="0dp"
             android:layout_height="28dp"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="40dp"
             android:background="@null"
             android:src="@drawable/list_btn_disable"
             app:layout_constraintBottom_toBottomOf="parent"

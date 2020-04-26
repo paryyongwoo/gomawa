@@ -4,16 +4,16 @@
     <item
         android:id="@+id/menu_my_thanks"
         android:icon="@drawable/menu_my_thanks_icon"
-        android:title="myThanks" />
+        android:title="고마운 일들" />
 
     <item
         android:id="@+id/menu_share"
         android:icon="@drawable/menu_share_icon"
-        android:title="share" />
+        android:title="감사 일기" />
 
     <item
         android:id="@+id/menu_setting"
         android:icon="@drawable/menu_setting_icon"
-        android:title="setting" />
+        android:title="설정" />
 
 </menu>

@@ -100,10 +100,6 @@ public class ShareActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        // TODO: 2020-01-16 글쓰기 기능 추가 (api개발)
-
-
     }
 
     @Override

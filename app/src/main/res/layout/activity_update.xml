@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffffff"
-    android:paddingHorizontal="20dp">
+    android:paddingHorizontal="10dp">
 
     <LinearLayout
         android:id="@+id/activity_update_header"
@@ -105,15 +105,6 @@
                 android:text="EditText"
                 android:textSize="13sp"
                 android:textColor="#ff000000" />
-
-
-            <!-- 구분선 -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/inactive_line"
-                android:scaleType="fitXY" />
 
         </LinearLayout>
 

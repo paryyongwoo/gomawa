@@ -106,6 +106,9 @@ public class WriteActivity extends Activity {
         contentEditText = findViewById(R.id.activity_write_shareItem_body_content);
         contentEditText.setText("");
 
+        // EditText Focus & 키보드 올리기
+        CommonUtils.showKeyboard(mActivity, contentEditText);
+
         // 배경 이미지 Listener
         backgroundImageView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -114,6 +114,9 @@ public class UpdateActivity extends Activity {
         String content = intent.getExtras().getString("content");
         contentEditText.setText(content);
 
+        // EditText Focus & 키보드 올리기
+        CommonUtils.showKeyboard(mActivity, contentEditText);
+
         // 배경 이미지 Listener
         backgroundImageView.setOnClickListener(new View.OnClickListener() {
             @Override

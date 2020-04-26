@@ -22,7 +22,7 @@ public class CustomViewPager extends ViewPager {
         super(context, attrs);
 
         // 터치로 스와이프 하는 것을 막기 위해 false로 설정
-        this.enabled = false;
+        this.enabled = true;
         // 뷰페이저 이동시 딜레이 시간 주기위한 초기화 함수
         init();
     }

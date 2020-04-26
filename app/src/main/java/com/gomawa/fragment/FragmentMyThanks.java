@@ -266,43 +266,11 @@ public class FragmentMyThanks extends Fragment {
             sendDailyThanks(dailyThanks);
         }
 
-        /**
-         * 고마운 일 안내 문구 찾기
-         */
-        //guideSentence = rootView.findViewById(R.id.header_subtitle);
-        //guideSentence.setText(subTitleList.get(want));
-
         // keyboard 내리기
         hideKeyboad(currentPosition);
 
         // 현재 위치 재설정
         currentPosition = want;
-
-        /**
-         * 상태바 색상
-         */
-        if (currentPosition == 0) {
-            secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-            firstTextView.setVisibility(View.VISIBLE);
-            secondTextView.setVisibility(View.INVISIBLE);
-            thirdTextView.setVisibility(View.INVISIBLE);
-        }
-
-        if (currentPosition == 1) {
-            secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
-            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-            firstTextView.setVisibility(View.INVISIBLE);
-            secondTextView.setVisibility(View.VISIBLE);
-            thirdTextView.setVisibility(View.INVISIBLE);
-        }
-
-        if (currentPosition == 2) {
-            thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
-            firstTextView.setVisibility(View.INVISIBLE);
-            secondTextView.setVisibility(View.INVISIBLE);
-            thirdTextView.setVisibility(View.VISIBLE);
-        }
 
         // 프래그먼트 전환
         mPager.setCurrentItem(currentPosition, true);

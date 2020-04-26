@@ -36,7 +36,7 @@
         android:text="다음"
         android:textSize="10sp"
         android:textColor="@color/whiteColor"
-        android:background="@color/backgroundColor"
+        android:background="@drawable/shape_circle"
         android:visibility="visible"
         android:layout_marginTop="20dp"
         />

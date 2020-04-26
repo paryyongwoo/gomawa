@@ -113,7 +113,9 @@
                 android:layout_height="wrap_content"
                 android:text="EditText"
                 android:textSize="13sp"
-                android:textColor="#ff000000" />
+                android:textColor="#ff000000"
+                android:hint="내용을 입력해 주세요."
+                android:textColorHint="#80000000"/>
 
         </LinearLayout>
 

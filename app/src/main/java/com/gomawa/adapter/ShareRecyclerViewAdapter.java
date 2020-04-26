@@ -67,6 +67,9 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
     // 삭제 확인 다이얼로그
     private HorizontalTwoButtonDialog deleteDialog = null;
 
+    // 다운로드 버튼 다이얼로그
+    private OnlyVerticalTwoButtonDialog downloadShareDialog = null;
+
     // ShareItem List
     private ArrayList<ShareItem> shareItemList;
 
@@ -268,6 +271,32 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         // 좋아요 수 표시
 //        String likeNum = String.valueOf(shareItemSelected.getLikeNum());
 //        holder.likeTextView.setText(likeNum);
+
+        // 다운로드 버튼 Listener
+        holder.downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 다운로드 버튼 in Dialog, Listener
+                View.OnClickListener downloadBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // TODO: 2020-04-26 사진 다운로드 기능
+                    }
+                };
+
+                // 공유 버튼 in Dialog, Listener
+                View.OnClickListener shareBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // TODO: 2020-04-26 사진 공유 기능
+                    }
+                };
+
+                // 다이얼로그
+                downloadShareDialog = new OnlyVerticalTwoButtonDialog(mContext, downloadBtnListener, shareBtnListener, "다운로드", "공유");
+                downloadShareDialog.show();
+            }
+        });
 
         // TODO: 2020-04-22 댓글 몇개 보기 로 수정
         // 댓글 모두 보기 Text 설정

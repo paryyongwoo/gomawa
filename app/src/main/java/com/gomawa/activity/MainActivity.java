@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -116,7 +117,14 @@ public class MainActivity extends AppCompatActivity {
         sessionCallback = new SessionCallback();
         Session.getCurrentSession().addCallback(sessionCallback);
         // 자동 로그인 - 카카오로 로그인 한 적이 있으면 자동으로 로그인 된다고 함. 아직 안해봄.
-        //Session.getCurrentSession().checkAndImplicitOpen();
+        Session.getCurrentSession().checkAndImplicitOpen();
+
+        // 네이버 자동로그인을 막기 위해 SharePreferences 입력
+        SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+        Boolean isLoginNaver = sharedPreferences.getBoolean("isLoginNaver", false);
+        if(isLoginNaver) {
+            mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mOAuthLoginHandler);
+        }
 
         // 키 해시 값을 로그로 출력함
         Log.d("KeyHash", getKeyHash(mContext));

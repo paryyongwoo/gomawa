@@ -1,5 +1,6 @@
 package com.gomawa.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
+import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.fragment.FragmentMyThanks;
@@ -106,5 +108,19 @@ public class ShareActivity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         CommonUtils.onBackPressedCheck(this.getApplicationContext(), this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+
+        // 카카오는 자동 로그인이 존재하므로 네이버만
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        boolean isLoginNaver = (AuthUtils.getServices() == AuthUtils.Services.NAVER);
+        editor.putBoolean("isLoginNaver", isLoginNaver);
+
+        editor.commit();
     }
 }

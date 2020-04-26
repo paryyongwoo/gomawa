@@ -57,7 +57,7 @@ public class CommonUtils {
                 // 로그인이 되어있지 않다면 로그아웃 하지 않음
             } else {
                 // 로그인이 되어있다면 로그아웃 처리
-                AuthUtils.logout(mContext);
+                //AuthUtils.logout(mContext);
             }
 
             // 살아있는 액티비티가 하나 밖에 없으므로 finish 하면 앱이 종료됨

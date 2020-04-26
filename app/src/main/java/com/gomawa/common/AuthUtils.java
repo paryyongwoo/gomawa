@@ -2,7 +2,9 @@ package com.gomawa.common;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -66,6 +68,13 @@ public class AuthUtils {
             case NAVER:
                 // 네이버 로그아웃
                 mOAuthLoginModule.logout(mContext);
+
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("isLogin", Context.MODE_PRIVATE);
+                // 카카오는 자동 로그인이 존재하므로 네이버만
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoginNaver", false);
+
+                editor.commit();
                 break;
             case KAKAO:
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {

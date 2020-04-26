@@ -53,14 +53,6 @@ public class FragmentMyThanks extends Fragment {
     // 현재 뷰페이저의 위치
     private int currentPosition = 0;
 
-    // subTitle 배열
-    List<String> subTitleList = new ArrayList<>();
-
-    // drawable 배열
-    List<Drawable> btnList = new ArrayList<Drawable>();
-    List<Drawable> disableBtnList = new ArrayList<Drawable>();
-    List<ImageButton> numberBtnList = new ArrayList<>();
-
     private ShareActivity activity = null;
     // 터치를 통한 스와이프 불가능하게 막은 CustomViewPager 사용
     private ViewPager mPager;
@@ -69,21 +61,6 @@ public class FragmentMyThanks extends Fragment {
     // rootView
     private ViewGroup rootView = null;
     // 툴바의 메뉴 버튼
-    private MenuItem menuItem = null;
-    // back 버튼
-    private ImageButton backBtn = null;
-    // next 버튼
-    private ImageButton nextBtn = null;
-    // '1' 버튼
-    private ImageButton firstBtn = null;
-    // '2' 버튼
-    private ImageButton secondBtn = null;
-    // '3' 버튼
-    private ImageButton thirdBtn = null;
-    // '4' 버튼
-    private ImageButton fourthBtn = null;
-    // 고마운 일 안내 문구
-    private TextView guideSentence = null;
 
     /**
      * 상태 버튼들
@@ -104,6 +81,11 @@ public class FragmentMyThanks extends Fragment {
     private Fragment fragmentSecond = null;
     private Fragment fragmentThird = null;
     private Fragment fragmentFourth = null;
+
+    /**
+     * 헤더의 메뉴 버튼 (화면 표시 안함)
+     */
+    private ImageButton headerMenuBtn = null;
 
     @Nullable
     @Override
@@ -163,66 +145,14 @@ public class FragmentMyThanks extends Fragment {
          * 헤더 텍스트 설정
          */
         String headerTitle = getResources().getString(R.string.header_title);
-        String headerSubTitle = getResources().getString(R.string.sub_title1);
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);
-        //TextView headerSubTitleText = rootView.findViewById(R.id.header_subtitle);
-        //headerSubTitleText.setText(headerSubTitle);
+
+        headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
+        headerMenuBtn.setVisibility(View.GONE);
 
         ImageButton headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
         headerMenuBtn.setVisibility(View.INVISIBLE);
-
-        /**
-         * subTitleArray 데이터 세팅
-         */
-//        subTitleList.add(getResources().getString(R.string.sub_title1));
-//        subTitleList.add(getResources().getString(R.string.sub_title2));
-//        subTitleList.add(getResources().getString(R.string.sub_title3));
-//        subTitleList.add(getResources().getString(R.string.sub_title4));
-
-        firstStepBtn = rootView.findViewById(R.id.first_step_btn);
-        secondStepBtn = rootView.findViewById(R.id.second_step_btn);
-        thirdStepBtn = rootView.findViewById(R.id.third_step_btn);
-
-        firstStepBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movePage(0);
-                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-                firstTextView.setVisibility(View.VISIBLE);
-                secondTextView.setVisibility(View.INVISIBLE);
-                thirdTextView.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        secondStepBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movePage(1);
-                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
-                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.whiteColor));
-                firstTextView.setVisibility(View.INVISIBLE);
-                secondTextView.setVisibility(View.VISIBLE);
-                thirdTextView.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        thirdStepBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                movePage(2);
-                secondStepBtn.setBackgroundColor(getResources().getColor(R.color.activeColor));
-                thirdStepBtn.setBackgroundColor(getResources().getColor(R.color.mainColor));
-                firstTextView.setVisibility(View.INVISIBLE);
-                secondTextView.setVisibility(View.INVISIBLE);
-                thirdTextView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        firstTextView = rootView.findViewById(R.id.first_text_view);
-        secondTextView = rootView.findViewById(R.id.second_text_view);
-        thirdTextView = rootView.findViewById(R.id.third_text_view);
 
         /**
          * drawableList에 버튼 이미지들 추가

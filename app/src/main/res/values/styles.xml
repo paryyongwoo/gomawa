@@ -46,4 +46,8 @@
         <item name="colorAccent">@color/mainColor</item>
     </style>
 
+    <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/inactiveColor</item>
+    </style>
+
 </resources>

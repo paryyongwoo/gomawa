@@ -22,6 +22,7 @@ import com.gomawa.R;
 import com.gomawa.activity.WriteActivity;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.dialog.OnlyVerticalThreeButtonDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FragmentShare extends Fragment {
@@ -50,6 +51,11 @@ public class FragmentShare extends Fragment {
      * 프래그먼트 매니저
      */
     private FragmentManager fm = null;
+
+    /**
+     * 헤더 메뉴 버튼 다이얼로그
+     */
+    private OnlyVerticalThreeButtonDialog headerMenuDialog = null;
 
     /**
      * 현재 선택한 메뉴 값
@@ -115,94 +121,79 @@ public class FragmentShare extends Fragment {
          * 헤더 텍스트 설정
          */
         String headerTitle = getResources().getString(R.string.header_title_share);
-        String headerSubTitle = getResources().getString(R.string.sub_title_share);
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);
-        TextView headerSubTitleText = rootView.findViewById(R.id.header_subtitle);
-        headerSubTitleText.setText(headerSubTitle);
-        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) headerSubTitleText.getLayoutParams();
-        marginLayoutParams.setMargins(0, marginLayoutParams.topMargin - 20, 0, 0);
 
         /**
-         * 헤더 버튼 (목록, 글쓰기, 내글보기)
+         * 헤더 버튼 설정
          */
-        listBtn = rootView.findViewById(R.id.list_btn);
-        writeBtn = rootView.findViewById(R.id.write_btn);
-        myListBtn = rootView.findViewById(R.id.my_list_btn);
-        listTextView = rootView.findViewById(R.id.list_textview);
-        writeTextView = rootView.findViewById(R.id.write_textview);
-        myListTextView = rootView.findViewById(R.id.my_list_textview);
-
-        // TODO: 2020-04-20 버튼 눌렀을 때 adapter notify 해줘야함 ( 좋아요 반영이 안됨 ) 스크롤은 안 해야함
-        
-        /**
-         * 목록 (목록과 내글보기는 프래그먼트 전환시 구분자를 함께 전달해줘야함)
-         */
-        listBtn.setOnClickListener(new View.OnClickListener() {
+        final ImageButton headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
+        headerMenuBtn.setVisibility(View.VISIBLE);
+        headerMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (allListFragment != null) {
-                    if(!(allListFragment.isHidden())) {
-                        // 이미 보여지고 있었다면 새로고침
-                        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                // 모든 글 보기
+                View.OnClickListener allListBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(allListFragment == null) {
+                            Toast.makeText(getContext(), "allList 진입", Toast.LENGTH_SHORT).show();
 
-                        FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-                        allListFragment.getShareItems(0);
+                            // allListFragment 가 한 번도 만들어지지 않았을 때
+                            allListFragment = new FragmentShareList(Constants.ALL_LIST);
+                            fm.beginTransaction().add(R.id.share_frame_layout, allListFragment, "allListFragment").commit();
+                        } else {
+                            if(!(allListFragment.isHidden())) {
+                                // allListFragment 가 이미 보여지고 있을 때 ~ 새로고침
+                                FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
+                                fragment.getShareItems(0);
+                            }
+                        }
+
+                        if(allListFragment != null) { fm.beginTransaction().show(allListFragment).commit(); }
+                        if(myListFragment != null) { fm.beginTransaction().hide(myListFragment).commit(); }
+
+                        headerMenuDialog.dismiss();
                     }
+                };
 
-                    fm.beginTransaction().show(allListFragment).commit();
-                }
-                if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
+                // 내 글 보기
+                View.OnClickListener myListBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(myListFragment == null) {
+                            Toast.makeText(getContext(), "myList 진입", Toast.LENGTH_SHORT).show();
 
-                // 메뉴 활성화
-                setMenuActive(LIST);
-            }
-        });
+                            // myListFragment 가 한 번도 만들어지지 않았을 때
+                            myListFragment = new FragmentShareList(Constants.MY_LIST);
+                            fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
+                        } else {
+                            if(!(myListFragment.isHidden())) {
+                                // allListFragment 가 이미 보여지고 있을 때 ~ 새로고침
+                                FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
+                                fragment.getShareItems(0);
+                            }
+                        }
 
-        /**
-         * 글쓰기
-         */
-        writeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (writeFragment == null) {
-                    writeFragment = new FragmentShareWrite();
-                    fm.beginTransaction().add(R.id.share_frame_layout, writeFragment, "writeFragment").commit();
-                }
-                if (writeFragment != null) fm.beginTransaction().show(writeFragment).commit();
-                if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
-                if (myListFragment != null) fm.beginTransaction().hide(myListFragment).commit();
+                        if(myListFragment != null) { fm.beginTransaction().show(myListFragment).commit(); }
+                        if(allListFragment != null) { fm.beginTransaction().hide(allListFragment).commit(); }
 
-                // 메뉴 활성화
-                setMenuActive(WRITE);
-            }
-        });
-
-        /**
-         * 내글보기 (목록과 내글보기는 프래그먼트 전환시 구분자를 함께 전달해줘야함)
-         */
-        myListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (myListFragment == null) {
-                    myListFragment = new FragmentShareList(Constants.MY_LIST);
-                    fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
-                    fm.beginTransaction().show(myListFragment).commit();
-                } else {
-                    if(!(myListFragment.isHidden())) {
-                        // 이미 보여지고 있었다면 새로고침
-                        FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-                        myListFragment.getShareItems(0);
+                        headerMenuDialog.dismiss();
                     }
-                    fm.beginTransaction().show(myListFragment).commit();
-                }
+                };
 
-                if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-                if (allListFragment != null) fm.beginTransaction().hide(allListFragment).commit();
+                // 좋아요 글 보기
+                View.OnClickListener likeListBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // TODO: 2020-04-26 좋아요 누른 글 보기
+                        headerMenuDialog.dismiss();
+                    }
+                };
 
-                // 메뉴 활성화
-                setMenuActive(MY_LIST);
+                // 다이얼로그
+                headerMenuDialog = new OnlyVerticalThreeButtonDialog(getContext(), allListBtnListener, myListBtnListener, likeListBtnListener, "모든 글", "내가 쓴 글", "좋아요 누른 글");
+                headerMenuDialog.show();
             }
         });
 
@@ -226,38 +217,6 @@ public class FragmentShare extends Fragment {
         isWrite = true;
         if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
         if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
-    }
-
-    /**
-     * 상단 메뉴 클릭시 리소스 변경해주는 메소드
-     * @param menuType
-     */
-    private void setMenuActive(String menuType) {
-        switch (menuType) {
-            case WRITE:
-                writeBtn.setImageResource(R.drawable.write_btn);
-                listBtn.setImageResource(R.drawable.list_btn_disable);
-                myListBtn.setImageResource(R.drawable.user_btn_disable);
-                writeTextView.setTextColor(getResources().getColor(R.color.mainColor));
-                listTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                myListTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                break;
-            case LIST:
-                writeBtn.setImageResource(R.drawable.write_btn_disable);
-                listBtn.setImageResource(R.drawable.list_btn);
-                myListBtn.setImageResource(R.drawable.user_btn_disable);
-                writeTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                listTextView.setTextColor(getResources().getColor(R.color.mainColor));
-                myListTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                break;
-            case MY_LIST:
-                writeBtn.setImageResource(R.drawable.write_btn_disable);
-                listBtn.setImageResource(R.drawable.list_btn_disable);
-                myListBtn.setImageResource(R.drawable.user_btn);
-                writeTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                listTextView.setTextColor(getResources().getColor(R.color.blackColor));
-                myListTextView.setTextColor(getResources().getColor(R.color.mainColor));
-        }
     }
 
     @Override

@@ -4,6 +4,7 @@
     android:id="@+id/share_recycler_refresh"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -20,6 +21,7 @@
             android:layout_height="match_parent"
             android:text="게시글이 존재하지 않습니다"
             android:textSize="9pt"
+            android:textColor="@color/inactiveColor"
             android:gravity="center"
             android:layout_gravity="center_vertical"
             android:visibility="gone"

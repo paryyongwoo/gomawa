@@ -9,117 +9,50 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="20dp"
-        android:background="@drawable/background">
+        android:background="@color/whiteColor">
 
         <include layout="@layout/header" />
 
-        <LinearLayout
-            android:id="@+id/share_header_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="80dp"
-            android:gravity="center"
-            android:background="@drawable/share_header_background"
-            android:orientation="horizontal" >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical" >
-
-                <ImageButton
-                    android:id="@+id/list_btn"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@null"
-                    android:src="@drawable/list_btn" />
-
-                <TextView
-                    android:id="@+id/list_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mainColor"
-                    android:textSize="10dp"
-                    android:text="목록" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical" >
-
-                <ImageButton
-                    android:id="@+id/write_btn"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@null"
-                    android:src="@drawable/write_btn_disable" />
-
-                <TextView
-                    android:id="@+id/write_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/inactiveColor"
-                    android:textSize="10dp"
-                    android:text="글쓰기"
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical" >
-
-                <ImageButton
-                    android:id="@+id/my_list_btn"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@null"
-                    android:src="@drawable/user_btn_disable" />
-
-                <TextView
-                    android:id="@+id/my_list_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/inactiveColor"
-                    android:textSize="10dp"
-                    android:text="내글보기" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- height 값 wrap 에서 고정 수치로 변경 -->
         <FrameLayout
             android:id="@+id/share_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/share_header_menu" />
+            app:layout_constraintTop_toBottomOf="@+id/header_layout" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/share_floating_button"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:src="@drawable/pen"
-            app:fabSize="normal"
-            android:background="@color/inactiveColor" />
+            android:layout_marginBottom="20dp" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center"
+                android:text="글쓰기"
+                android:textSize="13sp"
+                android:textColor="@color/whiteColor" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/share_floating_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:fabSize="normal"
+                app:elevation="-1dp"
+                android:background="@null"
+                app:backgroundTint="@color/mainColor" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -166,16 +166,19 @@ public class FragmentMyThanks extends Fragment {
         String headerSubTitle = getResources().getString(R.string.sub_title1);
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);
-        TextView headerSubTitleText = rootView.findViewById(R.id.header_subtitle);
-        headerSubTitleText.setText(headerSubTitle);
+        //TextView headerSubTitleText = rootView.findViewById(R.id.header_subtitle);
+        //headerSubTitleText.setText(headerSubTitle);
+
+        ImageButton headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
+        headerMenuBtn.setVisibility(View.INVISIBLE);
 
         /**
          * subTitleArray 데이터 세팅
          */
-        subTitleList.add(getResources().getString(R.string.sub_title1));
-        subTitleList.add(getResources().getString(R.string.sub_title2));
-        subTitleList.add(getResources().getString(R.string.sub_title3));
-        subTitleList.add(getResources().getString(R.string.sub_title4));
+//        subTitleList.add(getResources().getString(R.string.sub_title1));
+//        subTitleList.add(getResources().getString(R.string.sub_title2));
+//        subTitleList.add(getResources().getString(R.string.sub_title3));
+//        subTitleList.add(getResources().getString(R.string.sub_title4));
 
         firstStepBtn = rootView.findViewById(R.id.first_step_btn);
         secondStepBtn = rootView.findViewById(R.id.second_step_btn);
@@ -332,8 +335,8 @@ public class FragmentMyThanks extends Fragment {
         /**
          * 고마운 일 안내 문구 찾기
          */
-        guideSentence = rootView.findViewById(R.id.header_subtitle);
-        guideSentence.setText(subTitleList.get(want));
+        //guideSentence = rootView.findViewById(R.id.header_subtitle);
+        //guideSentence.setText(subTitleList.get(want));
 
         // keyboard 내리기
         hideKeyboad(currentPosition);

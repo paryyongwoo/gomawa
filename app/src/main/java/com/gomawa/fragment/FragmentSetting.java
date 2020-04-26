@@ -75,8 +75,8 @@ public class FragmentSetting extends Fragment {
         // 헤더 타이틀과 서브타이틀 Text 초기화
         TextView headerTitle = rootView.findViewById(R.id.header_title);
         headerTitle.setText(getResources().getString(R.string.fragment_setting_header_title));
-        TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
-        headerSubTitle.setText(getResources().getString(R.string.fragment_setting_header_sub_title));
+        //TextView headerSubTitle = rootView.findViewById(R.id.header_subtitle);
+        //headerSubTitle.setText(getResources().getString(R.string.fragment_setting_header_sub_title));
 
         // 닉네임을 CommonUtils.Member 에서 가져와서 표시
         nicknameTextView.setText(CommonUtils.getMember().getNickName());

@@ -66,18 +66,16 @@ public class UpdateActivity extends Activity {
         // DB 작업을 위해 받아놓는 ShareItem ID
         final Long shareItemId = intent.getExtras().getLong("id");
 
-        // 백 버튼 리스너
-        View.OnClickListener backBtnListener = new View.OnClickListener() {
+        // 백 버튼 Listener
+        ImageButton backBtn = findViewById(R.id.activity_update_header_backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
                 setResult(Constants.RESULT_CANCEL, intent);
                 finish();
             }
-        };
-
-        ImageButton backBtn = findViewById(R.id.activity_update_header_backBtn);
-        backBtn.setOnClickListener(backBtnListener);
+        });
 
         // 타이틀 설정
         TextView titleTextView = findViewById(R.id.activity_update_header_title);
@@ -135,8 +133,8 @@ public class UpdateActivity extends Activity {
             }
         });
 
-        // 확인 버튼 Listener
-        Button okBtn = findViewById(R.id.activity_update_bottom_ok_button);
+        // 완료 버튼 Listener
+        Button okBtn = findViewById(R.id.activity_update_header_okBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,10 +155,13 @@ public class UpdateActivity extends Activity {
                 updateShareItem(body, items);
             }
         });
+    }
 
-        // 취소 버튼 Listener
-        Button cancelBtn = findViewById(R.id.activity_update_bottom_cancel_button);
-        cancelBtn.setOnClickListener(backBtnListener);
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(Constants.RESULT_CANCEL, intent);
+        finish();
     }
 
     @Override

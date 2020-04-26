@@ -29,18 +29,6 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp" >
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:gravity="center"
-                android:text="글쓰기"
-                android:textSize="13sp"
-                android:textColor="@color/whiteColor" />
-
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/share_floating_button"
                 android:layout_width="wrap_content"
@@ -49,8 +37,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:fabSize="normal"
                 app:elevation="-1dp"
-                android:background="@null"
-                app:backgroundTint="@color/mainColor" />
+                android:src="@drawable/write_floatting"
+                app:maxImageSize="56dp"
+                app:backgroundTint="@null" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

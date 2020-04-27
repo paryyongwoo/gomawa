@@ -33,6 +33,8 @@ public class FragmentShare extends Fragment {
      */
     private ViewGroup rootView = null;
 
+    private TextView headerSubText = null;
+
     /**
      * 글쓰기, 목록, 내글 프래그먼트
      */
@@ -102,6 +104,27 @@ public class FragmentShare extends Fragment {
         inflater.inflate(R.menu.menu_toolbar, menu);
     }
 
+    /**
+     * type 을 인자로 넣으면 알맞는 문자열로 subTitle 을 설정해주는 메소드
+     */
+    public void setSubTitle(int type) {
+        String text = "";
+
+        switch (type) {
+            case Constants.ALL_LIST:
+                text = "전체 글";
+                break;
+            case Constants.MY_LIST:
+                text = "내 글";
+                break;
+            case Constants.LIKE_LIST:
+                text = "좋아요 누른 글";
+                break;
+        }
+
+        headerSubText.setText(text);
+    }
+
     private void initView() {
         /**
          * 헤더 텍스트 설정
@@ -113,9 +136,8 @@ public class FragmentShare extends Fragment {
         TextView headerText = rootView.findViewById(R.id.header_title);
         headerText.setText(headerTitle);
 
-        // TODO: 2020-04-26 subText 작업
-        TextView headerSubText = rootView.findViewById(R.id.header_sub_title);
-        headerSubText.setVisibility(View.INVISIBLE);
+        headerSubText = rootView.findViewById(R.id.header_sub_title);
+        setSubTitle(Constants.ALL_LIST);
 
         /**
          * 헤더 버튼 설정
@@ -145,6 +167,8 @@ public class FragmentShare extends Fragment {
                         if(myListFragment != null) { fm.beginTransaction().hide(myListFragment).commit(); }
                         if(likeListFragment != null) { fm.beginTransaction().hide(likeListFragment).commit(); }
 
+                        setSubTitle(Constants.ALL_LIST);
+
                         headerMenuDialog.dismiss();
                     }
                 };
@@ -169,6 +193,8 @@ public class FragmentShare extends Fragment {
                         if(allListFragment != null) { fm.beginTransaction().hide(allListFragment).commit(); }
                         if(likeListFragment != null) { fm.beginTransaction().hide(likeListFragment).commit(); }
 
+                        setSubTitle(Constants.MY_LIST);
+
                         headerMenuDialog.dismiss();
                     }
                 };
@@ -192,6 +218,8 @@ public class FragmentShare extends Fragment {
                         if(likeListFragment != null) { fm.beginTransaction().show(likeListFragment).commit(); }
                         if(allListFragment != null) { fm.beginTransaction().hide(allListFragment).commit(); }
                         if(myListFragment != null) { fm.beginTransaction().hide(myListFragment).commit(); }
+
+                        setSubTitle(Constants.LIKE_LIST);
 
                         headerMenuDialog.dismiss();
                     }

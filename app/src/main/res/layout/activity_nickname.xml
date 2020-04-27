@@ -62,7 +62,8 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="80dp"
             android:text="New Nickname"
-            android:gravity="center" />
+            android:gravity="center"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/activity_nickname_deleteBtn"

@@ -37,8 +37,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentShareList extends Fragment {
-    // ALL or MY
+    // ALL or MY or LIKE
     private int type;
+
     // 현재 게시물 페이지
     private int page = 0;
 
@@ -55,19 +56,13 @@ public class FragmentShareList extends Fragment {
     // Recycler View Adapter
     private ShareRecyclerViewAdapter shareRecyclerViewAdapter = null;
 
-    // 앨범에서 가져오기 request code
-    private static final int PICK_FROM_ALBUM = 1;
-
-    // initView 가 실행되었는지 체크하는 스위치
-    private boolean initViewCheck = false;
-
     // 스와이프 새로고침 레이아웃
     private SwipeRefreshLayout swipeRefreshLayout = null;
 
     // 게시글이 존재하지 않습니다 문구
     private TextView noContentTextView = null;
 
-    // 이 리스트가 All 인 지 MY 인 지를 가져오기 위한 생성자
+    // 이 리스트의 Type을 가져오기 위한 생성자
     public FragmentShareList(int type) {
         this.type = type;
     }
@@ -127,7 +122,13 @@ public class FragmentShareList extends Fragment {
             this.page += 1;
         } else if(type == Constants.MY_LIST) {
             // 나의 게시물 보기
+            // TODO: 2020-04-27 Page & order
+            // TODO: 2020-04-27 memberID 를 매개변수로 보내기
             call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByMemberKey(memberKey);
+        } else if(type == Constants.LIKE_LIST) {
+            // 좋아요 누른 게시물 보기
+            // TODO: 2020-04-27 Page & order
+            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByLike(CommonUtils.getMember().getId());
         }
 
         Callback<List<ShareItem>> callback = new Callback<List<ShareItem>>() {
@@ -202,9 +203,6 @@ public class FragmentShareList extends Fragment {
         // Adapter 설정
         shareRecyclerViewAdapter = new ShareRecyclerViewAdapter(shareItemList, getActivity(), this);
         recyclerView.setAdapter(shareRecyclerViewAdapter);
-
-        // 다음 RequestApi 부터는 initView 를 실행하지 않음
-        initViewCheck = true;
 
         // 게시글 없을때 문구
         noContentTextView = rootView.findViewById(R.id.no_content);

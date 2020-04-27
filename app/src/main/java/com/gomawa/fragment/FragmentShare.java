@@ -32,21 +32,13 @@ public class FragmentShare extends Fragment {
      * 뷰
      */
     private ViewGroup rootView = null;
-    private ListView shareListView = null;
-    private ImageButton writeBtn = null;
-    private ImageButton listBtn = null;
-    private ImageButton myListBtn = null;
-    private TextView writeTextView = null;
-    private TextView listTextView = null;
-    private TextView myListTextView = null;
-    private TextView pageTextView = null;
 
     /**
      * 글쓰기, 목록, 내글 프래그먼트
      */
-    private Fragment writeFragment = null;
     private Fragment allListFragment = null;
     private Fragment myListFragment = null;
+    private Fragment likeListFragment = null;
 
     /**
      * 프래그먼트 매니저
@@ -57,13 +49,6 @@ public class FragmentShare extends Fragment {
      * 헤더 메뉴 버튼 다이얼로그
      */
     private OnlyVerticalThreeButtonDialog headerMenuDialog = null;
-
-    /**
-     * 현재 선택한 메뉴 값
-     */
-    private final String WRITE = "WRITE";
-    private final String LIST = "LIST";
-    private final String MY_LIST = "MY_LIST";
 
     public boolean isWrite = false;
 
@@ -145,8 +130,6 @@ public class FragmentShare extends Fragment {
                     @Override
                     public void onClick(View view) {
                         if(allListFragment == null) {
-                            Toast.makeText(getContext(), "allList 진입", Toast.LENGTH_SHORT).show();
-
                             // allListFragment 가 한 번도 만들어지지 않았을 때
                             allListFragment = new FragmentShareList(Constants.ALL_LIST);
                             fm.beginTransaction().add(R.id.share_frame_layout, allListFragment, "allListFragment").commit();
@@ -160,6 +143,7 @@ public class FragmentShare extends Fragment {
 
                         if(allListFragment != null) { fm.beginTransaction().show(allListFragment).commit(); }
                         if(myListFragment != null) { fm.beginTransaction().hide(myListFragment).commit(); }
+                        if(likeListFragment != null) { fm.beginTransaction().hide(likeListFragment).commit(); }
 
                         headerMenuDialog.dismiss();
                     }
@@ -170,8 +154,6 @@ public class FragmentShare extends Fragment {
                     @Override
                     public void onClick(View view) {
                         if(myListFragment == null) {
-                            Toast.makeText(getContext(), "myList 진입", Toast.LENGTH_SHORT).show();
-
                             // myListFragment 가 한 번도 만들어지지 않았을 때
                             myListFragment = new FragmentShareList(Constants.MY_LIST);
                             fm.beginTransaction().add(R.id.share_frame_layout, myListFragment, "myListFragment").commit();
@@ -185,6 +167,7 @@ public class FragmentShare extends Fragment {
 
                         if(myListFragment != null) { fm.beginTransaction().show(myListFragment).commit(); }
                         if(allListFragment != null) { fm.beginTransaction().hide(allListFragment).commit(); }
+                        if(likeListFragment != null) { fm.beginTransaction().hide(likeListFragment).commit(); }
 
                         headerMenuDialog.dismiss();
                     }
@@ -194,7 +177,22 @@ public class FragmentShare extends Fragment {
                 View.OnClickListener likeListBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // TODO: 2020-04-26 좋아요 누른 글 보기
+                        if(likeListFragment == null) {
+                            // likeListFragment 가 한 번도 만들어지지 않았을 때
+                            likeListFragment = new FragmentShareList(Constants.LIKE_LIST);
+                            fm.beginTransaction().add(R.id.share_frame_layout, likeListFragment, "likeListFragment").commit();
+                        } else {
+                            if(!(likeListFragment.isHidden())) {
+                                // likeListFragment 가 이미 보여지고 있을 때 ~ 새로고침
+                                FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("likeListFragment");
+                                fragment.getShareItems(0);
+                            }
+                        }
+
+                        if(likeListFragment != null) { fm.beginTransaction().show(likeListFragment).commit(); }
+                        if(allListFragment != null) { fm.beginTransaction().hide(allListFragment).commit(); }
+                        if(myListFragment != null) { fm.beginTransaction().hide(myListFragment).commit(); }
+
                         headerMenuDialog.dismiss();
                     }
                 };
@@ -221,11 +219,11 @@ public class FragmentShare extends Fragment {
     /**
      * 글작성 완료 후에, 최신 상태의 shareList를 가져오기 위한 함수
      */
-    public void moveShareList() {
-        isWrite = true;
-        if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-        if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
-    }
+//    public void moveShareList() {
+//        isWrite = true;
+//        if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
+//        if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

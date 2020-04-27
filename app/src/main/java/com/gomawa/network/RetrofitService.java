@@ -37,6 +37,9 @@ public interface RetrofitService {
     @GET("/api/comment/{shareItemId}")
     Call<List<Comment>> getCommentByShareItemId(@Path("shareItemId") Long shareItemId);
 
+    @GET("/api/shareItem/like/{memberId}")
+    Call<List<ShareItem>> getShareItemByLike(@Path("memberId") Long memberId);
+
 
 
     //POST

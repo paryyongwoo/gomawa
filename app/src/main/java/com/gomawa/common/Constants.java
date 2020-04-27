@@ -14,6 +14,7 @@ public class Constants {
     // ShareItem Fragment 에서 All List 인지 My List 인지 구분할 때 쓰는 상수
     public static final int ALL_LIST = 99;
     public static final int MY_LIST = 999;
+    public static final int LIKE_LIST = 9999;
 
     // ShareItem Update / Write 액티비티 request code & result code
     public static final int REQUEST_UPDATE = 55;

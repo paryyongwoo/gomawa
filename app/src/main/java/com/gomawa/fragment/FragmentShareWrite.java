@@ -188,7 +188,7 @@ public class FragmentShareWrite extends Fragment {
 
                             // TODO: 2020-04-22 uploadImage 초기화
 
-                            parentFragment.moveShareList();
+                            //parentFragment.moveShareList();
                         } else {
                             Toast.makeText(getContext(), "setShareItem failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }

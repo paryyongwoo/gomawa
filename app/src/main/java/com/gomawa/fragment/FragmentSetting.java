@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,22 @@ import com.gomawa.common.ImageUtils;
 import com.gomawa.activity.NicknameActivity;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
+import com.gomawa.dto.Member;
+import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentSetting extends Fragment {
     // mActivity & mContext
@@ -324,8 +335,36 @@ public class FragmentSetting extends Fragment {
             // 프로필 이미지 파일에 tempFile 을 대입
             ImageUtils.profileImageFile = tempFile;
 
-            // 프로필 이미지를 바꿔줌
-            Picasso.get().load(tempFile).fit().centerCrop().into(headerImageView);
+            // 프로필 이미지 파일 서버로 보낼 준비
+            MultipartBody.Part body = null;
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), tempFile);
+            body = MultipartBody.Part.createFormData("file", tempFile.getName(), requestFile);
+
+            RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{id: " + CommonUtils.getMember().getId() + "}");
+
+            Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().updateMemberProfileImageUrl(body, items);
+            Callback<Member> callback = new Callback<Member>() {
+                @Override
+                public void onResponse(Call<Member> call, Response<Member> response) {
+                    if(response.isSuccessful()) {
+                        Member member = response.body();
+
+                        CommonUtils.setMember(member);
+
+                        // 세팅 프래그먼트의 프로필 이미지를 바꿔줌
+                        Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+                    } else {
+                        Log.d("api 응답은 왔으나 실패", "status: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Member> call, Throwable t) {
+                    Log.d("api 로그인 통신 실패", t.getMessage());
+                }
+            };
+            call.enqueue(callback);
+
 
             // todo: 복사된 이미지 파일의 삭제가 이루어져야함. 나중에 S3에 복사된 이미지를 저장한 후에 삭제하는 코드를 적으면 되지 않을까 싶음
             // 지금 기능으로는 복사된 이미지 파일의 삭제가 이루어지지 않으니, 일일이 삭제해야함

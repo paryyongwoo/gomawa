@@ -9,6 +9,7 @@ import com.gomawa.dto.ShareItem;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -82,6 +83,11 @@ public interface RetrofitService {
     @Headers("Accept: application/json")
     @PUT("/api/comment")
     Call<Void> updateComment(@Body Comment comment);
+
+    @Headers("Accept: application/hal+json")
+    @Multipart
+    @PUT("/api/member/profileImageUrl")
+    Call<Member> updateMemberProfileImageUrl(@Part MultipartBody.Part file, @Part("items") RequestBody items);
 
     // DELETE
     @DELETE("/api/member/{key}")

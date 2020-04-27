@@ -173,8 +173,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
          */
 
         // 프로필 이미지 표시
-        String imageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png"; // 기능 미 구현, 임시 이미지의 URL
-        Glide.with(mContext).load(imageUrl).into(holder.profileImageView);
+        ImageUtils.setProfileImageOnCircleImageView(mContext, holder.profileImageView, shareItemSelected.getMember().getProfileImgUrl());
 
         // 닉네임 표시
         String nickName = shareItemSelected.getMember().getNickName();

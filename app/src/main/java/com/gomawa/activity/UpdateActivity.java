@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
 
@@ -83,9 +84,7 @@ public class UpdateActivity extends Activity {
 
         // 프로필 이미지 설정
         CircleImageView profileImageView = findViewById(R.id.activity_update_shareItem_header_profile_imageView);
-        //String profileImageUrl = CommonUtils.getMember().getProfileImgUrl();
-        String profileImageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png"; // 기능 미 구현, 임시 이미지의 URL
-        Glide.with(mContext).load(profileImageUrl).into(profileImageView);
+        ImageUtils.setProfileImageOnCircleImageView(mContext, profileImageView, CommonUtils.getMember().getProfileImgUrl());
 
         // 닉네임 설정
         TextView nickNameTextView = findViewById(R.id.activity_update_shareItem_header_nickName);

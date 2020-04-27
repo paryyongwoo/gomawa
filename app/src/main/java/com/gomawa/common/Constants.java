@@ -1,5 +1,7 @@
 package com.gomawa.common;
 
+import com.gomawa.R;
+
 public class Constants {
     // 액티비티 전환 간 Intent 를 위한 상수 - 현재는 닉네임 액티비티 불러오는데 쓰이고 있음
     public static final int REQUEST_RESULT = 0;

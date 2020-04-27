@@ -79,8 +79,11 @@ public class FragmentSetting extends Fragment {
         // 헤더 이미지 변경
         headerImageView = rootView.findViewById(R.id.header_imageView);
         headerImageView.setVisibility(View.VISIBLE);
-        //Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).into(headerImageView);
-        headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
+        if(CommonUtils.getMember().getProfileImgUrl() == null) {
+            headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
+        } else {
+            Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+        }
 
         // 헤더 타이틀 Text 초기화
         TextView headerTitle = rootView.findViewById(R.id.header_title);

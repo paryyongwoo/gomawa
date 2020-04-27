@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.adapter.CommentRecyclerViewAdapter;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Constants;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.Comment;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
@@ -112,8 +115,7 @@ public class CommentActivity extends Activity {
          */
         // 프로필 이미지
         CircleImageView profileImageView = findViewById(R.id.activity_comment_body_profile_imageView);
-        String imageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png"; // 기능 미 구현, 임시 이미지의 URL
-        Glide.with(mContext).load(imageUrl).into(profileImageView);
+        ImageUtils.setProfileImageOnCircleImageView(mContext, profileImageView, parentShareItem.getMember().getProfileImgUrl());
 
         // 닉네임
         TextView nickNameTextView = findViewById(R.id.activity_comment_body_nickName_textView);

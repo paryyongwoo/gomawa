@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Constants;
+import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dialog.OnlyVerticalTwoButtonDialog;
 import com.gomawa.dialog.UpdateCommentDialog;
@@ -160,9 +162,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         Member member = comment.getMember();
 
         // 프로필 이미지
-        //String profileImageUrl = member.getProfileImgUrl();
-        String profileImageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
-        Glide.with(mContext).load(profileImageUrl).into(holder.profileImageView);
+        ImageUtils.setProfileImageOnCircleImageView(mContext, holder.profileImageView, member.getProfileImgUrl());
 
         // 닉네임
         String nickName = member.getNickName();

@@ -12,11 +12,14 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
+import com.gomawa.R;
 import com.gomawa.dto.Member;
 
 import java.io.File;
@@ -26,10 +29,27 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ImageUtils {
+
+    // 프로필 이미지 디폴트 값
+    public static final int DEFAULT_PROFILE_IMAGE = R.drawable.user_btn_disable;
 
     // 프로필 이미지 파일 저장 변수
     public static File profileImageFile;
+
+    /**
+     * Circle ImageView 에 프로필 이미지 설정해주는 함수
+     * 프로필 이미지가 null 이면 default Drawable 이 설정됨
+     */
+    public static void setProfileImageOnCircleImageView(Context mContext, CircleImageView view, String url) {
+        if(url == null) {
+            view.setImageResource(DEFAULT_PROFILE_IMAGE);
+        } else {
+            Glide.with(mContext).load(url).into(view);
+        }
+    }
 
     /**
      * 빈 이미지 파일 만드는 함수

@@ -101,7 +101,8 @@
                 android:layout_height="28dp"
                 android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"
-                android:text="likeNum" />
+                android:text="likeNum"
+                android:textColor="@color/inactiveColor"/>
 
 
         </LinearLayout>
@@ -135,7 +136,8 @@
             android:id="@+id/recyclerView_item_share_bottom_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comment" />
+            android:text="Comment"
+            android:textColor="@color/inactiveColor"/>
 
     </LinearLayout>
 

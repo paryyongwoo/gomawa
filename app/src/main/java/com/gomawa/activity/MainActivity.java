@@ -340,8 +340,9 @@ public class MainActivity extends AppCompatActivity {
             Member member = new Member();
 
             // Properties 에 닉네임 값이 담겨있음.
-            Map<String, String> nickname = result.getProperties();
-            member.setNickName(nickname.get("nickname"));
+            Map<String, String> properties = result.getProperties();
+            member.setNickName(properties.get("nickname"));
+            member.setProfileImgUrl(properties.get("profile_image")); // 프로필 이미지가 기본 이미지면 null 값이 입력됨
             member.setKey(result.getId());
 
             // 현재 날짜를 회원 가입 날짜로 저장

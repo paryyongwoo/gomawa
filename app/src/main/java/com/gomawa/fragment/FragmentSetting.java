@@ -279,7 +279,7 @@ public class FragmentSetting extends Fragment {
         // 갤러리에서 이미지 가져온 후 호출됨
         } else if(requestCode == Constants.PICK_FROM_GALLREY) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                // todo: 아무 이미지도 선택하지 않았을 때 (백 버튼)
+                Toast.makeText(mContext, "프로필 이미지 변경이 취소되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
                 // 이미지를 선택했을 때
                 // uri를 path로 전환
@@ -316,7 +316,10 @@ public class FragmentSetting extends Fragment {
         // 카메라에서 이미지 가져온 후 호출됨
         }else if(requestCode == Constants.PICK_FROM_CAMERA) {
             if(resultCode == Activity.RESULT_CANCELED) {
-                // todo: 사진을 찍지 않았을 때 여기서 처리
+                Toast.makeText(mContext, "프로필 이미지 변경이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+
+                // 임시 이미지 파일 삭제
+                tempFile.delete();
             } else {
                 if(tempFile.exists()) {
                     // 원본 이미지 보호를 하지 않음 = 찍은 사진이 CROP되어 저장됨
@@ -332,9 +335,6 @@ public class FragmentSetting extends Fragment {
 
         // CROP 액티비티 후에 실행
         }else if(requestCode == Constants.CROP_IMAGE) {
-            // 프로필 이미지 파일에 tempFile 을 대입
-            ImageUtils.profileImageFile = tempFile;
-
             // 프로필 이미지 파일 서버로 보낼 준비
             MultipartBody.Part body = null;
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), tempFile);
@@ -352,17 +352,22 @@ public class FragmentSetting extends Fragment {
                         CommonUtils.setMember(member);
 
                         // 세팅 프래그먼트의 프로필 이미지를 바꿔줌
+                        headerImageView.setImageResource(ImageUtils.DEFAULT_PROFILE_IMAGE);
                         Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
-
-                        tempFile.delete();
                     } else {
                         Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                     }
+
+                    // 임시 이미지 파일 삭제
+                    tempFile.delete();
                 }
 
                 @Override
                 public void onFailure(Call<Member> call, Throwable t) {
                     Log.d("api 로그인 통신 실패", t.getMessage());
+
+                    // 임시 이미지 파일 삭제
+                    tempFile.delete();
                 }
             };
             call.enqueue(callback);

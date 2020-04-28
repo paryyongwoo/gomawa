@@ -353,6 +353,8 @@ public class FragmentSetting extends Fragment {
 
                         // 세팅 프래그먼트의 프로필 이미지를 바꿔줌
                         Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+
+                        tempFile.delete();
                     } else {
                         Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                     }
@@ -364,11 +366,6 @@ public class FragmentSetting extends Fragment {
                 }
             };
             call.enqueue(callback);
-
-
-            // todo: 복사된 이미지 파일의 삭제가 이루어져야함. 나중에 S3에 복사된 이미지를 저장한 후에 삭제하는 코드를 적으면 되지 않을까 싶음
-            // 지금 기능으로는 복사된 이미지 파일의 삭제가 이루어지지 않으니, 일일이 삭제해야함
-            // 카메라로 찍은 사진도 삭제해야하나?
         }
     }
 }

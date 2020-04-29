@@ -59,7 +59,7 @@ public class AuthUtils {
     private static OAuthLogin mOAuthLoginModule = OAuthLogin.getInstance();
 
     // 로그아웃
-    public static void logout(Context mContext) {
+    public static void logout(Context mContext, final Activity mActivity) {
         switch (services) {
             case NONE:
                 // 로그인이 되어 있지 않은 상황에서 로그아웃 호출 : 에러
@@ -75,12 +75,22 @@ public class AuthUtils {
                 editor.putBoolean("isLoginNaver", false);
 
                 editor.commit();
+
+                // 액티비티 이동
+                Intent intent = new Intent(mActivity, MainActivity.class);
+                mActivity.startActivity(intent);
+                mActivity.finish();
                 break;
             case KAKAO:
                 UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
                     @Override
                     public void onCompleteLogout() {
                         // 로그아웃이 완료되었을 때의 처리
+
+                        // 액티비티 이동
+                        Intent intent = new Intent(mActivity, MainActivity.class);
+                        mActivity.startActivity(intent);
+                        mActivity.finish();
                     }
                 });
                 break;
@@ -88,8 +98,6 @@ public class AuthUtils {
 
         // 로그아웃이 완료되면 services 값 변경
         services = Services.NONE;
-
-        // 액티비티 이동은, ShareActivity 에서 백버튼 눌렀을 때에는 처리하지 않으므로 여기서 처리하지 않음
     }
 
     // 회원 탈퇴
@@ -102,6 +110,14 @@ public class AuthUtils {
             case NAVER:
                 // 네이버 회원 탈퇴는 asyncTask 를 이용해야함 - 그렇지 않으면 android.os.NetworkOnMainThreadException 발생
                 // 무조건 로그아웃은 진행되니 회원 탈퇴 여부와 관계없이 isUnLinkSuccess 를 true 로 줘 액티비티를 이동시킴
+                // SharedPreference
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("isLogin", Context.MODE_PRIVATE);
+                // 카카오는 자동 로그인이 존재하므로 네이버만
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoginNaver", false);
+
+                editor.commit();
+
                 // 로그아웃 & 회원탈퇴
                 new DeleteTokenTask().execute(mContext, mActivity);
                 break;
@@ -109,17 +125,8 @@ public class AuthUtils {
                 UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
                     @Override
                     public void onSuccess(Long result) {
-                        // DB 에서 Member 삭제
-                        new RequestApi().execute();
-
-                        // services 변경
-                        services = Services.NONE;
-
-                        // 회원 탈퇴 성공
-                        Intent intent = new Intent(mContext, MainActivity.class);
-                        mActivity.startActivity(intent);
-
-                        mActivity.finish();
+                        // DB 에서 Member 삭제 후 액티비티 이동
+                        deleteMemberByKey(mContext, mActivity);
                     }
 
                     // TODO: 2020-04-11 카카오 회원 탈퇴 실패 시 예외 처리
@@ -175,52 +182,44 @@ public class AuthUtils {
             }
 
             // DB 에서 Member 삭제
-            new RequestApi().execute();
-
-            // services 변경
-            services = Services.NONE;
-
-            // 회원 탈퇴 이후 ( 실패해도 ) 액티비티 이동
-            Intent intent = new Intent(mContext, MainActivity.class);
-            mActivity.startActivity(intent);
-
-            mActivity.finish();
+            deleteMemberByKey(mContext, mActivity);
 
             return null;
         }
     }
 
-    // TODO: 2020-04-11 Task 있어야 할 자리로 옮기기
-    // DB 에서 Member 를 DELETE 하는 Task
-    public static class RequestApi extends AsyncTask {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            // 삭제할 멤버 ( 현재 로그인 되어 있는 멤버 )
-            Member member = CommonUtils.getMember();
+    // DB 에서 Member 삭제해주는 메소드
+    private static void deleteMemberByKey(final Context mContext, final Activity mActivity) {
+        // 삭제할 멤버 ( 현재 로그인 되어 있는 멤버 )
+        Member member = CommonUtils.getMember();
 
-            // 해당 멤버의 Key 값
-            Long key = member.getKey();
+        // 해당 멤버의 Key 값
+        Long key = member.getKey();
 
-            Log.d("현재 멤버의 키 값", key.toString());
+        // 서버와 통신
+        Call<Void> call = RetrofitHelper.getInstance().getRetrofitService().deleteMemberByKey(key);
+        Callback<Void> callback = new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()) {
+                    // services 변경
+                    services = Services.NONE;
 
-            // 서버와 통신
-            Call<Void> call = RetrofitHelper.getInstance().getRetrofitService().deleteMemberByKey(key);
-            Callback<Void> callback = new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                   // DELETE 성공
+                    // 회원 탈퇴 성공
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    mActivity.startActivity(intent);
+
+                    mActivity.finish();
+                } else {
+                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    // TODO: 2020-04-11 Delete Member By Key 통신 실패 예외 처리
-                    Log.d("api 로그인 통신 실패", t.getMessage());
-                }
-            };
-            call.enqueue(callback);
-
-
-            return null;
-        }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("api 로그인 통신 실패", t.getMessage());
+            }
+        };
+        call.enqueue(callback);
     }
 }

@@ -208,16 +208,11 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener okBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // 로그아웃
-                        AuthUtils.logout(mContext);
-
                         // 다이얼로그 종료
                         horizontalTwoButtonDialog.dismiss();
 
-                        // 액티비티 이동
-                        Intent intent = new Intent(mActivity, MainActivity.class);
-                        startActivity(intent);
-                        mActivity.finish();
+                        // 로그아웃
+                        AuthUtils.logout(mContext, mActivity);
                     }
                 };
 
@@ -225,7 +220,7 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener cancelBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        verticalTwoButtonDialog.dismiss();
+                        horizontalTwoButtonDialog.dismiss();
                     }
                 };
 

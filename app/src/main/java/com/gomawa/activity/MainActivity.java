@@ -2,6 +2,7 @@ package com.gomawa.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,8 +31,11 @@ import com.gun0912.tedpermission.TedPermission;
 import com.kakao.auth.ApiErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.auth.authorization.accesstoken.AccessToken;
+import com.kakao.auth.authorization.accesstoken.AccessTokenManager;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.usermgmt.response.model.UserAccount;
@@ -116,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
         // 카카오 로그인 초기화 작업
         sessionCallback = new SessionCallback();
         Session.getCurrentSession().addCallback(sessionCallback);
-        // 자동 로그인 - 카카오로 로그인 한 적이 있으면 자동으로 로그인 된다고 함. 아직 안해봄.
+        // 자동 로그인 - 카카오로 로그인한 후 로그아웃 없이 종료할 경우 자동으로 로그인 됨
         Session.getCurrentSession().checkAndImplicitOpen();
+
 
         // 네이버 자동로그인을 막기 위해 SharePreferences 입력
         SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
@@ -274,13 +279,15 @@ public class MainActivity extends AppCompatActivity {
                 addMemberAfterLogin(member);
             } else {
                 // 로그인 실패
-                AuthUtils.logout(mContext);
+                // 네이버 로그아웃
+                mOAuthLoginModule.logout(mContext);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
 
-            AuthUtils.logout(mContext);
+            // 네이버 로그아웃
+            mOAuthLoginModule.logout(mContext);
         }
     }
 
@@ -395,7 +402,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
                     }
 
-                    AuthUtils.logout(mContext);
+                    // 카카오 로그아웃
+                    UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                        @Override
+                        public void onCompleteLogout() {}
+                    });
                 }
             }
 
@@ -403,7 +414,11 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<Member> call, Throwable t) {
                 Log.d("api 로그인 통신 실패", t.getMessage());
 
-                AuthUtils.logout(mContext);
+                // 카카오 로그아웃
+                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                    @Override
+                    public void onCompleteLogout() {}
+                });
 
                 // 개발용 : 로그인 실패해도 액티비티 전환
                 // Intent intent = new Intent(mContext, ShareActivity.class);

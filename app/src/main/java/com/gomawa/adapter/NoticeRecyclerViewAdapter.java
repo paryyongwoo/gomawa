@@ -20,17 +20,15 @@ import java.util.Date;
 import java.util.List;
 
 public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecyclerViewAdapter.NoticeRecyclerViewHolder> {
-    // Context & Activity
+    // Context
     private Context mContext = null;
-    private NoticeActivity mActivity;
 
     // 공지사항 리스트
     private List<NoticeItem> noticeItemList;
 
     // 생성자 - 리스트 초기화, Activity 가져오기
-    public NoticeRecyclerViewAdapter(List<NoticeItem> noticeItemList, NoticeActivity mActivity) {
+    public NoticeRecyclerViewAdapter(List<NoticeItem> noticeItemList) {
         this.noticeItemList = noticeItemList;
-        this.mActivity = mActivity;
     }
 
     // 뷰 홀더
@@ -38,9 +36,9 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
         // NoticeItem 의 전체 레이아웃 ( Listener )
         LinearLayout linearLayout;
 
-        // 제목과 날짜
         TextView titleTextView;
         TextView regDateTextView;
+        TextView contentTextView;
 
         public NoticeRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -48,7 +46,8 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
             linearLayout = itemView.findViewById(R.id.recyclerView_item_notice_layout);
 
             titleTextView = itemView.findViewById(R.id.recyclerView_item_notice_title);
-            regDateTextView = itemView.findViewById(R.id.recyclerView_item_notice_regDate);
+            regDateTextView = itemView.findViewById(R.id.recyclerView_item_notice_date);
+            contentTextView = itemView.findViewById(R.id.recyclerView_item_notice_content);
         }
     }
 
@@ -68,23 +67,18 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
     public void onBindViewHolder(@NonNull NoticeRecyclerViewHolder holder, int position) {
         final NoticeItem noticeItemSelected = noticeItemList.get(position);
 
-        // 항목 선택
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // NoticeActivity 의 View 작업을 위해 NoticeActivity의 메소드를 호출함
-                mActivity.selectItem(noticeItemSelected);
-            }
-        });
-
         // 공지사항 제목
         String title = noticeItemSelected.getTitle();
         holder.titleTextView.setText(title);
 
         // 공지사항 날짜
         Date regDate = noticeItemSelected.getRegDate();
-        String regDateStr = CommonUtils.convertFromDateToString(regDate);
+        String regDateStr = CommonUtils.convertFromDateToString(regDate, "YYYY.MM.dd");
         holder.regDateTextView.setText(regDateStr);
+
+        // 공지사항 본문
+        String content = noticeItemSelected.getDsc();
+        holder.contentTextView.setText(content);
     }
 
     @Override

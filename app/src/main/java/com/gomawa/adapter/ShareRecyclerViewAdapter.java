@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
+import com.gomawa.activity.ImageActivity;
 import com.gomawa.activity.ShareActivity;
 import com.gomawa.activity.UpdateActivity;
 import com.gomawa.common.CommonUtils;
@@ -186,10 +187,19 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         holder.dateTextView.setText(dateString);
 
         // 배경 이미지 표시
-        String backgroundImageUrl = shareItemSelected.getBackgroundUrl();
+        final String backgroundImageUrl = shareItemSelected.getBackgroundUrl();
         if(backgroundImageUrl != null) {
             // DB 에서 가져온 ShareItem 의 BackgroundURL 이 null 이면 아래 코드를 진행하지 않음 - 기본 src 속성으로 지정된 drawable 이 표시됨
             Picasso.get().load(backgroundImageUrl).into(holder.backgroundImageView);
+
+            holder.backgroundImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mActivity, ImageActivity.class);
+                    intent.putExtra("url", backgroundImageUrl);
+                    mActivity.startActivity(intent);
+                }
+            });
         } else {
             holder.backgroundImageView.setImageResource(ImageUtils.DEFAULT_BACKGROUND_IMAGE);
         }

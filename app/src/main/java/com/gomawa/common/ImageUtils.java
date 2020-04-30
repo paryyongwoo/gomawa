@@ -56,12 +56,28 @@ public class ImageUtils {
     }
 
     /**
-     * 빈 이미지 파일 만드는 함수 ( for Profile Image )
+     * 빈 이미지 파일 만드는 함수
+     * 1. ProfileIamge
+     * 2. ShareItem BackgroundImage
      */
     public static File createProfileImageFile() throws IOException {
         // 이미지 파일 이름
         String timeStamp = new SimpleDateFormat("YYYYMMddHHmmssSSS", Locale.KOREA).format(new Date());
         String imageFileName = CommonUtils.getMember().getId() + "_ProfileImage_" + timeStamp + "_";
+
+        // 이미지 저장 폴더 ( gomawa_temp )
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/gomawa_temp");
+        if(!storageDir.exists()) storageDir.mkdir();
+
+        // 빈 파일 생성
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        return image;
+    }
+    public static File createShareItemBackgroundImageFile() throws IOException {
+        // 이미지 파일 이름
+        String timeStamp = new SimpleDateFormat("YYYYMMddHHmmssSSS", Locale.KOREA).format(new Date());
+        String imageFileName = CommonUtils.getMember().getId() + "_BackgroundImage_" + timeStamp + "_";
 
         // 이미지 저장 폴더 ( gomawa_temp )
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/gomawa_temp");

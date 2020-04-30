@@ -19,7 +19,7 @@ ToDO 20200427
 *4. S3 이미지가 안바뀜 - S3에 저장되는 파일 이름 변경 ( 프로필 이미지 - [MEMBER_ID]_ProfileImage_[YYYYMMddHHmmssSSS]_??? )
 *5. 공지사항 디자인하기
 *6. CROP SIZE 200 200 ?
-7. 사진 다운로드
+*7. 사진 다운로드
 8. 댓글 개수 표시
 9. 폰트 정하기
 10. 댓글 액티비티 전격 수정
@@ -28,3 +28,5 @@ Todo 20200430
 1. 공지사항 그림자 ( api 21 부터 elevation 지원 )
 2. Second Header
 3. Image Activity 기능 설계
+4. ShareItem Background Image Width&Height
+5. 스크롤해서 더보기 관련

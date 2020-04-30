@@ -17,18 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
+import com.gomawa.dialog.VerticalTwoButtonDialog;
+import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.fragment.FragmentShare;
 import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -53,8 +57,11 @@ public class WriteActivity extends Activity {
     // Content EditText
     private EditText contentEditText = null;
 
-    // Background Image File
-    private File imageFile = null;
+    // 사진 가져오기 다이얼로그
+    private VerticalTwoButtonDialog getImageDialog = null;
+
+    // 선택하고, Crop된 이미지 파일이 임시로 저장되는 변수
+    private File tempFile = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,17 +117,90 @@ public class WriteActivity extends Activity {
         backgroundImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // File System.
-                final Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*"); // 이미지 파일 호출
-                galleryIntent.setAction(Intent.ACTION_PICK);
+                /**
+                 * 기존 소스
+                 */
+//                // File System.
+//                final Intent galleryIntent = new Intent();
+//                galleryIntent.setType("image/*"); // 이미지 파일 호출
+//                galleryIntent.setAction(Intent.ACTION_PICK);
+//
+//                // Chooser of file system options.
+//                final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Image");
+//                galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+//                startActivityForResult(chooserIntent, Constants.PICK_FROM_GALLREY);
+//
+//                CommonUtils.hideKeyboard(mActivity, contentEditText);
 
-                // Chooser of file system options.
-                final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Image");
-                galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                startActivityForResult(chooserIntent, Constants.PICK_FROM_GALLREY);
+                /**
+                 * 실행되는 소스
+                 */
+                // 갤러리에서 가져오기 버튼 Listener
+                View.OnClickListener fromGalleryBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        /**
+                         * 갤러리에서 가져오기 로직
+                         * 1. 갤러리 액티비티에서 이미지 가져옴 ( Uri 로 가져옴 )
+                         * 2. Uri 를 이용해 originalFile 에 가져온 이미지 저장
+                         * 3. gomawa_temp 폴더에 새로운 이미지 파일을 생성 ( tempFile 에 저장 )
+                         * 4. originalFile => tempFile ( Copy )
+                         * 5. tempFile 을 매개로 CROP 진행
+                         * 6. CROP 여부와 관계없이 tempFile 을 서버로 전달, S3 에 저장하고 DB에 url 저장 ( API will return Member DTO )
+                         * 7. Member DTO 를 이용해 세팅 프래그먼트의 프로필 이미지 뷰 설정
+                         * 8. 임시 이미지 파일 삭제
+                         */
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                        startActivityForResult(intent, Constants.PICK_FROM_GALLREY);
 
-                CommonUtils.hideKeyboard(mActivity, contentEditText);
+                        // 다이얼로그 종료
+                        getImageDialog.dismiss();
+                    }
+                };
+
+                // 카메라에서 가져오기 버튼 Listener
+                View.OnClickListener fromCameraBtnListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        /**
+                         * 카메라에서 가져오기 로직
+                         * 1. gomawa_temp 폴더에 새로운 이미지 파일을 생성 ( tempFile 에 저장 )
+                         * 2. 사진 촬영 액티비티에서 사진 촬영
+                         * 3. 촬영 취소 ~ tempFile 을 이용해 만든 이미지 파일 삭제
+                         * 4. 촬영 완료 ~ tempFile 을 매개로 CROP 진행
+                         * 5. CROP 여부와 관계없이 tempFile 을 서버로 전달, S3 에 저장하고 DB에 url 저장 ( API will return Member DTO )
+                         * 6. Member DTO 를 이용해 세팅 프래그먼트의 프로필 이미지 뷰 설정
+                         * 7. 이미지 파일 삭제
+                         * Result : S3 에 이미지 저장, DB 에 url 저장, Storage 에는 남은 게 없음
+                         */
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        // 빈 이미지 파일 만들기
+                        try {
+                            tempFile = ImageUtils.createShareItemBackgroundImageFile();
+                        } catch(IOException e) {
+                            Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+
+                            getImageDialog.dismiss();
+                        }
+
+                        if(tempFile != null) {
+                            Uri uri = FileProvider.getUriForFile(mContext, "com.gomawa.fileprovider", tempFile);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            startActivityForResult(intent, Constants.PICK_FROM_CAMERA);
+                        }
+
+                        // 다이얼로그 종료
+                        getImageDialog.dismiss();
+                    }
+                };
+
+                // 다이얼로그 인스턴스를 생성한 후에 띄워줌
+                getImageDialog = new VerticalTwoButtonDialog(mContext, fromCameraBtnListener, fromGalleryBtnListener, "프로필 사진", "카메라에서 가져오기", "갤러리에서 가져오기");
+                getImageDialog.show();
             }
         });
 
@@ -130,9 +210,9 @@ public class WriteActivity extends Activity {
             @Override
             public void onClick(View view) {
                 MultipartBody.Part body = null;
-                if(imageFile != null) {
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), imageFile);
-                    body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+                if(tempFile != null) {
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), tempFile);
+                    body = MultipartBody.Part.createFormData("file", tempFile.getName(), requestFile);
                 } else {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), "");
                     body = MultipartBody.Part.createFormData("file", "Not Exist", requestFile);
@@ -154,29 +234,97 @@ public class WriteActivity extends Activity {
         finish();
     }
 
+    /**
+     * 기존 소스
+     */
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case Constants.PICK_FROM_GALLREY:
+//                if(resultCode == RESULT_OK) {
+//                    /**
+//                     * 앨범에서 사진 선택
+//                     */
+//                    Uri imageUri = data.getData();
+//                    Log.d("imageCapture", imageUri.getPath());
+//
+//                    // 실제 파일이 존재하는 경로
+//                    String[] proj = { MediaStore.Images.Media.DATA };
+//                    Cursor cursor = mActivity.getContentResolver().query(imageUri, proj, null, null, null);
+//                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//                    cursor.moveToFirst();
+//
+//                    String imagePath = cursor.getString(columnIndex);
+//
+//                    // 이미지뷰에 보여주기
+//                    imageFile = new File(imagePath);
+//                    Picasso.get().load(imageFile).fit().into(backgroundImageView);
+//                }
+//        }
+//    }
+
+    /**
+     *  현재 소스
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.PICK_FROM_GALLREY:
-                if(resultCode == RESULT_OK) {
-                    /**
-                     * 앨범에서 사진 선택
-                     */
-                    Uri imageUri = data.getData();
-                    Log.d("imageCapture", imageUri.getPath());
+        if(requestCode == Constants.PICK_FROM_GALLREY) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(mContext, "이미지 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+            } else {
+                // 이미지를 선택했을 때
+                // uri를 path로 전환
+                Uri photoUri = data.getData();
 
-                    // 실제 파일이 존재하는 경로
-                    String[] proj = { MediaStore.Images.Media.DATA };
-                    Cursor cursor = mActivity.getContentResolver().query(imageUri, proj, null, null, null);
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    cursor.moveToFirst();
+                Cursor cursor = null;
 
-                    String imagePath = cursor.getString(columnIndex);
+                String[] proj = {MediaStore.Images.Media.DATA};
+                cursor = mActivity.getContentResolver().query(photoUri, proj, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
 
-                    // 이미지뷰에 보여주기
-                    imageFile = new File(imagePath);
-                    Picasso.get().load(imageFile).fit().into(backgroundImageView);
+                // 선택한 이미지를 originalFile 에 저장
+                File originalFile = new File(cursor.getString(column_index));
+
+                // 새로운 이미지 파일 생성 ( 임시 작업용 )
+                try {
+                    tempFile = ImageUtils.createShareItemBackgroundImageFile();
+
+                    // 선택한 이미지를 tempFile에 복사
+                    File copiedFile = CommonUtils.copyFile(originalFile, tempFile);
+
+                    if (copiedFile.exists()) {
+                        // 원본 이미지 보호를 위해 복사된 이미지 파일로 CROP 과정이 진행됨
+                        Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
+
+                        // CROP 액티비티 실행
+                        startActivityForResult(intent, Constants.CROP_IMAGE);
+                    }
+                } catch(IOException e) {
+                    Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
+            }
+            // 카메라에서 이미지 가져온 후 호출됨
+        }else if(requestCode == Constants.PICK_FROM_CAMERA) {
+            if(resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(mContext, "사진 촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+
+                // 임시 이미지 파일 삭제
+                tempFile.delete();
+            } else {
+                if(tempFile.exists()) {
+                    // 원본 이미지 보호를 하지 않음 = 찍은 사진이 CROP되어 저장됨
+                    Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
+
+                    // CROP 액티비티 실행
+                    startActivityForResult(intent, Constants.CROP_IMAGE);
+                }
+            }
+            // CROP 액티비티 후에 실행
+        }else if(requestCode == Constants.CROP_IMAGE) {
+            // 이미지 뷰
+            Picasso.get().load(tempFile).into(backgroundImageView);
         }
     }
 

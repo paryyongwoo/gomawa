@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -189,6 +190,8 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         if(backgroundImageUrl != null) {
             // DB 에서 가져온 ShareItem 의 BackgroundURL 이 null 이면 아래 코드를 진행하지 않음 - 기본 src 속성으로 지정된 drawable 이 표시됨
             Picasso.get().load(backgroundImageUrl).into(holder.backgroundImageView);
+        } else {
+            holder.backgroundImageView.setImageResource(ImageUtils.DEFAULT_BACKGROUND_IMAGE);
         }
 
         // 본문 표시
@@ -258,7 +261,13 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                     View.OnClickListener downloadBtnListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // TODO: 2020-04-26 사진 다운로드 기능
+                            String url = shareItemSelected.getBackgroundUrl();
+                            if(url == null) {
+                                Toast.makeText(mActivity, "기본 이미지는 다운받으실 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                new ImageUtils.ImageDownload().execute(shareItemSelected.getBackgroundUrl(), mActivity);
+                            }
+
                             myMenuDialog.dismiss();
                         }
                     };

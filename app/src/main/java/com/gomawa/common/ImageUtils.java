@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
@@ -26,6 +27,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -36,6 +41,7 @@ public class ImageUtils {
 
     // 프로필 이미지 디폴트 값
     public static final int DEFAULT_PROFILE_IMAGE = R.drawable.user_btn_disable;
+    public static final int DEFAULT_BACKGROUND_IMAGE = R.drawable.share_item_background;
 
     /**
      * Circle ImageView 에 프로필 이미지 설정해주는 함수
@@ -87,6 +93,82 @@ public class ImageUtils {
         intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
 
         return intent;
+    }
+
+    /**
+     * 이미지 다운로드 클래스
+     */
+    public static class ImageDownload extends AsyncTask {
+        // mActivity
+        private Activity mActivity = null;
+
+        // 다운받아질 File
+        private File file = null;
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            // Index 0: Url
+            String url = (String) objects[0];
+            // Index 1: mActivity for Toast
+            mActivity = (Activity) objects[1];
+
+            // 다운로드 경로
+            String savePath = Environment.getExternalStorageDirectory() + "/gomawa_file";
+
+            File dir = new File(savePath);
+            if(!(dir.exists())) {
+                dir.mkdir();
+            }
+
+            // 이미지 파일 이름
+            String timeStamp = new SimpleDateFormat("YYYYMMddHHmmssSSS", Locale.KOREA).format(new Date());
+            String imageFileName = CommonUtils.getMember().getId() + "_ProfileImage_" + timeStamp + "_";
+
+            // 저장될 파일의 경로
+            String filePath = savePath + "/" + imageFileName + ".jpg";
+
+            try{
+                URL imgUrl = new URL(url);
+
+                HttpURLConnection conn = (HttpURLConnection) imgUrl.openConnection();
+                int len = conn.getContentLength();
+                byte[] tmpByte = new byte[len];
+
+                InputStream is = conn.getInputStream();
+
+                file = new File(filePath);
+
+                FileOutputStream fos = new FileOutputStream(file);
+                int read;
+
+                while(true) {
+                    read = is.read(tmpByte);
+
+                    if(read <= 0) {
+                        break;
+                    }
+
+                    fos.write(tmpByte, 0, read);
+                }
+
+                is.close();
+                fos.close();
+                conn.disconnect();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            return mActivity;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+
+            Toast.makeText(mActivity, "이미지 다운로드 완료", Toast.LENGTH_SHORT).show();
+
+            mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        }
     }
 
 }

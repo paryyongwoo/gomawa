@@ -130,19 +130,16 @@ public class CommonUtils {
     /**
      * 파일 복사 함수
      */
-    public static File fileCopy(String input, String output) {
-        File file = new File(input);
-        File newFile = new File(output);
+    public static File copyFile(File oldFile, File newFile) {
+//        try{
+//            newFile.createNewFile();
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        try{
-            newFile.createNewFile();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(file!=null && file.exists()) {
+        if(oldFile!=null && oldFile.exists()) {
             try {
-                FileInputStream fis = new FileInputStream(file);
+                FileInputStream fis = new FileInputStream(oldFile);
                 FileOutputStream fos = new FileOutputStream(newFile);
 
                 int readCnt = 0;

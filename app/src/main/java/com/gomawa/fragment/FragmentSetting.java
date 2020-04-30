@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -115,9 +116,23 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener fromGalleryBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        /**
+                         * 갤러리에서 가져오기 로직
+                         * 1. 갤러리 액티비티에서 이미지 가져옴 ( Uri 로 가져옴 )
+                         * 2. Uri 를 이용해 originalFile 에 가져온 이미지 저장
+                         * 3. gomawa_temp 폴더에 새로운 이미지 파일을 생성 ( tempFile 에 저장 )
+                         * 4. originalFile => tempFile ( Copy )
+                         * 5. tempFile 을 매개로 CROP 진행
+                         * 6. CROP 여부와 관계없이 tempFile 을 서버로 전달, S3 에 저장하고 DB에 url 저장 ( API will return Member DTO )
+                         * 7. Member DTO 를 이용해 세팅 프래그먼트의 프로필 이미지 뷰 설정
+                         * 8. 임시 이미지 파일 삭제
+                         */
                         Intent intent = new Intent(Intent.ACTION_PICK);
                         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                         startActivityForResult(intent, Constants.PICK_FROM_GALLREY);
+
+                        // 다이얼로그 종료
+                        verticalTwoButtonDialog.dismiss();
                     }
                 };
 
@@ -125,6 +140,17 @@ public class FragmentSetting extends Fragment {
                 View.OnClickListener fromCameraBtnListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        /**
+                         * 카메라에서 가져오기 로직
+                         * 1. gomawa_temp 폴더에 새로운 이미지 파일을 생성 ( tempFile 에 저장 )
+                         * 2. 사진 촬영 액티비티에서 사진 촬영
+                         * 3. 촬영 취소 ~ tempFile 을 이용해 만든 이미지 파일 삭제
+                         * 4. 촬영 완료 ~ tempFile 을 매개로 CROP 진행
+                         * 5. CROP 여부와 관계없이 tempFile 을 서버로 전달, S3 에 저장하고 DB에 url 저장 ( API will return Member DTO )
+                         * 6. Member DTO 를 이용해 세팅 프래그먼트의 프로필 이미지 뷰 설정
+                         * 7. 이미지 파일 삭제
+                         * Result : S3 에 이미지 저장, DB 에 url 저장, Storage 에는 남은 게 없음
+                         */
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                         // 빈 이미지 파일 만들기
@@ -144,6 +170,8 @@ public class FragmentSetting extends Fragment {
                             startActivityForResult(intent, Constants.PICK_FROM_CAMERA);
                         }
 
+                        // 다이얼로그 종료
+                        verticalTwoButtonDialog.dismiss();
                     }
                 };
 
@@ -287,27 +315,28 @@ public class FragmentSetting extends Fragment {
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 cursor.moveToFirst();
 
-                // 선택한 이미지를 tempFile에 저장
-                String tempPath = cursor.getString(column_index);
-                tempFile = new File(cursor.getString(column_index));
+                // 선택한 이미지를 originalFile 에 저장
+                File originalFile = new File(cursor.getString(column_index));
 
-                // 선택한 이미지를 copiedFile에 복사
-                String copiedPath = tempPath.replace(".", "2.");
-                File copiedFile = CommonUtils.fileCopy(tempPath, copiedPath);
+                // 새로운 이미지 파일 생성 ( 임시 작업용 )
+                try {
+                    tempFile = ImageUtils.createImageFile();
 
-                if (copiedFile.exists()) {
-                    // 원본 이미지 보호를 위해 복사된 이미지 파일로 CROP 과정이 진행됨
-                    tempFile = copiedFile;
-                    Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
+                    // 선택한 이미지를 tempFile에 복사
+                    File copiedFile = CommonUtils.copyFile(originalFile, tempFile);
 
-                    // CROP 액티비티 실행
-                    startActivityForResult(intent, Constants.CROP_IMAGE);
+                    if (copiedFile.exists()) {
+                        // 원본 이미지 보호를 위해 복사된 이미지 파일로 CROP 과정이 진행됨
+                        Intent intent = ImageUtils.setIntentToCrop(mContext, tempFile);
+
+                        // CROP 액티비티 실행
+                        startActivityForResult(intent, Constants.CROP_IMAGE);
+                    }
+                } catch(IOException e) {
+                    Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
             }
-
-            // TODO: 2020-04-15 어떤 다이얼로그를 종료할 것인지에 대한 로직 수정이 필요
-            // 다이얼로그 종료
-            verticalTwoButtonDialog.dismiss();
         // 카메라에서 이미지 가져온 후 호출됨
         }else if(requestCode == Constants.PICK_FROM_CAMERA) {
             if(resultCode == Activity.RESULT_CANCELED) {
@@ -324,10 +353,6 @@ public class FragmentSetting extends Fragment {
                     startActivityForResult(intent, Constants.CROP_IMAGE);
                 }
             }
-
-            // 다이얼로그 종료
-            verticalTwoButtonDialog.dismiss();
-
         // CROP 액티비티 후에 실행
         }else if(requestCode == Constants.CROP_IMAGE) {
             // 프로필 이미지 파일 서버로 보낼 준비

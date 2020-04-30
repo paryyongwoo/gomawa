@@ -293,7 +293,13 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                     View.OnClickListener downloadBtnListener = new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // TODO: 2020-04-26 사진 다운로드 기능
+                            String url = shareItemSelected.getBackgroundUrl();
+                            if(url == null) {
+                                Toast.makeText(mActivity, "기본 이미지는 다운받으실 수 없습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                new ImageUtils.ImageDownload().execute(shareItemSelected.getBackgroundUrl(), mActivity);
+                            }
+
                             menuDialog.dismiss();
                         }
                     };

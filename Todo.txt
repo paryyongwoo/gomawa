@@ -31,3 +31,4 @@ Todo 20200430
 4. ShareItem Background Image Width&Height
 5. 스크롤해서 더보기 관련
 6. 수정 액티비티와 글쓰기 액티비티 합쳐보기
+7. 다운 받는 파일 이름 포맷 정하기

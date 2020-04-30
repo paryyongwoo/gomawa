@@ -136,9 +136,9 @@ public class ImageUtils {
                 dir.mkdir();
             }
 
-            // 이미지 파일 이름
+            // 이미지 파일 이름 todo: 파일 이름 포맷 정하기
             String timeStamp = new SimpleDateFormat("YYYYMMddHHmmssSSS", Locale.KOREA).format(new Date());
-            String imageFileName = CommonUtils.getMember().getId() + "_ProfileImage_" + timeStamp + "_";
+            String imageFileName = CommonUtils.getMember().getId() + "_Image_" + timeStamp;
 
             // 저장될 파일의 경로
             String filePath = savePath + "/" + imageFileName + ".jpg";

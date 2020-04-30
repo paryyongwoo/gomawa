@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +19,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.gomawa.R;
 import com.gomawa.activity.WriteActivity;
-import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 import com.gomawa.dialog.OnlyVerticalThreeButtonDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -263,6 +260,11 @@ public class FragmentShare extends Fragment {
                 if(myListFragment != null) {
                     FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
                     myListFragment.getShareItems(0);
+                }
+
+                if(likeListFragment != null) {
+                    FragmentShareList likeListFragment = (FragmentShareList) fm.findFragmentByTag("likeListFragment");
+                    likeListFragment.getShareItems(0);
                 }
 
             }

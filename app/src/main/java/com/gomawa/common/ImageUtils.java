@@ -79,8 +79,8 @@ public class ImageUtils {
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 200);
-        intent.putExtra("outputY", 200);
+//        intent.putExtra("outputX", 200);
+//        intent.putExtra("outputY", 200);
         intent.putExtra("scale", true);
         intent.putExtra("return-data", false);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);

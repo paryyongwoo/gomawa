@@ -27,3 +27,4 @@ ToDO 20200427
 Todo 20200430
 1. 공지사항 그림자 ( api 21 부터 elevation 지원 )
 2. Second Header
+3. Image Activity 기능 설계

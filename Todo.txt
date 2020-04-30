@@ -16,7 +16,7 @@ ToDO 20200427
 *1. 카카오 로그아웃 시 token 관련 메세지 뜸
 *2. 프로필 이미지 변경 후 CROP된 이미지 삭제
 *3. 갤러리에서 가져올 때도 gomawa_temp 를 거치도록
-4. S3 이미지가 안바뀜
+*4. S3 이미지가 안바뀜 - S3에 저장되는 파일 이름 변경 ( 프로필 이미지 - [MEMBER_ID]_ProfileImage_[YYYYMMddHHmmssSSS]_??? )
 *5. 공지사항 디자인하기
 6. CROP SIZE 200 200 ?
 7. 사진 다운로드

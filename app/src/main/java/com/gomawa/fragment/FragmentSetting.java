@@ -155,7 +155,7 @@ public class FragmentSetting extends Fragment {
 
                         // 빈 이미지 파일 만들기
                         try {
-                            tempFile = ImageUtils.createImageFile();
+                            tempFile = ImageUtils.createProfileImageFile();
                         } catch(IOException e) {
                             Toast.makeText(mContext, "이미지 파일 생성 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
@@ -320,7 +320,7 @@ public class FragmentSetting extends Fragment {
 
                 // 새로운 이미지 파일 생성 ( 임시 작업용 )
                 try {
-                    tempFile = ImageUtils.createImageFile();
+                    tempFile = ImageUtils.createProfileImageFile();
 
                     // 선택한 이미지를 tempFile에 복사
                     File copiedFile = CommonUtils.copyFile(originalFile, tempFile);

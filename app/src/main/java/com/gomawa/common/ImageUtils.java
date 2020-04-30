@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -35,9 +36,6 @@ public class ImageUtils {
 
     // 프로필 이미지 디폴트 값
     public static final int DEFAULT_PROFILE_IMAGE = R.drawable.user_btn_disable;
-
-    // 프로필 이미지 파일 저장 변수
-    public static File profileImageFile;
 
     /**
      * Circle ImageView 에 프로필 이미지 설정해주는 함수
@@ -52,15 +50,14 @@ public class ImageUtils {
     }
 
     /**
-     * 빈 이미지 파일 만드는 함수
+     * 빈 이미지 파일 만드는 함수 ( for Profile Image )
      */
-    public static File createImageFile() throws IOException {
-        // 이미지 파일 이름 / "newProfileImage" 대신 알맞은 문자열 넣어줘야함
-        String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
-        String imageFileName = "newProfileImage_" + timeStamp + "_";
+    public static File createProfileImageFile() throws IOException {
+        // 이미지 파일 이름
+        String timeStamp = new SimpleDateFormat("YYYYMMddHHmmssSSS", Locale.KOREA).format(new Date());
+        String imageFileName = CommonUtils.getMember().getId() + "_ProfileImage_" + timeStamp + "_";
 
-        // 이미지 저장 폴더
-        // todo: gomawa_temp 폴더는 임시이므로 어떻게 해야 할 지 난 잘 모르겠다
+        // 이미지 저장 폴더 ( gomawa_temp )
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/gomawa_temp");
         if(!storageDir.exists()) storageDir.mkdir();
 

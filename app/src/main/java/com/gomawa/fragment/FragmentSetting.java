@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
+import com.gomawa.activity.ImageActivity;
 import com.gomawa.activity.MainActivity;
 import com.gomawa.activity.NoticeActivity;
 import com.gomawa.adapter.SettingRecyclerViewAdapter;
@@ -95,6 +96,16 @@ public class FragmentSetting extends Fragment {
             headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
         } else {
             Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+
+            // 프로필 이미지 클릭 시 이미지 액티비티 실행
+            headerImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, ImageActivity.class);
+                    intent.putExtra("url", CommonUtils.getMember().getProfileImgUrl());
+                    startActivity(intent);
+                }
+            });
         }
 
         // 헤더 타이틀 Text 초기화

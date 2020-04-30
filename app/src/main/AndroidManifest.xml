@@ -63,6 +63,9 @@
         <activity android:name=".activity.NicknameActivity"
             android:theme="@style/Transparent"/>
 
+        <activity android:name=".activity.ImageActivity"
+            android:theme="@style/Transparent"/>
+
         <!-- Theme.AppCompat 을 쓰면 상태바랑 화면이 겹치지 않음! -->
         <activity
             android:name=".activity.NoticeActivity"

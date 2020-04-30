@@ -87,4 +87,7 @@ dependencies {
 
     // 이미지 Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // 확대 축소 이미지 뷰
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }

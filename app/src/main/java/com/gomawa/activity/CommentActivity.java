@@ -154,7 +154,7 @@ public class CommentActivity extends Activity {
         // 댓글 쓰는 EditText
         editText = findViewById(R.id.activity_comment_bottom_editText);
         editText.setText("");
-        // TODO: 2020-04-18 CommnetActivity EditText Focusable
+        editText.requestFocus();
 
         // 댓글 완료 버튼
         ImageButton okBtn = findViewById(R.id.activity_comment_bottom_ok_button);

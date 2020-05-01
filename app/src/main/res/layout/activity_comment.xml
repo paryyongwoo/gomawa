@@ -111,9 +111,10 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/activity_comment_bottom_ok_button"
             android:minHeight="28dp"
-            android:background="#ffffffff"
+            android:focusable="true"
             android:text="Comment is here"
-            android:textColor="#ff000000" />
+            android:textColor="#ff000000"
+            android:theme="@style/WriteAndUpdateStyle" />
 
         <ImageButton
             android:id="@+id/activity_comment_bottom_ok_button"

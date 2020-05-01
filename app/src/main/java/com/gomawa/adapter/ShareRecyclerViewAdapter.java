@@ -339,9 +339,14 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         String likeNum = String.valueOf(shareItemSelected.getLikeNum());
         holder.likeTextView.setText(likeNum);
 
-        // TODO: 2020-04-22 댓글 몇개 보기 로 수정
         // 댓글 모두 보기 Text 설정
-        holder.bottomTextView.setText("댓글 모두 보기");
+        String commentString = null;
+        if(shareItemSelected.getCommentNum() == 0)
+            commentString = "댓글 쓰기";
+        else
+            commentString = "댓글 " + shareItemSelected.getCommentNum() + "개 보기";
+
+        holder.bottomTextView.setText(commentString);
 
         // 댓글 모두 보기 Listener
         holder.bottomTextView.setOnClickListener(new View.OnClickListener() {

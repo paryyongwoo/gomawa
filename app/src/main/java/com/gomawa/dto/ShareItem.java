@@ -10,6 +10,7 @@ public class ShareItem {
     private String backgroundUrl;
     private int likeNum;
     private boolean isLike; // 좋아요 클릭 여부
+    private int commentNum; // 댓글 갯수
 
     public ShareItem() {
 
@@ -78,6 +79,14 @@ public class ShareItem {
 
     public void setIsLike(boolean isLike) {
         this.isLike = isLike;
+    }
+
+    public int getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
     }
 
     @Override

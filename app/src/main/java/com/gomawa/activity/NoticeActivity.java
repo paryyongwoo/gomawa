@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,17 +58,22 @@ public class NoticeActivity extends Activity {
 
     private void initView() {
         // 액티비티의 타이틀
-        titleTextView = findViewById(R.id.activity_notice_title);
+        titleTextView = findViewById(R.id.header_second_title);
+        titleTextView.setTextColor(getResources().getColor(R.color.inactiveColor));
         titleTextView.setText("공지사항");
 
         // 뒤로가기 버튼
-        backBtn = findViewById(R.id.activity_notice_backBtn);
+        backBtn = findViewById(R.id.header_second_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+
+        // 완료 버튼 비활성화
+        Button headerOkBtn = findViewById(R.id.header_second_ok);
+        headerOkBtn.setVisibility(View.INVISIBLE);
 
         // Recylcer View
         recyclerView = findViewById(R.id.activity_notice_recyclerView);

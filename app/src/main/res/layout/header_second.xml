@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/header_second_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/header_second_back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@null"
+            android:src="@drawable/back"
+            android:scaleType="center"/>
+
+        <TextView
+            android:id="@+id/header_second_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:text="Title"
+            android:textSize="17sp"
+            android:gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/header_second_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@null"
+            android:text="완료" />
+
+    </LinearLayout>
+
+</merge>

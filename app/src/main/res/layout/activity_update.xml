@@ -6,49 +6,13 @@
     android:background="#ffffffff"
     android:paddingHorizontal="10dp">
 
-    <LinearLayout
-        android:id="@+id/activity_update_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center">
-
-        <ImageButton
-            android:id="@+id/activity_update_header_backBtn"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1.5"
-            android:background="@null"
-            android:src="@drawable/back" />
-
-        <TextView
-            android:id="@+id/activity_update_header_title"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="7"
-            android:text="Title"
-            android:textColor="#ff000000"
-            android:gravity="start|center_vertical" />
-
-        <Button
-            android:id="@+id/activity_update_header_okBtn"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1.5"
-            android:background="@null"
-            android:text="완료"
-            android:textColor="#ff000000" />
-
-    </LinearLayout>
+    <include layout="@layout/header_second" />
 
     <LinearLayout
         android:id="@+id/activity_update_shareItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/activity_update_header"
+        app:layout_constraintTop_toBottomOf="@+id/header_second_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"
         android:orientation="vertical" >

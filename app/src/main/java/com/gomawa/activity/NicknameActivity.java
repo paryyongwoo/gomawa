@@ -50,7 +50,8 @@ public class NicknameActivity extends Activity {
 
     private void initView() {
         // 상단 타이틀의 Text 값
-        TextView title = findViewById(R.id.activity_nickname_title);
+        TextView title = findViewById(R.id.header_second_title);
+        title.setTextColor(getResources().getColor(R.color.whiteColor));
         title.setText("닉네임 변경");
 
         // editText 와 deleteBtn 초기화
@@ -111,7 +112,7 @@ public class NicknameActivity extends Activity {
         CommonUtils.showKeyboard(mActivity, editText);
 
         // 백 버튼 - editText의 값과 관계없이 액티비티만 종료함
-        backBtn = findViewById(R.id.activity_nickname_backBtn);
+        backBtn = findViewById(R.id.header_second_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,7 +125,7 @@ public class NicknameActivity extends Activity {
         });
 
         // 확인 버튼
-        okBtn = findViewById(R.id.activity_nickname_okBtn);
+        okBtn = findViewById(R.id.header_second_ok);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

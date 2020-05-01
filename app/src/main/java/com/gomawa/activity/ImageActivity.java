@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class ImageActivity extends Activity {
 
     private void initView() {
         // 백 버튼
-        ImageButton backBtn = findViewById(R.id.activity_image_backBtn);
+        ImageButton backBtn = findViewById(R.id.header_second_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,8 +42,13 @@ public class ImageActivity extends Activity {
         });
 
         // 타이틀
-        TextView titleTextView = findViewById(R.id.activity_image_title);
+        TextView titleTextView = findViewById(R.id.header_second_title);
+        titleTextView.setTextColor(getResources().getColor(R.color.whiteColor));
         titleTextView.setText("");
+
+        // 완료 버튼 비활성화
+        Button headerOkBtn = findViewById(R.id.header_second_ok);
+        headerOkBtn.setVisibility(View.INVISIBLE);
 
         // 이미지 뷰
         PhotoView photoView = findViewById(R.id.activity_image_photoView);

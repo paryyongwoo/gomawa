@@ -75,7 +75,7 @@ public class UpdateActivity extends Activity {
         final Long shareItemId = intent.getExtras().getLong("id");
 
         // 백 버튼 Listener
-        ImageButton backBtn = findViewById(R.id.activity_update_header_backBtn);
+        ImageButton backBtn = findViewById(R.id.header_second_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +86,8 @@ public class UpdateActivity extends Activity {
         });
 
         // 타이틀 설정
-        TextView titleTextView = findViewById(R.id.activity_update_header_title);
+        TextView titleTextView = findViewById(R.id.header_second_title);
+        titleTextView.setTextColor(getResources().getColor(R.color.inactiveColor));
         titleTextView.setText("글 수정");
 
         // 프로필 이미지 설정
@@ -195,7 +196,8 @@ public class UpdateActivity extends Activity {
         });
 
         // 완료 버튼 Listener
-        Button okBtn = findViewById(R.id.activity_update_header_okBtn);
+        Button okBtn = findViewById(R.id.header_second_ok);
+        okBtn.setTextColor(getResources().getColor(R.color.inactiveColor));
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -98,7 +99,7 @@ public class CommentActivity extends Activity {
          * Header
          */
         // 백 버튼
-        ImageButton backBtn = findViewById(R.id.activity_comment_header_back_button);
+        ImageButton backBtn = findViewById(R.id.header_second_back);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,8 +108,13 @@ public class CommentActivity extends Activity {
         });
 
         // 타이틀
-        TextView titleTextView = findViewById(R.id.activity_comment_header_title_textView);
+        TextView titleTextView = findViewById(R.id.header_second_title);
+        titleTextView.setTextColor(getResources().getColor(R.color.inactiveColor));
         titleTextView.setText("댓글");
+
+        // 완료 버튼 비활성화
+        Button headerOkBtn = findViewById(R.id.header_second_ok);
+        headerOkBtn.setVisibility(View.INVISIBLE);
 
         /**
          * Body

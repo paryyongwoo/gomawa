@@ -5,42 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:background="@drawable/background">
+    android:background="@color/whiteColor">
 
-    <LinearLayout
-        android:id="@+id/activity_comment_header_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:orientation="horizontal"
-        >
-
-        <ImageButton
-            android:id="@+id/activity_comment_header_back_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@null"
-            android:src="@drawable/back" />
-
-        <TextView
-            android:id="@+id/activity_comment_header_title_textView"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:layout_marginLeft="10dp"
-            android:text="Title"
-            android:textColor="#ff000000"
-            android:textSize="15sp"
-            android:gravity="center_vertical" />
-
-
-    </LinearLayout>
+    <include layout="@layout/header_second" />
 
     <LinearLayout
         android:id="@+id/activity_comment_body_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/activity_comment_header_layout"
+        app:layout_constraintTop_toBottomOf="@+id/header_second_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="10dp"
         android:orientation="horizontal" >

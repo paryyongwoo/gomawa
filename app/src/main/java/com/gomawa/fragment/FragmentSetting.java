@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,6 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,16 +26,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gomawa.R;
 import com.gomawa.activity.ImageActivity;
-import com.gomawa.activity.MainActivity;
+import com.gomawa.activity.NicknameActivity;
 import com.gomawa.activity.NoticeActivity;
 import com.gomawa.adapter.SettingRecyclerViewAdapter;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
 import com.gomawa.common.ImageUtils;
-import com.gomawa.activity.NicknameActivity;
-import com.gomawa.dialog.VerticalTwoButtonDialog;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
+import com.gomawa.dialog.VerticalTwoButtonDialog;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.squareup.picasso.Picasso;
@@ -47,7 +46,6 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,8 +61,11 @@ public class FragmentSetting extends Fragment {
     // 프로필 이미지가 표시되는 ImageView
     private ImageView headerImageView = null;
 
-    // 서브 타이틀
-    TextView headerSubTitle = null;
+    /**
+     * 헤더의 메뉴 버튼 (화면 표시 안함) 및 서브 타이틀
+     */
+    private ImageButton headerMenuBtn = null;
+    private TextView subTitleTextView = null;
 
     // 수평 2 버튼 다이얼로그
     private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
@@ -89,9 +90,12 @@ public class FragmentSetting extends Fragment {
     }
 
     private void initView() {
-        // 헤더 이미지 변경
+        // 헤더 서브 텍스트 및 메뉴 화면 미표시 처리
         headerImageView = rootView.findViewById(R.id.header_imageView);
         headerImageView.setVisibility(View.VISIBLE);
+        headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
+        headerMenuBtn.setVisibility(View.INVISIBLE);
+
         if(CommonUtils.getMember().getProfileImgUrl() == null) {
             headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
         } else {
@@ -113,8 +117,8 @@ public class FragmentSetting extends Fragment {
         headerTitle.setText(getResources().getString(R.string.fragment_setting_header_title));
 
         // 헤더 서브 타이틀 Text 초기화
-        headerSubTitle = rootView.findViewById(R.id.header_sub_title);
-        headerSubTitle.setText(makeSubTitle());
+        subTitleTextView = rootView.findViewById(R.id.header_sub_title);
+        subTitleTextView.setText(makeSubTitle());
 
         // 리사이클러 뷰에 들어갈 OnClickListener
         List<View.OnClickListener> onClickListenerList = new ArrayList<>();
@@ -304,7 +308,7 @@ public class FragmentSetting extends Fragment {
                     break;
                 // NicknameActivity - okBtn - textView 의 Text 값을 현재 닉네임으로 변경
                 case Constants.RESULT_SUCESS_NICKNAME:
-                    headerSubTitle.setText(makeSubTitle());
+                    subTitleTextView.setText(makeSubTitle());
                     break;
                 // 비정상적인 종료
                 default:

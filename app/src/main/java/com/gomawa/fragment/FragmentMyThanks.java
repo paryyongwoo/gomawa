@@ -1,17 +1,12 @@
 package com.gomawa.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,22 +16,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.gomawa.R;
 import com.gomawa.activity.ShareActivity;
 import com.gomawa.common.CommonUtils;
-import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.gomawa.viewpager.DepthPageTransformer;
 import com.gomawa.viewpager.ScreenSlidePagerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,20 +52,6 @@ public class FragmentMyThanks extends Fragment {
     private ViewGroup rootView = null;
     // 툴바의 메뉴 버튼
 
-    /**
-     * 상태 버튼들
-     */
-    private Button firstStepBtn = null;
-    private Button secondStepBtn = null;
-    private Button thirdStepBtn = null;
-
-    /**
-     * 상태 텍스트뷰
-     */
-    private TextView firstTextView = null;
-    private TextView secondTextView = null;
-    private TextView thirdTextView = null;
-
     // 뷰페이저에 보여줄 프래그먼트들
     private Fragment fragmentFirst = null;
     private Fragment fragmentSecond = null;
@@ -84,9 +59,10 @@ public class FragmentMyThanks extends Fragment {
     private Fragment fragmentFourth = null;
 
     /**
-     * 헤더의 메뉴 버튼 (화면 표시 안함)
+     * 헤더의 메뉴 버튼 (화면 표시 안함) 및 서브 타이틀
      */
     private ImageButton headerMenuBtn = null;
+    private TextView subTitleTextView = null;
 
     @Nullable
     @Override
@@ -158,98 +134,8 @@ public class FragmentMyThanks extends Fragment {
         ImageButton headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
         headerMenuBtn.setVisibility(View.INVISIBLE);
 
-        /**
-         * drawableList에 버튼 이미지들 추가
-         */
-//        Drawable btnOne = getResources().getDrawable(R.drawable.btn_one);
-//        Drawable btnTwo = getResources().getDrawable(R.drawable.btn_two);
-//        Drawable btnThree = getResources().getDrawable(R.drawable.btn_three);
-//        Drawable btnComplete = getResources().getDrawable(R.drawable.btn_complete);
-//        Drawable btnOneDisable = getResources().getDrawable(R.drawable.btn_one_disable);
-//        Drawable btnTwoDisable = getResources().getDrawable(R.drawable.btn_two_disable);
-//        Drawable btnThreeDisable = getResources().getDrawable(R.drawable.btn_three_disable);
-//        Drawable btnCompleteDisable = getResources().getDrawable(R.drawable.btn_complete_disable);
-//
-//        btnList.add(btnOne);
-//        btnList.add(btnTwo);
-//        btnList.add(btnThree);
-//        btnList.add(btnComplete);
-//        disableBtnList.add(btnOneDisable);
-//        disableBtnList.add(btnTwoDisable);
-//        disableBtnList.add(btnThreeDisable);
-//        disableBtnList.add(btnCompleteDisable);
-//
-//        /**
-//         * 숫자 버튼 찾기
-//         */
-//        firstBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_first);
-//        secondBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_second);
-//        thirdBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_third);
-//        fourthBtn = rootView.findViewById(R.id.fragment_my_thanks_btn_fourth);
-//
-//        firstBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                movePage(0);
-//            }
-//        });
-//
-//        secondBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                movePage(1);
-//            }
-//        });
-//
-//        thirdBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                movePage(2);
-//            }
-//        });
-//
-//        fourthBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                movePage(3);
-//
-//                /**
-//                 * 뷰페이저의 마지막 페이지의 경우
-//                 * 서버에 DailyThanks객체 전달 후 저장
-//                 */
-//                DailyThanks dailyThanks = setLastPage();
-//                sendDailyThanks(dailyThanks);
-//            }
-//        });
-//
-//        numberBtnList.add(firstBtn);
-//        numberBtnList.add(secondBtn);
-//        numberBtnList.add(thirdBtn);
-//        numberBtnList.add(fourthBtn);
-//
-//        /**
-//         * next, back 버튼
-//         */
-//        backBtn = rootView.findViewById(R.id.fragment_my_thanks_back);
-//        backBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (currentPosition > 0) {
-//                    movePage(currentPosition - 1);
-//                }
-//            }
-//        });
-//
-//        nextBtn = rootView.findViewById(R.id.fragment_my_thanks_next);
-//        nextBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (currentPosition < 3) {
-//                    movePage(currentPosition + 1);
-//                }
-//            }
-//        });
+        subTitleTextView = rootView.findViewById(R.id.header_sub_title);
+        subTitleTextView.setVisibility(View.INVISIBLE);
     }
 
     /**

@@ -15,11 +15,9 @@ import androidx.fragment.app.FragmentManager;
 import com.gomawa.R;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
-import com.gomawa.common.ImageUtils;
 import com.gomawa.fragment.FragmentMyThanks;
 import com.gomawa.fragment.FragmentSetting;
 import com.gomawa.fragment.FragmentShare;
-import com.gomawa.fragment.FragmentShareWrite;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ShareActivity extends AppCompatActivity {

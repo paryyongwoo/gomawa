@@ -4,7 +4,7 @@
     android:id="@+id/dialog_update_comment_linearLayout"
     android:layout_width="300dp"
     android:layout_height="150dp"
-    android:background="@drawable/shape_circle"
+    android:background="@drawable/shape_dialog"
     android:orientation="vertical" >
 
     <EditText

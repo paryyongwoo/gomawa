@@ -90,4 +90,6 @@ dependencies {
 
     // 확대 축소 이미지 뷰
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    implementation 'com.nex3z:flow-layout:1.3.0'
 }

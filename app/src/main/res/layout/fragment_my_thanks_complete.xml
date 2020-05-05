@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#가족#친구들#귀여운강아지"
+        android:textSize="26dp"
+        android:textColor="@color/inactiveColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="35dp" />
+
+    <TextView
+        android:id="@+id/complete_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="맑은날 나를 만나러 와준 친구에게 고맙다"
+        app:layout_constraintTop_toBottomOf="@+id/tags"
+        app:layout_constraintStart_toStartOf="@+id/tags"
+        android:paddingHorizontal="35dp"
+        android:paddingTop="30dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

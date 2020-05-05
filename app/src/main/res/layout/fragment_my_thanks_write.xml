@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#가족#친구들#귀여운강아지"
+        android:textSize="26dp"
+        android:textColor="@color/inactiveColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="35dp" />
+
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="35dp"
+        android:maxLines="5"
+        android:paddingRight="50dp"
+        android:theme="@style/EditTheme"
+        app:layout_constraintStart_toStartOf="@+id/tags"
+        app:layout_constraintTop_toBottomOf="@+id/tags"
+        android:layout_marginTop="50dp"
+        android:hint="오늘 혹은 어제 있었던 가장 고마운 일을 간단히 적어보세요"
+        />
+
+    <Button
+        android:id="@+id/complet_btn"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        app:layout_constraintRight_toRightOf="@id/edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text"
+        android:text="완료"
+        android:textSize="10sp"
+        android:textColor="@color/whiteColor"
+        android:background="@drawable/shape_circle"
+        android:visibility="visible"
+        android:layout_marginTop="20dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 public class DailyThanks {
 
     private Long id;
-    private String content1;
-    private String content2;
-    private String content3;
+    private String content;
     private LocalDateTime regDate;
     private Member regMember;
 
@@ -15,11 +13,9 @@ public class DailyThanks {
 
     }
 
-    public DailyThanks(Long id, String content1, String content2, String content3, LocalDateTime regDate, Member regMember) {
+    public DailyThanks(Long id, String content, LocalDateTime regDate, Member regMember) {
         this.id = id;
-        this.content1 = content1;
-        this.content2 = content2;
-        this.content3 = content3;
+        this.content = content;
         this.regDate = regDate;
         this.regMember = regMember;
     }
@@ -33,27 +29,11 @@ public class DailyThanks {
     }
 
     public String getContent1() {
-        return content1;
+        return content;
     }
 
     public void setContent1(String content1) {
-        this.content1 = content1;
-    }
-
-    public String getContent2() {
-        return content2;
-    }
-
-    public void setContent2(String content2) {
-        this.content2 = content2;
-    }
-
-    public String getContent3() {
-        return content3;
-    }
-
-    public void setContent3(String content3) {
-        this.content3 = content3;
+        this.content = content;
     }
 
     public LocalDateTime getRegDate() {
@@ -76,10 +56,9 @@ public class DailyThanks {
     public String toString() {
         return "DailyThanks{" +
                 "id=" + id +
-                ", content1='" + content1 + '\'' +
-                ", content2='" + content2 + '\'' +
-                ", content3='" + content3 + '\'' +
+                ", content='" + content + '\'' +
                 ", regDate=" + regDate +
+                ", regMember=" + regMember +
                 '}';
     }
 }

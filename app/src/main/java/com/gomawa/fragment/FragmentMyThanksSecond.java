@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,18 +26,24 @@ import java.util.Date;
  */
 public class FragmentMyThanksSecond extends Fragment {
 
-    private TextView today = null;
-    private TextView thanksText1 = null;
-    private TextView thanksText2 = null;
-    private TextView thanksText3 = null;
+    /**
+     * 고마운 일을 적은 에딧텍스트
+     */
+    private EditText editText = null;
+    private TextView tagsTextView = null;
+    /**
+     * '완료' 버튼
+     */
+    private Button completeBtn = null;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//        Toast.makeText(getContext(), "onCreateView", Toast.LENGTH_SHORT).show();
         /**
          * rootView 생성
          */
-        ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_my_thanks_second, container, false);
+        ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_my_thanks_write, container, false);
 
         initView(rootView);
 
@@ -43,27 +51,23 @@ public class FragmentMyThanksSecond extends Fragment {
     }
 
     private void initView(ViewGroup rootView) {
-        /**
-         * 오늘 날짜 설정
-         */
-        today = rootView.findViewById(R.id.fragment_my_thanks_today);
-        SimpleDateFormat format = new SimpleDateFormat("YYYY.MM.dd");
-        Date t = Calendar.getInstance().getTime();
-        today.setText(format.format(t));
-
-        /**
-         * thanksText 설정
-         */
-        thanksText1 = rootView.findViewById(R.id.fragment_my_thanks_second_content_text1);
-        thanksText2 = rootView.findViewById(R.id.fragment_my_thanks_second_content_text2);
-        thanksText3 = rootView.findViewById(R.id.fragment_my_thanks_second_content_text3);
+        editText = rootView.findViewById(R.id.edit_text);
+        tagsTextView = rootView.findViewById(R.id.tags);
+        completeBtn = rootView.findViewById(R.id.complet_btn);
+        completeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMyThanks fragmentMyThanks = (FragmentMyThanks) getParentFragment();
+                fragmentMyThanks.moveChapter();
+                fragmentMyThanks.setTags(2);
+            }
+        });
     }
 
-    public void setThanksText(DailyThanks dailyThanks) {
-        Toast.makeText(getContext(), "setThank" + dailyThanks.getContent1(), Toast.LENGTH_SHORT).show();
-        thanksText1.setText(dailyThanks.getContent1());
-        thanksText2.setText(dailyThanks.getContent2());
-        thanksText3.setText(dailyThanks.getContent3());
+    /**
+     * tagsTextView에 사용자가 입력한 tag를 설정해주는 함수
+     */
+    public void setTags(String tags) {
+        tagsTextView.setText(tags);
     }
-
 }

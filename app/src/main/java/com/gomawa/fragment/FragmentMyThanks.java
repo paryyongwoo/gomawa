@@ -53,13 +53,11 @@ public class FragmentMyThanks extends Fragment {
 
     // rootView
     private ViewGroup rootView = null;
-    // 툴바의 메뉴 버튼
 
     // 뷰페이저에 보여줄 프래그먼트들
     private Fragment fragmentFirst = null;
     private Fragment fragmentSecond = null;
-    private Fragment fragmentThird = null;
-    private Fragment fragmentFourth = null;
+    private Fragment fragmentComplete = null;
 
     /**
      * 헤더의 메뉴 버튼 (화면 표시 안함) 및 서브 타이틀
@@ -100,28 +98,19 @@ public class FragmentMyThanks extends Fragment {
          *    통해 관리 권한을 자신이 갖는다.
          */
         mPager = rootView.findViewById(R.id.thanksPager);
-        mPager.setOffscreenPageLimit(4);
+        mPager.setOffscreenPageLimit(3);
         pagerAdapter = new ScreenSlidePagerAdapter(getChildFragmentManager());
         fragmentFirst = new FragmentMyThanksFirst();
-        fragmentSecond = new FragmentMyThanksFirst();
-        fragmentThird = new FragmentMyThanksFirst();
-        fragmentFourth = new FragmentMyThanksSecond();
+        fragmentSecond = new FragmentMyThanksSecond();
+        fragmentComplete = new FragmentMyThanksComplete();
         pagerAdapter.addItem(fragmentFirst);
         pagerAdapter.addItem(fragmentSecond);
-        pagerAdapter.addItem(fragmentThird);
-        pagerAdapter.addItem(fragmentFourth);
+        pagerAdapter.addItem(fragmentComplete);
         mPager.setAdapter(pagerAdapter);
         // DepthPageTransformer 설정
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         return rootView;
-    }
-
-    public void moveChapter() {
-        Log.d("methodTest", "moveChapter");
-        if (currentPosition < 3) {
-            movePage(currentPosition + 1);
-        }
     }
 
     private void initView() {
@@ -147,81 +136,13 @@ public class FragmentMyThanks extends Fragment {
     }
 
     /**
-     * 화면 이동 해주는 메소드
-     * @param want 이동하려는 페이지 번호
+     * '다음' 클릭
      */
-    private void movePage(int want) {
-        final int w = want;
-
-        /**
-         * 마지막 페이지로 이동할 경우 서버에 DailyThanks 저장
-         */
-        if (want == 3) {
-            // 확인 버튼 Listener
-            View.OnClickListener okBtnListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // 다이얼로그 종료
-                    horizontalTwoButtonDialog.dismiss();
-                    DailyThanks dailyThanks = setLastPage();
-                    sendDailyThanks(dailyThanks, w);
-                }
-            };
-
-            // 취소 버튼 Listener
-            View.OnClickListener cancelBtnListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    horizontalTwoButtonDialog.dismiss();
-                }
-            };
-
-            // 다이얼로그 인스턴스를 생성한 후에 띄워줌
-            horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(getContext(), okBtnListener, cancelBtnListener, "Daily Thanks 작성을 완료 하시겠습니가?", "확인", "취소");
-            // 다이얼로그 애니메이션
-            horizontalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
-            horizontalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
-            horizontalTwoButtonDialog.show();
-        } else {
-            setCurrentPosition(w, currentPosition);
-        }
+    public void moveChapter() {
+        setCurrentPosition(currentPosition + 1);
     }
 
-    /**
-     * 뷰페이저의 마지막 페이지에 사용자가 작성한 고마운일 3가지를 세팅
-     * 및 DailyThanks객체 생성 후 반환
-     * @return dailyThanks: 사용자가 작성한 고마운일 3가지를 담고 있는 객체, 서버에 전달할 용도
-     */
-    private DailyThanks setLastPage() {
-        /**
-         * 각 프래그먼트별 textview의 값들 설정
-         */
-        String firstThanksText;
-        String secondThanksText;
-        String thirdThanksText;
-        TextView textView = fragmentFirst.getView().findViewById(R.id.fragment_my_thanks_first_edit_text);
-        firstThanksText = textView.getText().toString();
-        textView = fragmentSecond.getView().findViewById(R.id.fragment_my_thanks_first_edit_text);
-        secondThanksText = textView.getText().toString();
-        textView = fragmentThird.getView().findViewById(R.id.fragment_my_thanks_first_edit_text);
-        thirdThanksText = textView.getText().toString();
-
-        // DailyThanks 객체 생성
-        DailyThanks dailyThanks = new DailyThanks();
-        dailyThanks.setContent1(firstThanksText);
-        dailyThanks.setContent2(secondThanksText);
-        dailyThanks.setContent3(thirdThanksText);
-
-        /**
-         * 뷰페이저의 마지막 페이지를 얻어서 텍스트 세팅
-         */
-        FragmentMyThanksSecond fragment = (FragmentMyThanksSecond) pagerAdapter.instantiateItem(mPager, 3);
-        fragment.setThanksText(dailyThanks);
-
-        return dailyThanks;
-    }
-
-    private void setCurrentPosition(int want, int currentPosition) {
+    private void setCurrentPosition(int want) {
         // keyboard 내리기
         hideKeyboad(currentPosition);
 
@@ -249,7 +170,7 @@ public class FragmentMyThanks extends Fragment {
                 public void onResponse(Call<DailyThanks> call, Response<DailyThanks> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "setDailyThanks success" + response.body(), Toast.LENGTH_SHORT).show();
-                        setCurrentPosition(w, currentPosition);
+//                        setCurrentPosition(w, currentPosition);
                     } else {
                         Toast.makeText(getContext(), "setDailyThanks failed: " + response.code(), Toast.LENGTH_SHORT).show();
                     }
@@ -275,6 +196,29 @@ public class FragmentMyThanks extends Fragment {
         if (editText != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        }
+    }
+
+    /**
+     * write, complete 프래그먼트의 상단 tagTextView에
+     * 사용자가 입력한 tag 설정하는 함수
+     * 1. 사용자가 입력한 tags 얻기
+     * 2. 파라메터로 입력받은 프래그먼트의 tagTextView에 tags 설정
+     */
+    public void setTags(int position) {
+        FragmentMyThanksFirst fragment = (FragmentMyThanksFirst) pagerAdapter.getItem(0);
+        String tags = fragment.getTags();
+
+        // write 프래그먼트
+        if (position == 1) {
+            FragmentMyThanksSecond writeFragment = (FragmentMyThanksSecond) pagerAdapter.getItem(position);
+            writeFragment.setTags(tags);
+        }
+
+        // complete 프래그먼트
+        if (position == 2) {
+            FragmentMyThanksComplete writeFragment = (FragmentMyThanksComplete) pagerAdapter.getItem(position);
+            writeFragment.setTags(tags);
         }
     }
 }

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
+import com.gomawa.common.CommonUtils;
 import com.gomawa.dto.DailyThanks;
 
 import java.text.SimpleDateFormat;
@@ -39,7 +40,6 @@ public class FragmentMyThanksSecond extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        Toast.makeText(getContext(), "onCreateView", Toast.LENGTH_SHORT).show();
         /**
          * rootView 생성
          */
@@ -60,6 +60,10 @@ public class FragmentMyThanksSecond extends Fragment {
                 FragmentMyThanks fragmentMyThanks = (FragmentMyThanks) getParentFragment();
                 fragmentMyThanks.moveChapter();
                 fragmentMyThanks.setTags(2);
+                DailyThanks dailyThanks = new DailyThanks();
+                dailyThanks.setContent(editText.getText().toString());
+                dailyThanks.setRegMember(CommonUtils.getMember());
+                fragmentMyThanks.sendDailyThanks(dailyThanks);
             }
         });
     }

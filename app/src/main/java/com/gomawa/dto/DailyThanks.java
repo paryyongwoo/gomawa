@@ -1,19 +1,19 @@
 package com.gomawa.dto;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class DailyThanks {
 
     private Long id;
     private String content;
-    private LocalDateTime regDate;
+    private Date regDate;
     private Member regMember;
 
     public DailyThanks() {
 
     }
 
-    public DailyThanks(Long id, String content, LocalDateTime regDate, Member regMember) {
+    public DailyThanks(Long id, String content, Date regDate, Member regMember) {
         this.id = id;
         this.content = content;
         this.regDate = regDate;
@@ -28,19 +28,19 @@ public class DailyThanks {
         this.id = id;
     }
 
-    public String getContent1() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent1(String content1) {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public LocalDateTime getRegDate() {
+    public Date getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(LocalDateTime regDate) {
+    public void setRegDate(Date regDate) {
         this.regDate = regDate;
     }
 

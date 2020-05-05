@@ -98,7 +98,7 @@ public class FragmentMyThanks extends Fragment {
          *    통해 관리 권한을 자신이 갖는다.
          */
         mPager = rootView.findViewById(R.id.thanksPager);
-        mPager.setOffscreenPageLimit(3);
+        mPager.setOffscreenPageLimit(1);
         pagerAdapter = new ScreenSlidePagerAdapter(getChildFragmentManager());
         fragmentFirst = new FragmentMyThanksFirst();
         fragmentSecond = new FragmentMyThanksSecond();
@@ -153,13 +153,12 @@ public class FragmentMyThanks extends Fragment {
         mPager.setCurrentItem(want, true);
     }
 
-    private void sendDailyThanks(DailyThanks dailyThanks, int want) {
+    public void sendDailyThanks(DailyThanks dailyThanks) {
         /**
          * dailyThanks 객체를 api로 보내기
          * api/dailyThanks
          */
         Member member = CommonUtils.getMember();
-        final int w = want;
         if (member.getKey() < 0) {
             Toast.makeText(activity, "재로그인필요", Toast.LENGTH_SHORT).show();
         } else {
@@ -170,7 +169,7 @@ public class FragmentMyThanks extends Fragment {
                 public void onResponse(Call<DailyThanks> call, Response<DailyThanks> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "setDailyThanks success" + response.body(), Toast.LENGTH_SHORT).show();
-//                        setCurrentPosition(w, currentPosition);
+                        setCurrentPosition(2);
                     } else {
                         Toast.makeText(getContext(), "setDailyThanks failed: " + response.code(), Toast.LENGTH_SHORT).show();
                     }

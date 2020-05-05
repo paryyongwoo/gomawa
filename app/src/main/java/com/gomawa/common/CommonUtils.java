@@ -8,7 +8,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -18,31 +17,18 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.gomawa.R;
-import com.gomawa.dto.Member;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class CommonUtils {
-    // 멤버
-    private static Member member;
-
     // 뒤로가기 버튼 시간 측정 변수
     private static long backKeyPressedTime = 0;
-
-    public static void setMember(Member m) {
-        member = m;
-    }
-
-    public static Member getMember() {
-        return member;
-    }
 
     /**
      * 뒤로가기 한 번 더 확인한 후에 액티비티를 종료해주는 함수

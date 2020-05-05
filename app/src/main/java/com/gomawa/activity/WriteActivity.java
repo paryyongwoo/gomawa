@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
 import com.gomawa.dto.Member;
@@ -90,11 +91,11 @@ public class WriteActivity extends Activity {
 
         // 프로필 이미지 설정
         CircleImageView profileImageView = findViewById(R.id.activity_write_shareItem_header_profile_imageView);
-        ImageUtils.setProfileImageOnCircleImageView(mContext, profileImageView, CommonUtils.getMember().getProfileImgUrl());
+        ImageUtils.setProfileImageOnCircleImageView(mContext, profileImageView, Data.getMember().getProfileImgUrl());
 
         // 닉네임 설정
         TextView nickNameTextView = findViewById(R.id.activity_write_shareItem_header_nickName);
-        String nickName = CommonUtils.getMember().getNickName();
+        String nickName = Data.getMember().getNickName();
         nickNameTextView.setText(nickName);
 
         // 날짜 설정 ( 글쓰기에선 사용되지 않음 )
@@ -222,7 +223,7 @@ public class WriteActivity extends Activity {
 
                 String content = contentEditText.getText().toString();
 
-                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: \"" + content + "\", key: " + CommonUtils.getMember().getKey() + "}");
+                RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{content: \"" + content + "\", key: " + Data.getMember().getKey() + "}");
 
                 addShareItem(body, items);
             }

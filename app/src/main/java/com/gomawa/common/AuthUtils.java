@@ -191,7 +191,7 @@ public class AuthUtils {
     // DB 에서 Member 삭제해주는 메소드
     private static void deleteMemberByKey(final Context mContext, final Activity mActivity) {
         // 삭제할 멤버 ( 현재 로그인 되어 있는 멤버 )
-        Member member = CommonUtils.getMember();
+        Member member = Data.getMember();
 
         // 해당 멤버의 Key 값
         Long key = member.getKey();

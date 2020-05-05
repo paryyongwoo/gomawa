@@ -19,6 +19,7 @@ import com.gomawa.R;
 import com.gomawa.activity.CommentActivity;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dialog.OnlyVerticalTwoButtonDialog;
@@ -80,7 +81,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
                     final Comment comment = commentList.get(position);
 
                     // 댓글 쓴 멤버와 현재 접속된 멤버가 같을 때만 실행됨
-                    if(comment.getMember().getKey().equals(CommonUtils.getMember().getKey())) {
+                    if(comment.getMember().getKey().equals(Data.getMember().getKey())) {
                         // 수정 버튼 in Dialog Listener
                         View.OnClickListener updateBtnListener = new View.OnClickListener() {
                             @Override

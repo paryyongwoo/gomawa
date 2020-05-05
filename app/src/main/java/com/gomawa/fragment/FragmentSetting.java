@@ -32,6 +32,7 @@ import com.gomawa.adapter.SettingRecyclerViewAdapter;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dialog.VerticalTwoButtonDialog;
@@ -96,17 +97,17 @@ public class FragmentSetting extends Fragment {
         headerMenuBtn = rootView.findViewById(R.id.header_menu_button);
         headerMenuBtn.setVisibility(View.INVISIBLE);
 
-        if(CommonUtils.getMember().getProfileImgUrl() == null) {
+        if(Data.getMember().getProfileImgUrl() == null) {
             headerImageView.setImageResource(R.drawable.share_item_background); // todo: 프로필 이미지
         } else {
-            Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+            Picasso.get().load(Data.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
 
             // 프로필 이미지 클릭 시 이미지 액티비티 실행
             headerImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, ImageActivity.class);
-                    intent.putExtra("url", CommonUtils.getMember().getProfileImgUrl());
+                    intent.putExtra("url", Data.getMember().getProfileImgUrl());
                     startActivity(intent);
                 }
             });
@@ -201,7 +202,7 @@ public class FragmentSetting extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(), NicknameActivity.class);
-                i.putExtra("nowNickname", CommonUtils.getMember().getNickName());
+                i.putExtra("nowNickname", Data.getMember().getNickName());
                 startActivityForResult(i, Constants.REQUEST_RESULT);
             }
         });
@@ -294,7 +295,7 @@ public class FragmentSetting extends Fragment {
     }
 
     // 서브타이틀 문자열을 만들어주는 메소드
-    private String makeSubTitle() { return "안녕하세요, " + CommonUtils.getMember().getNickName() + "님!"; }
+    private String makeSubTitle() { return "안녕하세요, " + Data.getMember().getNickName() + "님!"; }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -375,7 +376,7 @@ public class FragmentSetting extends Fragment {
             RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), tempFile);
             body = MultipartBody.Part.createFormData("file", tempFile.getName(), requestFile);
 
-            RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{id: " + CommonUtils.getMember().getId() + "}");
+            RequestBody items = RequestBody.create(MediaType.parse("application/json"), "{id: " + Data.getMember().getId() + "}");
 
             Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().updateMemberProfileImageUrl(body, items);
             Callback<Member> callback = new Callback<Member>() {
@@ -384,11 +385,11 @@ public class FragmentSetting extends Fragment {
                     if(response.isSuccessful()) {
                         Member member = response.body();
 
-                        CommonUtils.setMember(member);
+                        Data.setMember(member);
 
                         // 세팅 프래그먼트의 프로필 이미지를 바꿔줌
                         headerImageView.setImageResource(ImageUtils.DEFAULT_PROFILE_IMAGE);
-                        Picasso.get().load(CommonUtils.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
+                        Picasso.get().load(Data.getMember().getProfileImgUrl()).fit().centerCrop().into(headerImageView);
                     } else {
                         Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                     }

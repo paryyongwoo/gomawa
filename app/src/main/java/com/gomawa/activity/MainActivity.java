@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gomawa.R;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Data;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.gun0912.tedpermission.PermissionListener;
@@ -389,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // DB 작업이 성공적이면 받은 Member 를 CommonUtils의 Member로 설정함
                     Member memberReceived = response.body();
-                    CommonUtils.setMember(memberReceived);
+                    Data.setMember(memberReceived);
 
                     // 액티비티 이동
                     Intent intent = new Intent(mContext, ShareActivity.class);

@@ -23,6 +23,7 @@ import com.gomawa.R;
 import com.gomawa.activity.ShareActivity;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Data;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
@@ -158,7 +159,7 @@ public class FragmentMyThanks extends Fragment {
          * dailyThanks 객체를 api로 보내기
          * api/dailyThanks
          */
-        Member member = CommonUtils.getMember();
+        Member member = Data.getMember();
         if (member.getKey() < 0) {
             Toast.makeText(activity, "재로그인필요", Toast.LENGTH_SHORT).show();
         } else {

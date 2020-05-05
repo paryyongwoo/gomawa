@@ -24,6 +24,7 @@ import com.gomawa.activity.UpdateActivity;
 import com.gomawa.adapter.ShareRecyclerViewAdapter;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.network.RetrofitHelper;
@@ -113,12 +114,12 @@ public class FragmentShareList extends Fragment {
             // add 를 해주기 위해 먼저 ShareItem List 를 Clear 해줌
             shareItemList.clear();
         }
-        Long memberKey = CommonUtils.getMember().getKey();
+        Long memberKey = Data.getMember().getKey();
         Call<List<ShareItem>> call = null;
 
         if (type == Constants.ALL_LIST) {
             // 모든 게시물 보기
-            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(CommonUtils.getMember().getId(), page);
+            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemAll(Data.getMember().getId(), page);
             this.page += 1;
         } else if(type == Constants.MY_LIST) {
             // 나의 게시물 보기
@@ -128,7 +129,7 @@ public class FragmentShareList extends Fragment {
         } else if(type == Constants.LIKE_LIST) {
             // 좋아요 누른 게시물 보기
             // TODO: 2020-04-27 Page & order
-            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByLike(CommonUtils.getMember().getId());
+            call = RetrofitHelper.getInstance().getRetrofitService().getShareItemByLike(Data.getMember().getId());
         }
 
         Callback<List<ShareItem>> callback = new Callback<List<ShareItem>>() {

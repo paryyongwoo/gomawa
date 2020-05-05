@@ -31,6 +31,7 @@ import com.gomawa.activity.ImageActivity;
 import com.gomawa.activity.ShareActivity;
 import com.gomawa.activity.UpdateActivity;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dialog.OnlyVerticalFourButtonDialog;
@@ -213,7 +214,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
         holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(shareItemSelected.getMember().getKey().equals(CommonUtils.getMember().getKey())) {
+                if(shareItemSelected.getMember().getKey().equals(Data.getMember().getKey())) {
                     /**
                      * 글쓴이일 때
                      */
@@ -389,7 +390,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
             // 선택된 Item 의 id 값을 가져옴
             Long shareItemId = shareItemList.get(position).getId();
             // 유저의 key 값을 가져옴
-            Long memberKey = CommonUtils.getMember().getKey();
+            Long memberKey = Data.getMember().getKey();
 
             Call<ShareItem> call = RetrofitHelper.getInstance().getRetrofitService().updateLike(shareItemId, memberKey);
             Callback<ShareItem> callback = new Callback<ShareItem>() {

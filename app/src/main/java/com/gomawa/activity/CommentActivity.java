@@ -22,6 +22,7 @@ import com.gomawa.R;
 import com.gomawa.adapter.CommentRecyclerViewAdapter;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.common.ImageUtils;
 import com.gomawa.dto.Comment;
 import com.gomawa.dto.Member;
@@ -165,7 +166,7 @@ public class CommentActivity extends Activity {
                 Comment comment = new Comment();
                 //comment.setId(0l);
                 comment.setContent(editText.getText().toString());
-                comment.setMember(CommonUtils.getMember());
+                comment.setMember(Data.getMember());
                 comment.setShareItem(parentShareItem);
                 comment.setRegDate(new Date());
 

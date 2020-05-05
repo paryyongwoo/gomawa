@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 
@@ -73,7 +74,7 @@ public class NicknameActivity extends Activity {
         });
 
         // editText의 Text를 현재 닉네임으로 변경
-        editText.setText(CommonUtils.getMember().getNickName());
+        editText.setText(Data.getMember().getNickName());
 
         // editText 포커스 전환 시 deleteBtn 나타나고 사라짐
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -98,7 +99,7 @@ public class NicknameActivity extends Activity {
         });
 
         // 현재 닉네임의 길이를 계산하여 lengthTextView 에 출력 (이후에는 위 TextChangedListener 에서 진행함)
-        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.calculateLength(CommonUtils.getMember().getNickName()), Constants.NICKNAME_LIMIT));
+        lengthTextView.setText(CommonUtils.makeLengthString(CommonUtils.calculateLength(Data.getMember().getNickName()), Constants.NICKNAME_LIMIT));
 
         // deleteBtn Listener
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +166,7 @@ public class NicknameActivity extends Activity {
             String newNickName = objects[0].toString();
 
             // 현재 멤버를 복사해서 닉네임을 newNickName으로 변경
-            Member member = CommonUtils.getMember();
+            Member member = Data.getMember();
             member.setNickName(newNickName);
 
             // 닉네임만 바뀐 멤버를 매개변수로 setNickName 통신 시작
@@ -178,7 +179,7 @@ public class NicknameActivity extends Activity {
 
                         Log.d("반환받은 Member : ", memberReceived.toString());
 
-                        CommonUtils.setMember(memberReceived);
+                        Data.setMember(memberReceived);
                     } else {
                         // todo: 예외 처리
                         Toast.makeText(NicknameActivity.this, "닉네임 수정 실패", Toast.LENGTH_SHORT).show();

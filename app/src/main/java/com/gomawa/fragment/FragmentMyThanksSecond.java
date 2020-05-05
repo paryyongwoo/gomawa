@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.common.Data;
 import com.gomawa.dto.DailyThanks;
 
 import java.text.SimpleDateFormat;
@@ -62,7 +63,7 @@ public class FragmentMyThanksSecond extends Fragment {
                 fragmentMyThanks.setTags(2);
                 DailyThanks dailyThanks = new DailyThanks();
                 dailyThanks.setContent(editText.getText().toString());
-                dailyThanks.setRegMember(CommonUtils.getMember());
+                dailyThanks.setRegMember(Data.getMember());
                 fragmentMyThanks.sendDailyThanks(dailyThanks);
             }
         });

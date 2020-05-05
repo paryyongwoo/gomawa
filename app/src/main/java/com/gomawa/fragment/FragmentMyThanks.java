@@ -3,6 +3,7 @@ package com.gomawa.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.gomawa.R;
 import com.gomawa.activity.ShareActivity;
+import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
+import com.gomawa.dialog.HorizontalTwoButtonDialog;
 import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
@@ -63,6 +66,11 @@ public class FragmentMyThanks extends Fragment {
      */
     private ImageButton headerMenuBtn = null;
     private TextView subTitleTextView = null;
+
+    /**
+     * 다이얼로그
+     */
+    private HorizontalTwoButtonDialog horizontalTwoButtonDialog = null;
 
     @Nullable
     @Override
@@ -143,23 +151,40 @@ public class FragmentMyThanks extends Fragment {
      * @param want 이동하려는 페이지 번호
      */
     private void movePage(int want) {
+        final int w = want;
 
         /**
          * 마지막 페이지로 이동할 경우 서버에 DailyThanks 저장
          */
         if (want == 3) {
-            DailyThanks dailyThanks = setLastPage();
-            sendDailyThanks(dailyThanks);
+            // 확인 버튼 Listener
+            View.OnClickListener okBtnListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 다이얼로그 종료
+                    horizontalTwoButtonDialog.dismiss();
+                    DailyThanks dailyThanks = setLastPage();
+                    sendDailyThanks(dailyThanks, w);
+                }
+            };
+
+            // 취소 버튼 Listener
+            View.OnClickListener cancelBtnListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    horizontalTwoButtonDialog.dismiss();
+                }
+            };
+
+            // 다이얼로그 인스턴스를 생성한 후에 띄워줌
+            horizontalTwoButtonDialog = new HorizontalTwoButtonDialog(getContext(), okBtnListener, cancelBtnListener, "Daily Thanks 작성을 완료 하시겠습니가?", "확인", "취소");
+            // 다이얼로그 애니메이션
+            horizontalTwoButtonDialog.getWindow().setGravity(Gravity.BOTTOM);
+            horizontalTwoButtonDialog.getWindow().setWindowAnimations(R.style.AnimationPopupStyle);
+            horizontalTwoButtonDialog.show();
+        } else {
+            setCurrentPosition(w, currentPosition);
         }
-
-        // keyboard 내리기
-        hideKeyboad(currentPosition);
-
-        // 현재 위치 재설정
-        currentPosition = want;
-
-        // 프래그먼트 전환
-        mPager.setCurrentItem(currentPosition, true);
     }
 
     /**
@@ -196,12 +221,24 @@ public class FragmentMyThanks extends Fragment {
         return dailyThanks;
     }
 
-    private void sendDailyThanks(DailyThanks dailyThanks) {
+    private void setCurrentPosition(int want, int currentPosition) {
+        // keyboard 내리기
+        hideKeyboad(currentPosition);
+
+        // 현재 위치 재설정
+        this.currentPosition = want;
+
+        // 프래그먼트 전환
+        mPager.setCurrentItem(want, true);
+    }
+
+    private void sendDailyThanks(DailyThanks dailyThanks, int want) {
         /**
          * dailyThanks 객체를 api로 보내기
          * api/dailyThanks
          */
         Member member = CommonUtils.getMember();
+        final int w = want;
         if (member.getKey() < 0) {
             Toast.makeText(activity, "재로그인필요", Toast.LENGTH_SHORT).show();
         } else {
@@ -212,6 +249,7 @@ public class FragmentMyThanks extends Fragment {
                 public void onResponse(Call<DailyThanks> call, Response<DailyThanks> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), "setDailyThanks success" + response.body(), Toast.LENGTH_SHORT).show();
+                        setCurrentPosition(w, currentPosition);
                     } else {
                         Toast.makeText(getContext(), "setDailyThanks failed: " + response.code(), Toast.LENGTH_SHORT).show();
                     }

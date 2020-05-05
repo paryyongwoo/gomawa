@@ -41,6 +41,9 @@ public interface RetrofitService {
     @GET("/api/shareItem/like/{memberId}")
     Call<List<ShareItem>> getShareItemByLike(@Path("memberId") Long memberId);
 
+    @GET("/api/dailyThanks/{memberId}")
+    Call<DailyThanks> getDailyThanks(@Path("memberId") Long memberId);
+
 
 
     //POST

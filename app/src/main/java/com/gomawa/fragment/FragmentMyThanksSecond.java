@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,6 +60,7 @@ public class FragmentMyThanksSecond extends Fragment {
     }
 
     public void setThanksText(DailyThanks dailyThanks) {
+        Toast.makeText(getContext(), "setThank" + dailyThanks.getContent1(), Toast.LENGTH_SHORT).show();
         thanksText1.setText(dailyThanks.getContent1());
         thanksText2.setText(dailyThanks.getContent2());
         thanksText3.setText(dailyThanks.getContent3());

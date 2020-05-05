@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
         android:paddingHorizontal="20dp"
         >
 
@@ -28,6 +27,7 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:layout_marginVertical="20dp"
+            android:textColor="@color/inactiveColor"
             />
 
         <TextView
@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:layout_marginVertical="20dp"
+            android:textColor="@color/inactiveColor"
             />
 
         <TextView
@@ -44,6 +45,7 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:layout_marginVertical="20dp"
+            android:textColor="@color/inactiveColor"
             />
 
     </LinearLayout>

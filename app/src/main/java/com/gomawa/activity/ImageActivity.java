@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.gomawa.R;
@@ -53,5 +54,14 @@ public class ImageActivity extends Activity {
         // 이미지 뷰
         PhotoView photoView = findViewById(R.id.activity_image_photoView);
         Picasso.get().load(url).into(photoView);
+
+        // 레이아웃 클릭 시 이미지 액티비티 종료
+        ConstraintLayout layout = findViewById(R.id.activity_image_layout);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }

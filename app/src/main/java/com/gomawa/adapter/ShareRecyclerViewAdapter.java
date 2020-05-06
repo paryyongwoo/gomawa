@@ -45,6 +45,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -78,10 +79,10 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
     private OnlyVerticalTwoButtonDialog downloadShareDialog = null;
 
     // ShareItem List
-    private ArrayList<ShareItem> shareItemList;
+    private List<ShareItem> shareItemList;
 
     // 생성자
-    public ShareRecyclerViewAdapter(ArrayList<ShareItem> shareItemList, Activity mActivity, FragmentShareList fragmentShareList) {
+    public ShareRecyclerViewAdapter(List<ShareItem> shareItemList, Activity mActivity, FragmentShareList fragmentShareList) {
         this.shareItemList = shareItemList;
         this.mActivity = mActivity;
         this.fragmentShareList = fragmentShareList;
@@ -434,7 +435,7 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                     shareItemList.remove(shareItemSelected);
 
                     // TODO: 2020-04-23 임시로 0 들어감
-                    fragmentShareList.getShareItems(0);
+                    fragmentShareList.getShareItemList(0, true);
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());
                 }

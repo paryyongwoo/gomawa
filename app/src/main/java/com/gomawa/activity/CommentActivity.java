@@ -237,13 +237,13 @@ public class CommentActivity extends Activity {
                     } else {
                         commentList.add(comment);
 
-                        getCommentByShareItemIdApi();
-
                         // 키보드 내리기
                         CommonUtils.hideKeyboard(mActivity, editText);
 
                         // editText 초기화
                         editText.setText("");
+
+                        getCommentByShareItemIdApi();
                     }
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());

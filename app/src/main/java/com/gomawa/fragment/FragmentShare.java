@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import com.gomawa.R;
 import com.gomawa.activity.WriteActivity;
 import com.gomawa.common.Constants;
+import com.gomawa.common.Data;
 import com.gomawa.dialog.OnlyVerticalThreeButtonDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -61,7 +62,7 @@ public class FragmentShare extends Fragment {
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_share, container, false);
 
         /**
-         * 초기화 작업
+         * 뷰 초기화 작업
          */
         initView();
 
@@ -156,7 +157,7 @@ public class FragmentShare extends Fragment {
                             if(!(allListFragment.isHidden())) {
                                 // allListFragment 가 이미 보여지고 있을 때 ~ 새로고침
                                 FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-                                fragment.getShareItems(0);
+                                fragment.getShareItemList(0, true);
                             }
                         }
 
@@ -182,7 +183,7 @@ public class FragmentShare extends Fragment {
                             if(!(myListFragment.isHidden())) {
                                 // allListFragment 가 이미 보여지고 있을 때 ~ 새로고침
                                 FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-                                fragment.getShareItems(0);
+                                fragment.getShareItemList(0, true);
                             }
                         }
 
@@ -208,7 +209,7 @@ public class FragmentShare extends Fragment {
                             if(!(likeListFragment.isHidden())) {
                                 // likeListFragment 가 이미 보여지고 있을 때 ~ 새로고침
                                 FragmentShareList fragment = (FragmentShareList) fm.findFragmentByTag("likeListFragment");
-                                fragment.getShareItems(0);
+                                fragment.getShareItemList(0, true);
                             }
                         }
 
@@ -241,30 +242,21 @@ public class FragmentShare extends Fragment {
         });
     }
 
-    /**
-     * 글작성 완료 후에, 최신 상태의 shareList를 가져오기 위한 함수
-     */
-//    public void moveShareList() {
-//        isWrite = true;
-//        if (writeFragment != null) fm.beginTransaction().hide(writeFragment).commit();
-//        if (this.allListFragment != null) fm.beginTransaction().show(this.allListFragment).commit();
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.REQUEST_WRITE) {
             if(resultCode == Constants.RESULT_OK) {
                 FragmentShareList allListFragment = (FragmentShareList) fm.findFragmentByTag("allListFragment");
-                allListFragment.getShareItems(0);
+                allListFragment.getShareItemList(0, true);
 
                 if(myListFragment != null) {
                     FragmentShareList myListFragment = (FragmentShareList) fm.findFragmentByTag("myListFragment");
-                    myListFragment.getShareItems(0);
+                    myListFragment.getShareItemList(0, true);
                 }
 
                 if(likeListFragment != null) {
                     FragmentShareList likeListFragment = (FragmentShareList) fm.findFragmentByTag("likeListFragment");
-                    likeListFragment.getShareItems(0);
+                    likeListFragment.getShareItemList(0, true);
                 }
 
             }

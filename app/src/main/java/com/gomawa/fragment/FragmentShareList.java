@@ -44,6 +44,10 @@ public class FragmentShareList extends Fragment {
     // ALL or MY or LIKE
     private int type;
 
+    public int getType() {
+        return type;
+    }
+
     // 현재 게시물 페이지
     private int page = 0;
 
@@ -228,7 +232,7 @@ public class FragmentShareList extends Fragment {
      */
     @Override
     public void onResume() {
-        getShareItemList(page, false);
+        refreshList(page, false);
 
         super.onResume();
     }

@@ -366,6 +366,10 @@ public class ShareRecyclerViewAdapter extends RecyclerView.Adapter<ShareRecycler
                 String regDateString = CommonUtils.convertFromDateToString(regDate, "YYYY.MM.dd");
                 intent.putExtra("dateString", regDateString);
 
+                // ShareItem List 수정을 위한 type 과 position
+                intent.putExtra("type", fragmentShareList.getType());
+                intent.putExtra("position", position);
+
                 mContext.startActivity(intent);
             }
         });

@@ -35,6 +35,7 @@ public class ImageActivity extends Activity {
     private void initView() {
         // 백 버튼
         ImageButton backBtn = findViewById(R.id.header_second_back);
+        backBtn.setVisibility(View.INVISIBLE);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

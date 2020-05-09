@@ -3,15 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/recyclerView_item_notice_layout"
     android:layout_width="match_parent"
-    android:layout_height="400dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:layout_marginVertical="20dp">
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:orientation="vertical"
-        android:background="@color/backgroundColor">
+        android:background="@color/backgroundColor"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"

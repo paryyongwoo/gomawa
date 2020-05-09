@@ -15,7 +15,9 @@
         app:layout_constraintTop_toBottomOf="@+id/header_second_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        >
 
         <LinearLayout
             android:id="@+id/activity_write_shareItem_header"
@@ -61,25 +63,46 @@
             android:paddingVertical="10dp"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/activity_write_shareItem_body_imageView"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:src="@drawable/share_item_background"
-                android:background="@color/inactiveColor"
-                android:scaleType="fitXY" >
+                android:layout_height="300dp">
 
-            </ImageView>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/activity_write_shareItem_body_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/photo"
+                        android:background="@color/inactiveColor"
+                        android:scaleType="center"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="사진을 선택하세요"
+                        android:textColor="@color/inactiveColor"
+                        android:gravity="center_horizontal"
+                        app:layout_constraintTop_toBottomOf="@+id/activity_write_shareItem_body_imageView"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
 
             <EditText
                 android:id="@+id/activity_write_shareItem_body_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="EditText"
-                android:textSize="13sp"
+                android:textSize="18sp"
                 android:textColor="#ff000000"
-                android:hint="내용을 입력해 주세요."
-                android:textColorHint="#80000000"/>
+                android:hint="내용을 입력해 주세요"
+                android:textColorHint="#80000000" />
 
         </LinearLayout>
 

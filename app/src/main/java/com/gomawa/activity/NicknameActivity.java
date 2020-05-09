@@ -114,6 +114,7 @@ public class NicknameActivity extends Activity {
 
         // 백 버튼 - editText의 값과 관계없이 액티비티만 종료함
         backBtn = findViewById(R.id.header_second_back);
+        backBtn.setImageResource(R.drawable.back_button_white);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

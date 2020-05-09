@@ -7,6 +7,9 @@
         <item name="colorAccent">@color/inactiveColor</item>
         <item name="android:statusBarColor">@color/inactiveColor</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textViewStyle">@style/CafeFontTextView</item>
+        <item name="android:buttonStyle">@style/CafeFontButton</item>
+        <item name="android:editTextStyle">@style/CafeFontEditText</item>
     </style>
 
     <!-- The launcher theme. It sets the main window background to the launch_screen drawable -->
@@ -48,6 +51,21 @@
 
     <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/inactiveColor</item>
+        <item name="android:fontFamily">@font/cafe_font</item>
     </style>
+
+    <!--  뷰별로 폰트 적용  -->
+    <style name="CafeFontTextView" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/cafe_font</item>
+    </style>
+
+    <style name="CafeFontButton" parent="@android:style/Widget.DeviceDefault.Button">
+        <item name="android:fontFamily">@font/cafe_font</item>
+    </style>
+
+    <style name="CafeFontEditText" parent="@android:style/Widget.DeviceDefault.EditText">
+        <item name="android:fontFamily">@font/cafe_font</item>
+    </style>
+    <!--  뷰별로 폰트 적용 끝  -->
 
 </resources>

@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.gomawa.R;
+import com.gomawa.common.Data;
+import com.gomawa.dto.DailyThanks;
 import com.nex3z.flowlayout.FlowLayout;
 
 public class FragmentMyThanksComplete extends Fragment {
@@ -39,6 +41,14 @@ public class FragmentMyThanksComplete extends Fragment {
         tagsTextView = rootView.findViewById(R.id.tags);
         tagsTextView = rootView.findViewById(R.id.tags);
         completeTextView = rootView.findViewById(R.id.complete_text_view);
+
+        /**
+         * 이미 오늘 날짜에 작성한 DailyThanks가 있다면 내용을 뷰에 표시
+         */
+        DailyThanks dailyThanks = Data.getDailyThanks();
+        if (dailyThanks != null) {
+            completeTextView.setText(dailyThanks.getContent());
+        }
     }
 
     /**

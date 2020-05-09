@@ -389,6 +389,12 @@ public class MainActivity extends AppCompatActivity {
                 Data.setDailyThanks(dailyThanks);
 
                 return true;
+            } else {
+                /**
+                 * 서버 에러
+                 * 오늘 작성한 DailyThanks가 없다면 204 응답이 오므로, 결국 응답은 성공(success)이다.
+                 * 이곳으로 왔다는 얘기는 서버 에러가 발생했다는 의미
+                 */
             }
         } else {
             // todo: 예외 처리

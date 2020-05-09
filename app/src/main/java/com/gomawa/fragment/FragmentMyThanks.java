@@ -101,12 +101,20 @@ public class FragmentMyThanks extends Fragment {
         mPager = rootView.findViewById(R.id.thanksPager);
         mPager.setOffscreenPageLimit(1);
         pagerAdapter = new ScreenSlidePagerAdapter(getChildFragmentManager());
-        fragmentFirst = new FragmentMyThanksFirst();
-        fragmentSecond = new FragmentMyThanksSecond();
-        fragmentComplete = new FragmentMyThanksComplete();
-        pagerAdapter.addItem(fragmentFirst);
-        pagerAdapter.addItem(fragmentSecond);
-        pagerAdapter.addItem(fragmentComplete);
+
+        DailyThanks dailyThanks = Data.getDailyThanks();
+        if (dailyThanks != null) {
+            fragmentComplete = new FragmentMyThanksComplete();
+            pagerAdapter.addItem(fragmentComplete);
+        } else {
+            fragmentFirst = new FragmentMyThanksFirst();
+            fragmentSecond = new FragmentMyThanksSecond();
+            fragmentComplete = new FragmentMyThanksComplete();
+            pagerAdapter.addItem(fragmentFirst);
+            pagerAdapter.addItem(fragmentSecond);
+            pagerAdapter.addItem(fragmentComplete);
+        }
+
         mPager.setAdapter(pagerAdapter);
         // DepthPageTransformer 설정
         mPager.setPageTransformer(true, new DepthPageTransformer());

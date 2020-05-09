@@ -195,6 +195,8 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
+                    mActivity.shareItemList.get(mActivity.position).setCommentNum(mActivity.shareItemList.get(mActivity.position).getCommentNum() - 1);
+
                     mActivity.getCommentByShareItemIdApi();
                 } else {
                     Log.d("api 응답은 왔으나 실패", "status: " + response.code());

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -46,9 +47,13 @@ public class CommentActivity extends Activity {
     // Comment List
     private List<Comment> commentList = new ArrayList<>();
 
+    // ShareItem List
+    public List<ShareItem> shareItemList = null;
+
     // Parent ShareItem
     private ShareItem parentShareItem = null;
     private String parentShareItemRegDate = null;
+    public int position = -1;
 
     // RecyclerView
     private RecyclerView recyclerView = null;
@@ -91,6 +96,20 @@ public class CommentActivity extends Activity {
         shareItem.setId(id);
         shareItem.setContent(content);
         shareItem.setMember(member);
+
+        position = intent.getExtras().getInt("position");
+
+        int type = intent.getExtras().getInt("type");
+        switch(type) {
+            case Constants.ALL_LIST:
+                shareItemList = Data.getShareItemList();
+                break;
+            case Constants.MY_LIST:
+                shareItemList = Data.getMyShareItemList();
+                break;
+            case Constants.LIKE_LIST:
+                shareItemList = Data.getLikeShareItemList();
+        }
 
         return shareItem;
     }
@@ -242,6 +261,9 @@ public class CommentActivity extends Activity {
 
                         // editText 초기화
                         editText.setText("");
+
+                        // commentNum++
+                        shareItemList.get(position).setCommentNum(shareItemList.get(position).getCommentNum() + 1);
 
                         getCommentByShareItemIdApi();
                     }

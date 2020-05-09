@@ -2,7 +2,6 @@ package com.gomawa.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +24,7 @@ import com.gomawa.R;
 import com.gomawa.common.AuthUtils;
 import com.gomawa.common.CommonUtils;
 import com.gomawa.common.Data;
+import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.network.RetrofitHelper;
 import com.gun0912.tedpermission.PermissionListener;
@@ -32,8 +32,6 @@ import com.gun0912.tedpermission.TedPermission;
 import com.kakao.auth.ApiErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
-import com.kakao.auth.authorization.accesstoken.AccessToken;
-import com.kakao.auth.authorization.accesstoken.AccessTokenManager;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
@@ -49,23 +47,17 @@ import com.nhn.android.naverlogin.OAuthLoginHandler;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -87,8 +79,28 @@ public class MainActivity extends AppCompatActivity {
     // 뷰객체
     private Button loginBtnNaver;
 
-    // objectMapper
-    private ObjectMapper objectMapper = new ObjectMapper();
+    // 로그인을 처리할 핸들러
+    private OAuthLoginHandler mOAuthLoginHandler;
+
+    public MainActivity() {
+        mOAuthLoginHandler = new OAuthLoginHandler() {
+            @Override
+            public void run(boolean success) {
+                // Naver 로그인 성공 & Token을 받는 데 성공
+                if (success) {
+                    String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+
+                    // AuthUtils.services 의 값을 네이버로 변경
+                    AuthUtils.setServices(AuthUtils.Services.NAVER, mActivity);
+
+                    // 발급받은 accessToken을 가지고 네이버 프로필 정보를 얻는 요청을 보낸다.
+                    new RequestApiTask().execute(accessToken);
+                } else {
+                    // TODO: 2020-02-02 로그인 실패 처리
+                }
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,47 +163,6 @@ public class MainActivity extends AppCompatActivity {
         //super.onBackPressed();
         CommonUtils.onBackPressedCheck(mContext, mActivity);
     }
-
-    private void tedPermission() {
-        PermissionListener permissionListener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                // 권한 요청 성공
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                // 권한 요청 실패
-            }
-        };
-
-        TedPermission.with(this)
-                .setPermissionListener(permissionListener)
-                .setRationaleMessage(getResources().getString(R.string.permission_2))
-                .setDeniedMessage(getResources().getString(R.string.permission_1))
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .check();
-    }
-
-    // 로그인을 처리할 핸들러
-    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
-        @Override
-        public void run(boolean success) {
-            // Naver 로그인 성공 & Token을 받는 데 성공
-            if (success) {
-                String accessToken = mOAuthLoginModule.getAccessToken(mContext);
-
-                // AuthUtils.services 의 값을 네이버로 변경
-                AuthUtils.setServices(AuthUtils.Services.NAVER, mActivity);
-
-                // 발급받은 accessToken을 가지고 네이버 프로필 정보를 얻는 요청을 보낸다.
-                new RequestApiTask().execute(accessToken);
-            } else {
-                // TODO: 2020-02-02 로그인 실패 처리
-            }
-        }
-    };
-
     /**
      * 네이버 액세스 토큰 받아온 후, 프로필 정보 가져올 태스크
      */
@@ -219,76 +190,72 @@ public class MainActivity extends AppCompatActivity {
 
                 br.close();
 
-                Map<String, Object> map = new HashMap<>();
-                map.put("response", response);
+                    Long key;
+                    String email = null;
+                    String gender = null;
 
-                return map;
+                    // response decoding
+                    JSONObject object = new JSONObject(response.toString());
+                    JSONObject innerJson = new JSONObject(object.get("response").toString());
+                    Log.d("login inner", innerJson.toString());
+
+                    /**
+                     * @description
+                     * 이메일 제공에 동의하지 않은 경우 > 다이얼로그를 띄우고 로그아웃 및 세션을 삭제 요청을 한다
+                     * 이메일 제공에 동의한 경우 > ShareActivity로 이동한다.
+                     */
+                    if (innerJson.has("id")) {
+                        key = innerJson.getLong("id");
+
+                        if (innerJson.has("email")) email = innerJson.getString("email");
+                        if (innerJson.has("gender")) gender = innerJson.getString("gender");
+
+                        // 완성된 사용자 객체
+                        final Member member = new Member();
+                        member.setKey(key);
+                        member.setEmail(email);
+                        member.setGender(gender);
+                        // 현재 날짜를 저장함
+                        member.setRegDate(new Date());
+
+                        // 디폴트 닉네임
+                        String[] emailForSplit = email.split("@");
+
+                        member.setNickName(emailForSplit[0]);
+
+                        // DB에 멤버 등록 및 서버로부터 DailyThanks 정보 가져오기
+                        boolean isSuccess = addMemberAndDailyThanks(member);
+
+                        return isSuccess;
+                    } else {
+                        // 로그인 실패
+                        // 네이버 로그아웃
+                        mOAuthLoginModule.logout(mContext);
+                    }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Object map) {
-            super.onPostExecute(map);
-
-            // 로그인 처리 완료 후에 실행될 로직
-            processAuthResult((Map)map);
-        }
-    }
-
-    private void processAuthResult(Map map) {
-        try {
-            Long key;
-            String email = null;
-            String gender = null;
-
-            // response decoding
-            String response = map.get("response").toString();
-            JSONObject object = new JSONObject(response);
-            JSONObject innerJson = new JSONObject(object.get("response").toString());
-            Log.d("login inner", innerJson.toString());
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
 
             /**
-             * @description
-             * 이메일 제공에 동의하지 않은 경우 > 다이얼로그를 띄우고 로그아웃 및 세션을 삭제 요청을 한다
-             * 이메일 제공에 동의한 경우 > ShareActivity로 이동한다.
+             * 로그인 성공 여부
+             * 1. 로그인 성공: 액티비티 전환
+             * 2. 로그인 실패: 에러 메시지 출력
              */
-            if (innerJson.has("id")) {
-                key = innerJson.getLong("id");
-
-                if (innerJson.has("email")) email = innerJson.getString("email");
-                if (innerJson.has("gender")) gender = innerJson.getString("gender");
-
-                // 완성된 사용자 객체
-                final Member member = new Member();
-                member.setKey(key);
-                member.setEmail(email);
-                member.setGender(gender);
-                // 현재 날짜를 저장함
-                member.setRegDate(new Date());
-
-                // 디폴트 닉네임
-                String[] emailForSplit = email.split("@");
-
-                member.setNickName(emailForSplit[0]);
-
-                Log.d("초기 닉네임", emailForSplit[0]);
-
-                // DB에 멤버 등록
-                addMemberAfterLogin(member);
+            boolean isSuccess = (boolean)o;
+            if (isSuccess) {
+                // 액티비티 이동
+                Intent intent = new Intent(mContext, ShareActivity.class);
+                startActivity(intent);
             } else {
-                // 로그인 실패
-                // 네이버 로그아웃
-                mOAuthLoginModule.logout(mContext);
+                // TODO: 2020/05/09 에러 문구를 다이얼로그로 표시하게 변경하기
+                Toast.makeText(mContext, "사용자 정보를 불러오는데 실패했습니다. 앱을 재실행 해주세요.", Toast.LENGTH_SHORT).show();
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            // 네이버 로그아웃
-            mOAuthLoginModule.logout(mContext);
         }
     }
 
@@ -339,94 +306,105 @@ public class MainActivity extends AppCompatActivity {
     private class KakaoLoginTask extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
-            // 로그인 성공 시 카카오에서 받아온 결과
-            MeV2Response result = (MeV2Response) objects[0];
+            try {
+                // 로그인 성공 시 카카오에서 받아온 결과
+                MeV2Response result = (MeV2Response) objects[0];
 
-            // 카카오 유저 정보가 담겨있음
-            UserAccount userAccount = result.getKakaoAccount();
+                // 카카오 유저 정보가 담겨있음
+                UserAccount userAccount = result.getKakaoAccount();
 
-            Member member = new Member();
+                Member member = new Member();
 
-            // Properties 에 닉네임 값이 담겨있음.
-            Map<String, String> properties = result.getProperties();
-            member.setNickName(properties.get("nickname"));
-            member.setProfileImgUrl(properties.get("profile_image")); // 프로필 이미지가 기본 이미지면 null 값이 입력됨
-            member.setKey(result.getId());
+                // Properties 에 닉네임 값이 담겨있음.
+                Map<String, String> properties = result.getProperties();
+                member.setNickName(properties.get("nickname"));
+                member.setProfileImgUrl(properties.get("profile_image")); // 프로필 이미지가 기본 이미지면 null 값이 입력됨
+                member.setKey(result.getId());
 
-            // 현재 날짜를 회원 가입 날짜로 저장
-            member.setRegDate(new Date());
+                // 현재 날짜를 회원 가입 날짜로 저장
+                member.setRegDate(new Date());
 
-            // 이메일 과 성별 수집 동의 여부 - 동의하지 않았으면 "null" 입력
-            if(userAccount.emailNeedsAgreement() == OptionalBoolean.FALSE) {
-                member.setEmail(userAccount.getEmail());
-            } else {
-                member.setEmail("null");
+                // 이메일 과 성별 수집 동의 여부 - 동의하지 않았으면 "null" 입력
+                if(userAccount.emailNeedsAgreement() == OptionalBoolean.FALSE) {
+                    member.setEmail(userAccount.getEmail());
+                } else {
+                    member.setEmail("null");
+                }
+
+                if(userAccount.genderNeedsAgreement() == OptionalBoolean.FALSE) {
+                    member.setGender(userAccount.getGender().getValue());
+                } else {
+                    member.setGender("null");
+                }
+
+                // DB에 멤버 등록 및 서버로부터 DailyThanks 정보 가져오기
+                boolean isSuccess = addMemberAndDailyThanks(member);
+
+                return isSuccess;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            if(userAccount.genderNeedsAgreement() == OptionalBoolean.FALSE) {
-                member.setGender(userAccount.getGender().getValue());
-            } else {
-                member.setGender("null");
-            }
-
-            return member;
+            return false;
         }
 
         @Override
         protected void onPostExecute(Object o) {
-            Member member = (Member) o;
+            super.onPostExecute(o);
 
-            // DB에 멤버 등록
-            addMemberAfterLogin(member);
+            /**
+             * 로그인 성공 여부
+             * 1. 로그인 성공: 액티비티 전환
+             * 2. 로그인 실패: 에러 메시지 출력
+             */
+            boolean isSuccess = (boolean)o;
+            if (isSuccess) {
+                // 액티비티 이동
+                Intent intent = new Intent(mContext, ShareActivity.class);
+                startActivity(intent);
+            } else {
+                // TODO: 2020/05/09 에러 문구를 다이얼로그로 표시하게 변경하기
+                Toast.makeText(mContext, "사용자 정보를 불러오는데 실패했습니다. 앱을 재실행 해주세요.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    // 로그인에 성공하면 addMemberOnStart 를 호출하는 메소드 ( 액티비티 이동 때문에 onPost 에서 실행되어야 함 )
-    private void addMemberAfterLogin(Member member) {
+    /**
+     * 1. 네이버, 카카오 로그인 성공시 가져온 사용자 정보를 Member 객체로 만들어서 서버에 저장 및 Data에 저장
+     * 2. 서버에서 DailyThanks 정보를 받아와서 Data에 저장
+     */
+    private boolean addMemberAndDailyThanks(Member member) throws IOException {
+        // 1. 네이버, 카카오 로그인 성공시 가져온 사용자 정보를 Member 객체로 만들어서 서버에 저장 및 Data에 저장
         Call<Member> call = RetrofitHelper.getInstance().getRetrofitService().addMemberOnStart(member);
-        Callback<Member> callback = new Callback<Member>() {
-            @Override
-            public void onResponse(Call<Member> call, Response<Member> response) {
-                if (response.isSuccessful()) {
-                    // DB 작업이 성공적이면 받은 Member 를 CommonUtils의 Member로 설정함
-                    Member memberReceived = response.body();
-                    Data.setMember(memberReceived);
+        Response<Member> callRes = call.execute();
+        if (callRes.isSuccessful()) {
+            Member memberReceived = callRes.body();
+            Data.setMember(memberReceived);
 
-                    // 액티비티 이동
-                    Intent intent = new Intent(mContext, ShareActivity.class);
-                    startActivity(intent);
-                } else {
-                    // todo: 예외 처리
-                    Log.d("api 응답은 왔으나 실패", "status: " + response.code());
-                    int status = response.code();
-                    if (status == 403) {
-                        Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
-                    }
+            // 2. 서버에서 DailyThanks 정보를 받아와서 Data에 저장
+            Call<DailyThanks> getDailyThanksCall = RetrofitHelper.getInstance().getRetrofitService().getDailyThanks(memberReceived.getId());
+            Response<DailyThanks> getDailyThanksCallRes = getDailyThanksCall.execute();
 
-                    // 카카오 로그아웃
-                    UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                        @Override
-                        public void onCompleteLogout() {}
-                    });
-                }
+            if (getDailyThanksCallRes.isSuccessful()) {
+                DailyThanks dailyThanks = getDailyThanksCallRes.body();
+                Data.setDailyThanks(dailyThanks);
+
+                return true;
+            }
+        } else {
+            // todo: 예외 처리
+            Log.d("api 응답은 왔으나 실패", "status: " + callRes.code());
+            int status = callRes.code();
+            if (status == 403) {
+                Toast.makeText(MainActivity.this, "로그인 인증 실패", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onFailure(Call<Member> call, Throwable t) {
-                Log.d("api 로그인 통신 실패", t.getMessage());
-
-                // 카카오 로그아웃
-                UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
-                    @Override
-                    public void onCompleteLogout() {}
-                });
-
-                // 개발용 : 로그인 실패해도 액티비티 전환
-                // Intent intent = new Intent(mContext, ShareActivity.class);
-                // startActivity(intent);
-            }
-        };
-        call.enqueue(callback);
+            // 카카오 로그아웃
+            UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+                @Override
+                public void onCompleteLogout() {}
+            });
+        }
+        return false;
     }
 
     @Override
@@ -435,6 +413,27 @@ public class MainActivity extends AppCompatActivity {
         if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void tedPermission() {
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // 권한 요청 성공
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                // 권한 요청 실패
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage(getResources().getString(R.string.permission_2))
+                .setDeniedMessage(getResources().getString(R.string.permission_1))
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .check();
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.gomawa.dto.Member;
 import com.gomawa.dto.NoticeItem;
 import com.gomawa.dto.ShareItem;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -41,6 +43,7 @@ public interface RetrofitService {
     @GET("/api/shareItem/like/{memberId}")
     Call<List<ShareItem>> getShareItemByLike(@Path("memberId") Long memberId);
 
+    @Headers("Accept: application/json")
     @GET("/api/dailyThanks/{memberId}")
     Call<DailyThanks> getDailyThanks(@Path("memberId") Long memberId);
 

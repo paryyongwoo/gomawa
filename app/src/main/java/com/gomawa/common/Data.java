@@ -2,6 +2,7 @@ package com.gomawa.common;
 
 import android.util.Log;
 
+import com.gomawa.dto.DailyThanks;
 import com.gomawa.dto.Member;
 import com.gomawa.dto.ShareItem;
 import com.gomawa.fragment.FragmentShareList;
@@ -15,7 +16,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Data {
-    // 멤버
+    /**
+     * 멤버
+     */
     private static Member member;
 
     public static void setMember(Member m) {
@@ -23,6 +26,18 @@ public class Data {
     }
     public static Member getMember() {
         return member;
+    }
+
+    /**
+     * DailyThanks
+     */
+    private static DailyThanks dailyThanks;
+
+    public static void setDailyThanks(DailyThanks d) {
+        dailyThanks = d;
+    }
+    public static DailyThanks getDailyThanks() {
+        return dailyThanks;
     }
 
     // All ShareItem List

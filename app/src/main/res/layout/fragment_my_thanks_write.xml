@@ -26,17 +26,18 @@
         app:layout_constraintStart_toStartOf="@+id/tags"
         app:layout_constraintTop_toBottomOf="@+id/tags"
         android:layout_marginTop="50dp"
-        android:hint="오늘 혹은 어제 있었던 가장 고마운 일을 간단히 적어보세요"
+        android:hint="최근에 가장 고마웠던 일을 간단히 적어보세요"
+        android:textSize="26sp"
         />
 
     <Button
         android:id="@+id/complet_btn"
-        android:layout_width="50dp"
+        android:layout_width="60dp"
         android:layout_height="30dp"
         app:layout_constraintRight_toRightOf="@id/edit_text"
         app:layout_constraintTop_toBottomOf="@+id/edit_text"
         android:text="완료"
-        android:textSize="10sp"
+        android:textSize="16sp"
         android:textColor="@color/whiteColor"
         android:background="@drawable/shape_circle"
         android:visibility="visible"

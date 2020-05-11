@@ -34,7 +34,7 @@
         app:layout_constraintRight_toRightOf="@id/fragment_my_thanks_first_edit_text"
         app:layout_constraintTop_toBottomOf="@+id/fragment_my_thanks_first_edit_text"
         android:text="다음"
-        android:textSize="10sp"
+        android:textSize="16sp"
         android:textColor="@color/whiteColor"
         android:background="@drawable/shape_circle"
         android:visibility="visible"

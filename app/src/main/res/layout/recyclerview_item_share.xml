@@ -31,7 +31,7 @@
             android:text="귀요미"
             android:layout_weight="5"
             android:layout_marginLeft="10dp"
-            android:textSize="14dp"
+            android:textSize="16sp"
             android:textColor="@color/inactiveColor"
             />
 
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:textSize="10dp"
+            android:textSize="12sp"
             android:layout_weight="5"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
@@ -113,9 +113,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:textColor="@color/inactiveColor"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_marginTop="8dp"/>
 
         <!-- 구분선 -->
         <ImageView
@@ -138,7 +139,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Comment"
-            android:textColor="@color/inactiveColor"/>
+            android:textColor="@color/inactiveColor"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 

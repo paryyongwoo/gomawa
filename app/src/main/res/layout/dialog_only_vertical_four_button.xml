@@ -19,7 +19,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:text="First Button"
-            android:textColor="#ff000000" />
+            android:textColor="#ff000000"
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/dialog_only_vertical_four_button_second_button"
@@ -28,7 +29,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:text="Second Button"
-            android:textColor="#ff000000" />
+            android:textColor="#ff000000"
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/dialog_only_vertical_four_button_third_button"
@@ -37,7 +39,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:text="Third Button"
-            android:textColor="#ff000000" />
+            android:textColor="#ff000000"
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/dialog_only_vertical_four_button_fourth_button"
@@ -46,7 +49,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:text="Fourth Button"
-            android:textColor="#ff000000" />
+            android:textColor="#ff000000"
+            android:textSize="18sp"/>
 
     </LinearLayout>
 

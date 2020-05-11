@@ -36,12 +36,12 @@
 
     <Button
         android:id="@+id/daily_thanks_next_btn"
-        android:layout_width="50dp"
+        android:layout_width="60dp"
         android:layout_height="30dp"
         app:layout_constraintRight_toRightOf="@id/fragment_my_thanks_first_edit_text"
         app:layout_constraintTop_toBottomOf="@+id/flow_layout"
         android:text="다음"
-        android:textSize="10sp"
+        android:textSize="16sp"
         android:textColor="@color/whiteColor"
         android:background="@drawable/shape_circle"
         android:visibility="visible"

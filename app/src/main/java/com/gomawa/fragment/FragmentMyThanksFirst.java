@@ -71,6 +71,9 @@ public class FragmentMyThanksFirst extends Fragment {
         editText = rootView.findViewById(R.id.fragment_my_thanks_first_edit_text);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+        /**
+         * 해시태그 만들기
+         */
         for (String tag : tags) {
             final String t = tag;
             final Button btn = new Button(getContext());

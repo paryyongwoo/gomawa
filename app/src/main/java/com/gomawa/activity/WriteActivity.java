@@ -105,8 +105,6 @@ public class WriteActivity extends Activity {
 
         // 배경 이미지 설정
         backgroundImageView = findViewById(R.id.activity_write_shareItem_body_imageView);
-        backgroundImageView.setImageResource(R.drawable.share_item_background);
-
 
         // 본문 설정
         contentEditText = findViewById(R.id.activity_write_shareItem_body_content);
@@ -208,7 +206,7 @@ public class WriteActivity extends Activity {
 
         // 완료 버튼 Listener
         Button okBtn = findViewById(R.id.header_second_ok);
-        okBtn.setTextColor(getResources().getColor(R.color.inactiveColor));
+        okBtn.setTextColor(getResources().getColor(R.color.activeColor));
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
